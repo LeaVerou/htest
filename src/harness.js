@@ -56,6 +56,7 @@ for (let a of tests.querySelectorAll("li > a")) {
 				li.classList.remove("selected");
 			}
 			li.classList.add("selected");
+			iframes.textContent = "";
 		}
 		else if (evt.target.matches("input[type=checkbox]")) {
 			let checked = $$("input[type=checkbox]:not(#select_all)", tests).map(checkbox => checkbox.checked);
