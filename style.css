@@ -1,5 +1,8 @@
 :root {
-	--color-accent: hsl(340 90% 50%);
+	--color-magenta: hsl(340 90% 50%);
+	--color-pink: hsl(340 90% 80%);
+	--color-accent: var(--color-magenta);
+	--color-accent-lighter: var(--color-pink);
 	--page-width: 100rem;
 	--font-body: system-ui, Helvetica Neue, Segoe UI, sans-serif;
 }
@@ -9,8 +12,13 @@ body {
 	font: 100%/1.5 var(--font-body);
 }
 
+a:not(:hover) {
+	filter: saturate(.5);
+}
+
 pre[class],
 header,
+footer,
 main > * {
 	padding: var(--padding-block, 0) calc(50vw - var(--page-width) / 2);
 }
@@ -31,15 +39,16 @@ header > h1 {
 	}
 
 header > h1 > strong {
-			color: var(--color-accent);
+			color: var(--color-accent-lighter);
 		}
 
 pre {
-	--padding-block: .6em;
+	--padding-block: .6rem;
 }
 
-main {
-
+footer {
+	--padding-block: .6rem;
+	background: hsl(220 10% 94%);
 }
 
 h2 {
