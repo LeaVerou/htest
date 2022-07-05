@@ -88,7 +88,12 @@ async function $out (...texts) {
 	for (let text of texts) {
 		if (typeof text === "function") {
 			await ready();
-			text = text();
+			try {
+				text = text();
+			}
+			catch (err) {
+				text = err;
+			}
 		}
 
 		text = format(text);
