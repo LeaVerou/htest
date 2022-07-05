@@ -5,19 +5,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "npx postcss \"**/*.postcss\" --base . --dir . --ext .css --config postcss.config.cjs",
-		"build": "npm run build:css",
-		"watch:css": "npx postcss \"**/*.postcss\" --base . --dir . --ext .css --config postcss.config.cjs --watch",
-		"watch": "npm run watch:css"
+    "build:html": "npx @11ty/eleventy --config=.eleventy.cjs",
+    "build": "npm run build:html && npm run build:css",
+    "watch:css": "npx postcss \"**/*.postcss\" --base . --dir . --ext .css --config postcss.config.cjs --watch",
+    "watch:html": "npx @11ty/eleventy --config=.eleventy.cjs --watch",
+    "watch": "npm run watch:css & npm run watch:html"
   },
   "exports": {
-		"import": "./src/index.js"
-	},
+    "import": "./src/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leaverou/h-chart.git"
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "author": "Lea Verou",
   "license": "MIT",
   "bugs": {
@@ -25,9 +26,9 @@
   },
   "homepage": "https://github.com/leaverou/htest#readme",
   "devDependencies": {
-    "postcss": "^8.3.9",
-    "postcss-cli": "^9.0.1",
-    "postcss-custom-selectors": "^6.0.0",
-    "postcss-nesting": "^8.0.1"
+    "@11ty/eleventy": "^1.0",
+    "postcss": "^8",
+    "postcss-cli": "^10.0.0",
+    "postcss-nesting": "^10.1.10"
   }
 }

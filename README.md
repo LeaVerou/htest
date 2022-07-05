@@ -1,12 +1,31 @@
-# htest
+<header>
+
+# **h**test
 
 Declarative unit testing, by writing HTML
+
+</header>
+
+<main>
+
+## Installation
+
+Just include htest on HTML pages with the appropriate format (see below).
+
+```html
+<link rel="stylesheet" href="https://htest.dev/htest.css" crossorigin />
+<script src="https://htest.dev/htest.js" crossorigin></script>
+```
+
+## Example testsuites
+
+* [Color.js](https://colorjs.io/tests/)
 
 ## Creating new tests
 
 Our primary test format is reftests, i.e. automatic comparison of two things, typically app output with expected (reference) output. When the two match, the test passes (green), otherwise it fails (red).
 
-You can create reftests with our test framework, by using a table with `class="reftest"`. Each row is a new test. Typically these tables have two columns: output and expected. However, if your test requires initialization data, you can also have 3 columns, and the first one will be ignored in the matching.
+You can create reftests by using a table with `class="reftest"`. Each row is a new test. Typically these tables have two columns: output and expected. However, if your test requires initialization data, you can also have 3 columns, and the first one will be ignored in the matching.
 
 Typically these tables are inside sections with HTML like the following:
 
@@ -26,12 +45,15 @@ Below is a short description of the syntax we support.
 
 ### `data-test` attribute
 
-This applies to either the whole table or individual tests and controls how the matching is done. By default the contents of the cells are compared which corresponds to `data-test="contents"`.
+This applies to either the whole table or individual tests and controls how the matching is done.
+By default the contents of the cells are compared which corresponds to `data-test="contents"`.
 
 Other useful values are:
 
 - `"selector"` which treats the reference cell as a selector (or list of a selectors, if using a `<ul>`) that the output HTML must match. You can reverse the matching with `class="not"`.
-- `"compareNumbers"` which only compares the numbers returned, ignoring all other output. You can specify an epsilon value by using a `data-epsilon` attribute, either on the row or an ancestor.
+- `"numbers"` which only compares the numbers returned, ignoring all other output. You can specify an epsilon value by using a `data-epsilon` attribute, either on the row or an ancestor.
+- `"dom"` which compares both contents and attributes
+- `"attribute"` ???
 
 Besides the built-in comparison functions, you can provide your own, by defining a JavaScript function, either as the content of the `data-test` attribute, or by defining a global function.
 It accepts the 2-3 cells of your test as arguments and should return a truthy value for pass and a falsy value for fail.
@@ -63,9 +85,11 @@ Examples:
 ### `data-error` attribute
 
 Use on tests that *should* produce an error to pass.
-In future versions of the test harness the value will allow you to specify a specific error class (e.g. `TypeError`).
+In future versions of htest the value will allow you to specify a specific error class (e.g. `TypeError`).
 
 ### `print()` and `println()` functions
 
 Sometimes what is tested is actual JS output. In that case, use `<script>` tags and the `print()` or `println()` functions.
 Their only difference is that `prinln()` also prints a line break.
+
+</main>

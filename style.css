@@ -1,0 +1,47 @@
+:root {
+	--color-accent: hsl(340 90% 50%);
+	--page-width: 100rem;
+	--font-body: system-ui, Helvetica Neue, Segoe UI, sans-serif;
+}
+
+body {
+	margin: 0;
+	font: 100%/1.5 var(--font-body);
+}
+
+pre[class],
+header,
+main > * {
+	padding: var(--padding-block, 0) calc(50vw - var(--page-width) / 2);
+}
+
+header {
+	--padding-block: 2rem;
+	background: hsl(220 10% 30%);
+	color: white;
+}
+
+header > h1,
+	header > p {
+		margin: 0;
+	}
+
+header > h1 {
+		font-size: 300%;
+	}
+
+header > h1 > strong {
+			color: var(--color-accent);
+		}
+
+pre {
+	--padding-block: .6em;
+}
+
+main {
+
+}
+
+h2 {
+	color: var(--color-accent);
+}
