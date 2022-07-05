@@ -43,18 +43,12 @@ function runSelected (names) {
 	}
 }
 
-/*
-<li class="[if(name = selected, 'selected')]">
-	<input type="checkbox" property="toRun" checked="[name != 'index.html']">
-	<meta property="id" content="[to(name, '.html')]">
-	<a target="test" property="name" mv-action="set(selected, name)">[id]</a>
-	<a href="[name]" class="new-tab" title="Open in new Tab" target="_blank">↗️</a>
-</li>
-*/
-
+// tests is the <ul id="tests"> that contains the list of tests
 for (let a of tests.querySelectorAll("li > a")) {
 	let li = a.parentElement;
 	a.insertAdjacentHTML("beforebegin", `<input type="checkbox" property="toRun" checked>`);
+	a.insertAdjacentHTML("afterend", `<a href="${ a.getAttribute("href") }" class="new-tab" title="Open in new Tab" target="_blank">↗️</a>`);
+
 	a.target = "test";
 	a.addEventListener("click", evt => {
 		for (let li of tests.querySelectorAll("li")) {
@@ -62,10 +56,13 @@ for (let a of tests.querySelectorAll("li > a")) {
 		}
 		li.classList.add("selected");
 	});
-	a.insertAdjacentHTML("afterend", `<a href="${ a.getAttribute("href") }" class="new-tab" title="Open in new Tab" target="_blank">↗️</a>`)
 }
 
 tests.insertAdjacentHTML("afterend", `<button id="run_button">Run selected</button>`);
+
 run_button.addEventListener("click", evt => {
 	runSelected($$("li > :checked + a", tests).map(a => a.getAttribute("href")));
 });
+
+body.insertAdjacentHTML("beforeend", `<div id="iframes"></div>
+<iframe name="test" src="about:blank"></iframe>`);
