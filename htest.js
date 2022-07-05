@@ -8,7 +8,7 @@ else {
 	currentPage = (location.pathname.match(/\/([a-z-]+)(?:\.html|\/?$)/) || [, "index"])[1];
 }
 
-document.documentElement.style.setProperty("--page", currentPage);
+document.documentElement.style.setProperty("--page", `"${currentPage}"`);
 
 let loaded;
 
