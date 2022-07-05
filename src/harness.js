@@ -50,19 +50,41 @@ for (let a of tests.querySelectorAll("li > a")) {
 	a.insertAdjacentHTML("afterend", `<a href="${ a.getAttribute("href") }" class="new-tab" title="Open in new Tab" target="_blank">↗️</a>`);
 
 	a.target = "test";
-	a.addEventListener("click", evt => {
-		for (let li of tests.querySelectorAll("li")) {
-			li.classList.remove("selected");
+	li.addEventListener("click", evt => {
+		if (evt.target.matches("a")) {
+			for (let li of tests.querySelectorAll("li")) {
+				li.classList.remove("selected");
+			}
+			li.classList.add("selected");
 		}
-		li.classList.add("selected");
+		else if (evt.target.matches("input[type=checkbox]")) {
+			let checked = $$("input[type=checkbox]:not(#select_all)", tests).map(checkbox => checkbox.checked);
+			let includesTrue = checked.includes(true);
+			let includesFalse = checked.includes(false);
+			select_all.indeterminate = includesTrue && includesFalse;
+			select_all.checked = includesTrue;
+		}
 	});
 }
 
+tests.insertAdjacentHTML("afterbegin", `<li>
+<label>
+	<input type="checkbox" id="select_all" checked>
+	Select/unselect all
+</label>
+</li>`)
 tests.insertAdjacentHTML("afterend", `<button id="run_button">Run selected</button>`);
+
+select_all.addEventListener("click", evt => {
+	let checked = evt.target.checked;
+	for (let checkbox of $$("input[type=checkbox]:not(#select_all)", tests)) {
+		checkbox.checked = checked;
+	}
+});
 
 run_button.addEventListener("click", evt => {
 	runSelected($$("li > :checked + a", tests).map(a => a.getAttribute("href")));
 });
 
-body.insertAdjacentHTML("beforeend", `<div id="iframes"></div>
+document.body.insertAdjacentHTML("beforeend", `<div id="iframes"></div>
 <iframe name="test" src="about:blank"></iframe>`);
