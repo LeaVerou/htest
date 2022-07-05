@@ -93,9 +93,3 @@ Sometimes what is tested is actual JS output. In that case, use `<script>` tags 
 Their only difference is that `$outln()` also prints a line break.
 
 </main>
-
-<footer>
-
-By [Lea Verou](https://lea.verou.me) • [GitHub](https://github.com/leaverou/htest/)
-
-</footer>
