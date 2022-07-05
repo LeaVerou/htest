@@ -85,12 +85,12 @@ Examples:
 ### `data-error` attribute
 
 Use on tests that *should* produce an error to pass.
-In future versions of htest the value will allow you to specify a specific error class (e.g. `TypeError`).
+Put the expected error type in the "expected" table cell.
 
-### `print()` and `println()` functions
+### `$out()` and `$outln()` functions
 
-Sometimes what is tested is actual JS output. In that case, use `<script>` tags and the `print()` or `println()` functions.
-Their only difference is that `prinln()` also prints a line break.
+Sometimes what is tested is actual JS output. In that case, use `<script>` tags and the `$out()` or `$outln()` functions.
+Their only difference is that `$outln()` also prints a line break.
 
 </main>
 

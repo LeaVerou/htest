@@ -82,7 +82,7 @@ function format (obj) {
  * Global functions to be available to tests
  */
 
-async function print (...texts) {
+async function $out (...texts) {
 	var script = this instanceof HTMLElement && this.matches("script")? this : document.currentScript;
 
 	for (let text of texts) {
@@ -106,12 +106,11 @@ async function print (...texts) {
 	}
 }
 
-function println (...text) {
+function $outln (...text) {
 	print(...text);
 	print(" ", document.createElement("br"));
 }
 
-globalThis.print = print;
-globalThis.println = println;
+Object.assign(globalThis, {$out, $outln});
 
 }
