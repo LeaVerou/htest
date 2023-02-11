@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/leaverou/htest#readme",
   "devDependencies": {
-    "@11ty/eleventy": "^1.0",
+    "@11ty/eleventy": "^2.0",
     "postcss": "^8",
     "postcss-cli": "^10.0.0",
     "postcss-nesting": "^10.1.10"
