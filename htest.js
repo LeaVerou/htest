@@ -12,7 +12,7 @@ document.documentElement.style.setProperty("--page", `"${currentPage}"`);
 
 let loaded;
 
-if (currentPage == "index") {
+if (document.documentElement.classList.contains("index")) {
 	loaded = import("./src/harness.js");
 }
 else {
