@@ -92,7 +92,7 @@ async function $out (...texts) {
 				text = text();
 			}
 			catch (err) {
-				text = err;
+				text = `<div onclick="console.log(\`${err.stack}\`)">${err}</div>`;
 			}
 		}
 
