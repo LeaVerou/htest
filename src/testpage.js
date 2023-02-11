@@ -18,15 +18,6 @@ for (let h1 of $$("body > section > h1")) {
 	});
 }
 
-// Add ids to all tests
-ready().then(() => {
-	$$(`.reftest > tbody > tr`).forEach((test, i) => {
-		if (!test.id) {
-			test.id = idify(test.title) || "test-" + (i + 1);
-		}
-	});
-});
-
 
 let hashchanged = evt => {
 	if (location.hash) {
@@ -87,6 +78,52 @@ let hashchanged = evt => {
 hashchanged();
 window.addEventListener("hashchange", hashchanged);
 
+Promise.all([
+	include(self.Prism, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/prism.min.js"),
+	include(self.tippy, "https://unpkg.com/tippy.js@1/dist/tippy.js")
+])
+.then(() => include(Prism.plugins.NormalizeWhitespace, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"))
+.then(() => {
+	var t = tippy(cells, {
+		html: td => {
+			var pre = create("pre")
+			var code = create("code", {
+				textContent: cellHTML.get(td),
+				className: "language-markup",
+				inside: pre
+			});
+			Prism.highlightElement(code);
+
+			return pre;
+		},
+		arrow: true,
+		theme: "light",
+		maxWidth: "50em"
+	});
+
+	t.store.forEach(instance => {
+		bind(instance.el, "mouseover mouseenter", function(evt) {
+			if (evt.target != this) {
+				var popper = t.getPopperElement(this);
+				t.hide(popper);
+			}
+		});
+	});
+});
+
+loadCSS("https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/themes/prism.css");
+loadCSS("https://unpkg.com/tippy.js@1.3.0/dist/tippy.css");
+
+
+await ready();
+
+// Add ids to all tests
+$$(`.reftest > tbody > tr`).forEach((test, i) => {
+	if (!test.id) {
+		test.id = idify(test.title) || "test-" + (i + 1);
+	}
+});
+
 // Add div for counter at the end of body
 let nav = create({
 	tag: "nav",
@@ -141,42 +178,6 @@ var cells = $$("table.reftest td");
 cells.forEach(td => {
 	cellHTML.set(td, td.attributes.length > 0? td.outerHTML : td.innerHTML);
 });
-
-Promise.all([
-	include(self.Prism, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/prism.min.js"),
-	include(self.tippy, "https://unpkg.com/tippy.js@1/dist/tippy.js")
-])
-.then(() => include(Prism.plugins.NormalizeWhitespace, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"))
-.then(() => {
-	var t = tippy(cells, {
-		html: td => {
-			var pre = create("pre")
-			var code = create("code", {
-				textContent: cellHTML.get(td),
-				className: "language-markup",
-				inside: pre
-			});
-			Prism.highlightElement(code);
-
-			return pre;
-		},
-		arrow: true,
-		theme: "light",
-		maxWidth: "50em"
-	});
-
-	t.store.forEach(instance => {
-		bind(instance.el, "mouseover mouseenter", function(evt) {
-			if (evt.target != this) {
-				var popper = t.getPopperElement(this);
-				t.hide(popper);
-			}
-		});
-	});
-});
-
-loadCSS("https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/themes/prism.css");
-loadCSS("https://unpkg.com/tippy.js@1.3.0/dist/tippy.css");
 
 $$("table.reftest").forEach(table => table.reftest = new RefTest(table));
 
