@@ -85,6 +85,7 @@ Examples:
 ### `data-error` attribute
 
 Use on tests that *should* produce an error to pass.
+Use the `data-error` attribute **on the `<tr>`, not the table cell**.
 Put the expected error type in the "expected" table cell.
 
 ### `$out()` and `$outln()` functions
