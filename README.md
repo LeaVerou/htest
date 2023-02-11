@@ -93,4 +93,12 @@ Put the expected error type in the "expected" table cell.
 Sometimes what is tested is actual JS output. In that case, use `<script>` tags and the `$out()` or `$outln()` functions.
 Their only difference is that `$outln()` also prints a line break.
 
+## Isolating tests
+
+It is often useful to isolate a single group of tests, or even a single test so you can debug a particular failure.
+
+To isolate a group of tests (`<section>`), simply click the link of the section heading.
+
+To isolate a specific test (`<tr>`), hold down the Alt/Option key and double click on the table row.
+
 </main>
