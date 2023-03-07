@@ -17,9 +17,17 @@ Just include htest on HTML pages with the appropriate format (see below).
 <script src="https://htest.dev/htest.js" crossorigin></script>
 ```
 
-## Example testsuites
+## In the wild
 
+### Testsuites 
+	
 * [Color.js](https://colorjs.io/tests/)
+* [Mavo](https://test.mavo.io) (not using htest directly, but a precursor)
+	
+### Single page tests
+
+* [Parsel](https://projects.verou.me/parsel/test.html)
+* [Stretchy](https://stretchy.verou.me/test.html)
 
 ## Creating new tests
 
