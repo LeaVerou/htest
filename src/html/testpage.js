@@ -1,4 +1,5 @@
-import { create, include, $$, idify, bind, ready } from "./util.js";
+import { idify } from "../util.js";
+import { create, include, $$, bind, ready } from "./util.js";
 import RefTest from "./reftest.js";
 import * as Test from "./content.js";
 
@@ -17,10 +18,6 @@ for (let h1 of $$("body > section > h1")) {
 		around: h1.firstChild
 	});
 }
-
-
-
-
 
 Promise.all([
 	include(self.Prism, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/prism.min.js"),

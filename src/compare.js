@@ -1,97 +1,88 @@
+import { getType } from "./util.js";
+
 /**
- * Built-in comparison functions
+ * Compare by equality, but also compare objects and arrays recursively
+ * @param {*} ref
+ * @param {*} test
+ * @returns {boolean}
  */
+export function structuredEquals (ref, test) {
+	if (ref === test) {
+		return true;
+	}
 
-import { parseClick, create, $$, bind, ready, delay } from "./util.js";
-import { content } from "./content.js";
-import hooks from "./hooks.js";
+	let type = getType(ref);
 
+	if (type === getType(test)) {
+		if (ref == test) {
+			return true;
+		}
 
-export function contents (...cells) {
-	var td = cells[cells.length - 2] || cells[cells.length - 1];
-	var ref = cells[cells.length - 1];
+		if (Array.isArray(ref) && Array.isArray(test)) {
+			return ref.length === test.length && ref.reduce((prev, current, i) => prev && equals(current, test[i]), true);
+		}
 
-	var pass = content(td).trim() == content(ref).trim();
+		if (type == "object") {
+			// Compare objects recursively
+			let propertyUnion = new Set([...Object.keys(ref), ...Object.keys(test)]);
+			return [...propertyUnion].reduce((prev, current) => prev && equals(ref[current], test[current]), true);
+		}
+	}
 
-	return pass;
+	return false;
+};
+
+/**
+ * Compare two numbers with an optional epsilon
+ * @param  {number} [ε=0]
+ * @param {number} ref
+ * @param {*} test
+ * @returns {boolean}
+ */
+export function numeric (...args) {
+	let ε = args.length === 3? args.shift() : 0;
+	let [ref, test] = args;
+
+	return Number.isNaN(ref) === Number.isNaN(test)
+	       && Math.abs(ref - test) <= ε;
 }
 
 /**
- * Compare numbers ignoring other stuff around them optionally with epsilon
+ * Compare lists of multiple numbers with an optional epsilon
+ * @param  {number} [ε=0]
+ * @param {number[] | string} ref
+ * @param {number[] | string} test
+ * @returns {boolean}
  */
-export function numbers (...cells) {
-	let tr = cells[0].parentNode;
-	let ε = +(tr.closest("[data-epsilon]")?.dataset.epsilon) || 0;
+export function numbers (...args) {
+	let ε = args.length === 3? args.shift() : 0;
+	let [ref, test] = args;
 
-	let test = cells[cells.length - 2] || cells[cells.length - 1];
-	let ref = cells[cells.length - 1];
+	function getNumbers(value) {
+		let type = getType(value);
+		let rNumber = /-?\d*\.?\d+(?:e-?\d+)?|NaN/g;
 
-	let rNumber = /-?\d*\.?\d+(?:e-?\d+)?|NaN/g;
+		if (type === "string") {
+			return value.match(rNumber) ?? [];
+		}
+		else if (type === "number") {
+			return [value]
+		}
+		else if (Array.isArray(value)) {
+			return value.map(n => +n);
+		}
+		else {
+			return [];
+		}
+	}
 
-	let test_numbers = content(test).match(rNumber) || [];
-	let ref_numbers = content(ref).match(rNumber) || [];
+	ref = getNumbers(ref);
+	test = getNumbers(test);
 
-	if (test_numbers.length !== ref_numbers.length) {
-		// Different number of numbers
+	if (test.length !== ref.length) {
+		// One has more numbers than the other
 		return false;
 	}
 
-	for (let i = 0; i < test_numbers.length; i++) {
-		let test = test_numbers[i];
-		let ref = ref_numbers[i];
-
-		if (Number.isNaN(ref) && !Number.isNaN(test)) {
-			return false;
-		}
-
-		if (Math.abs(test - ref) > ε) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-export function attribute (attribute, td, ref) {
-	var actual = $$("*", td).map(el => el[attribute]);
-	var expected = $$("*", ref).map(el => el[attribute]);
-
-	return actual.length === expected.length && actual.every((v, i) => {
-		return v === expected[i];
-
-	});
-}
-
-/**
- * Pass or fail when the test matches or doesn't match a given selector
- * @param {*} td
- * @param {*} ref
- * @returns
- */
-export function selector (td, ref) {
-	if (ref.children.length) {
-		// Multiple selectors to test against in a list
-		return $$("li", ref).every(li => selector(td, li));
-	}
-	else {
-		var negative = ref.classList.contains("not");
-		var has = !!$(ref.textContent, td);
-		return negative? !has : has;
-	}
-}
-
-/**
- * Compare the DOM structure of two elements (compares both content and attributes)
- * Previously called `elements`
- */
-export function dom (td, ref) {
-	var elements = $$("*", td);
-
-	return $$("*", ref).every((refElement, i) => {
-		var element = elements[i];
-
-		return element.nodeName == refElement.nodeName
-				&& $$(refElement.attributes).every(attr => element.getAttribute(attr.name) === attr.value)
-				&& content(element).trim() == content(refElement).trim();
-	});
+	return ref.every((ref, i) => numeric(ε, ref, test[i]));
 }

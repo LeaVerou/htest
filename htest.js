@@ -13,10 +13,10 @@ document.documentElement.style.setProperty("--page", `"${currentPage}"`);
 let loaded;
 
 if (document.documentElement.classList.contains("index")) {
-	loaded = import("./src/harness.js");
+	loaded = import("./src/html/harness.js");
 }
 else {
-	loaded = import("./src/testpage.js");
+	loaded = import("./src/html/testpage.js");
 }
 
 function ready (doc = document) {

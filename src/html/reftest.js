@@ -1,6 +1,5 @@
-import { parseClick, create, $$, bind, ready, delay } from "./util.js";
-import { content } from "./content.js";
-import hooks from "./hooks.js";
+import { doClick, create, $$, bind, } from "./util.js";
+import hooks from "../hooks.js";
 import * as compare from "./compare.js";
 
 export default class RefTest {
@@ -64,25 +63,7 @@ export default class RefTest {
 		$$("[data-click]", this.table)
 			.concat(this.table.matches("[data-click]")? [this.table] : [])
 			.forEach(target => {
-				var clicks = target.getAttribute("data-click").trim().split(/\s*,\s*/).map(parseClick);
-
-				clicks.forEach(click => {
-					var event = click.event? new Promise(resolve => target.addEventListener(click.event, resolve)) : Promise.resolve();
-
-					event.then(evt => {
-						var delay = click.delay? new Promise(resolve => setTimeout(resolve, click.delay)) : Promise.resolve();
-
-						delay.then(() => {
-							var targets = click.selector? $$(click.selector, target) : [target];
-
-							targets.forEach(el => {
-								for (let i=0; i<click.times; i++) {
-									el.click();
-								}
-							});
-						});
-					});
-				});
+				target.getAttribute("data-click").trim().split(/\s*,\s*/).forEach(doClick);
 			});
 	}
 
@@ -281,8 +262,8 @@ export default class RefTest {
 
 	// Navigate tests
 	static #navigateTests (type = "fail", offset) {
-		var elements = this.results[type];
-		var i = this.results.current[type] + offset;
+		let elements = this.results[type];
+		let i = this.results.current[type] + offset;
 
 		if (!elements.length) {
 			return;
@@ -295,16 +276,13 @@ export default class RefTest {
 			i = elements.length - 1;
 		}
 
-		var countElement = $(".count-" + type, RefTest.nav);
-
 		if (elements.length > 1) {
-			$(".nav", countElement).hidden = false;
-			$(".current", countElement).textContent = i + 1;
+			let countElement = RefTest.nav.querySelector(".count-" + type);
+			countElement.querySelector(".nav").hidden = false;
+			countElement.querySelector(".current").textContent = i + 1;
 		}
 
-		var target = elements[i];
-
-		target.scrollIntoView({behavior: "smooth"});
+		elements[i].scrollIntoView({behavior: "smooth"});
 
 		this.results.current[type] = i;
 	}
