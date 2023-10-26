@@ -1,4 +1,4 @@
-{
+{ // Careful: this is NOT run in module context!
 let currentPage;
 
 if (/\/$/.test(location.pathname)) {
@@ -19,64 +19,22 @@ else {
 	loaded = import("./src/html/testpage.js");
 }
 
-function ready (doc = document) {
-	return new Promise(resolve => {
+let util;
+
+async function ready (doc = document) {
+	await new Promise(resolve => {
 		if (doc.readyState !== "loading") {
 			resolve();
 		}
 		else {
 			doc.addEventListener("DOMContentLoaded", resolve, {once: true});
 		}
-	}).then(() => loaded);
+	});
+	await Promise.all([
+		loaded,
+		import("./src/html/util.js").then(m => util = m)
+	]);
 }
-
-function getType (o) {
-	let str = Object.prototype.toString.call(o);
-
-	return (str.match(/^\[object\s+(.*?)\]$/)[1] || "").toLowerCase();
-}
-
-// Stringify object in a useful way
-function format (obj) {
-	let type = getType(obj);
-
-	if (obj && obj[Symbol.iterator] && type != "string") {
-		var arr = [...obj];
-
-		if (obj && arr.length > 1) {
-			return arr.map(o => format(o)).join(" ");
-		}
-		else if (arr.length == 1) {
-			obj = arr[0];
-		}
-		else {
-			return `(empty ${type})`;
-		}
-	}
-
-	if (obj instanceof HTMLElement) {
-		return obj.outerHTML;
-	}
-
-	let toString = obj + "";
-
-	if (!/\[object \w+/.test(toString)) {
-		// Has reasonable toString method, return that
-		return toString;
-	}
-
-	return JSON.stringify(obj, function(key, value) {
-		switch (getType(value)) {
-			case "set":
-				return {
-					type: "Set",
-					value: [...value]
-				};
-			default:
-				return value;
-		}
-	}, "\t");
-};
 
 /**
  * Global functions to be available to tests
@@ -96,7 +54,7 @@ async function $out (...texts) {
 			}
 		}
 
-		text = format(text);
+		text = util.output(text);
 
 		if (document.readyState == "loading") {
 			document.write(text);
@@ -112,8 +70,7 @@ async function $out (...texts) {
 }
 
 function $outln (...text) {
-	print(...text);
-	print(" ", document.createElement("br"));
+	$out(...text, " ", document.createElement("br"));
 }
 
 Object.assign(globalThis, {$out, $outln});
