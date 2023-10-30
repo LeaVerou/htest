@@ -3,7 +3,7 @@ let markdownIt = require("markdown-it");
 module.exports = config => {
 	let data = {
 		"layout": "page.njk",
-		"permalink": "{{ page.filePathStem }}.html",
+		"permalink": "{{ page.filePathStem | replace('README', '') }}/index.html"
 	};
 
 	for (let p in data) {
