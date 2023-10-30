@@ -17,30 +17,28 @@ a:not(:hover) {
 }
 
 pre[class],
-header,
-footer,
-main > * {
-	padding: var(--padding-block, 0) calc(50vw - var(--page-width) / 2);
+body > * {
+	padding: var(--padding-block, 0rem) calc(50vw - var(--page-width) / 2);
 }
 
 header {
 	--padding-block: 2rem;
 	background: hsl(220 10% 30%);
 	color: white;
-}
 
-header > h1,
-	header > p {
+	& > h1,
+	& > p {
 		margin: 0;
 	}
 
-header > h1 {
+	& > h1 {
 		font-size: 300%;
-	}
 
-header > h1 > strong {
+		& > strong {
 			color: var(--color-accent-lighter);
 		}
+	}
+}
 
 pre {
 	--padding-block: .6rem;

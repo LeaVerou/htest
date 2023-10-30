@@ -30,5 +30,9 @@
     "postcss": "^8",
     "postcss-cli": "^10.0.0",
     "postcss-nesting": "^10.1.10"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "log-update": "^6.0.0"
   }
 }
