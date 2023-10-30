@@ -21,3 +21,14 @@ export function idify (readable) {
 export function delay (ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export function toPrecision (number, significantDigits) {
+	let n = getType(number) === "number" ? number : parseFloat(number);
+
+	if (Number.isNaN(n)) {
+		// 🤷🏽‍♀️
+		return number;
+	}
+
+	return Math.abs(n) > 1 ? n : n.toPrecision(significantDigits);
+}

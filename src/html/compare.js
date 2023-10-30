@@ -4,7 +4,8 @@
 
 import { $$ } from "./util.js";
 import { content } from "./content.js";
-import * as comparators from "../compare.js";
+import * as check from "../check.js";
+import * as map from "../map.js";
 
 function compare(cells, map, comparator = (a, b) => a == b) {
 	let [test, ref] = cells.slice(-2).map(map);
@@ -22,13 +23,13 @@ export function numbers (...cells) {
 	let tr = cells[0].parentNode;
 	let ε = +(tr.closest("[data-epsilon]")?.dataset.epsilon) || 0;
 
-	return compare(cells, td => content(td), comparators.numbers.bind(null, ε));
+	return compare(cells, td => map.numbersOnly(content(td)), check.closeEnough({epsilon: ε}));
 }
 
 export function attribute (attribute, td, ref) {
 	return compare([td, ref],
 		td => $$("*", td).map(el => el[attribute]),
-		comparators.structuredEquals
+		check.equals
 	);
 }
 

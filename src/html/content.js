@@ -1,57 +1,65 @@
-import { structuredEquals } from "../compare.js";
+export { equals } from "../check.js";
+
 /**
  * Utilities that are useful for tests
  */
-
-export function content (node) {
-	var ret = "";
-
-	if (node.nodeType == 1) {
-		if (getComputedStyle(node).display == "none") {
-			return "";
-		}
-
-		ret += pseudo(node, "before");
-		var special = false;
-
-		if (node.matches(contentRules.ignore.join(", "))) {
-			return "";
-		}
-
-		for (let selector in contentRules.read) {
-			if (node.matches(selector)) {
-				ret += contentRules.read[selector](node);
-				special = true;
-				break;
-			}
-		}
-
-		if (!special) {
-			for (let child of node.childNodes) {
-				ret += content(child);
-			}
-		}
-
-		ret += pseudo(node, "after");
+const DEFAULT_CONTENT_IGNORE = [".mv-ui", "script", ".test-content-ignore"];
+const formContent = {
+	"input, textarea": e => e.value,
+	"select": e => {
+		return [...e.selectedOptions].map(o => o.textContent).join(",\n");
 	}
-	else if (node.nodeType == 3) {
-		ret += node.textContent;
-	}
-
-	return ret.replace(/\s+/g, " ");
 }
 
-export const contentRules = {
-	"read": {
-		"input, textarea": e => e.value,
-		"select": e => {
-			return [...e.selectedOptions].map(o => o.textContent).join("\n");
-		}
-	},
-	"ignore": [".mv-ui", "script", ".test-content-ignore"]
-};
+export function domContent ({
+	hidden = false,
+	pseudos = true,
+	collapseWhitespace = true,
+	ignore = DEFAULT_CONTENT_IGNORE,
+	smartForms = true
+} = {}) {
+	let callee = function(node) {
+		var ret = "";
 
-export function pseudo (element, pseudo) {
+		if (node.nodeType == 1) {
+			if (!hidden && getComputedStyle(node).display == "none") {
+				return "";
+			}
+
+			if (pseudos) {
+				ret += pseudo(node, "before");
+			}
+
+			if (node.matches(ignore.join(", "))) {
+				return "";
+			}
+
+			let formRule = smartForms ? Object.entries(formContent).find(([selector, rule]) => node.closest(selector))?.map(([selector, rule]) => rule) : null;
+
+			if (formRule) {
+				ret += formRule(node);
+			}
+			else {
+				ret += [...node.childNodes].map(callee).join("");
+			}
+
+			if (pseudos) {
+				ret += pseudo(node, "after");
+			}
+
+		}
+		else if (node.nodeType == 3) {
+			ret += node.textContent;
+		}
+
+		return collapseWhitespace ? ret.replace(/\s+/g, " ") : ret;
+	}
+	return callee;
+}
+
+export const content = domContent();
+
+function pseudo (element, pseudo) {
 	var content = getComputedStyle(element, ":" + pseudo).content;
 
 	if (content == "none") {
@@ -59,9 +67,4 @@ export function pseudo (element, pseudo) {
 	}
 
 	return content.replace(/^["']|["']$/g, "");
-}
-
-export function equals(a, b) {
-	console.warn("equals() has moved to src/compare.js and is now structuredEquals()");
-	return structuredEquals(a, b);
 }
