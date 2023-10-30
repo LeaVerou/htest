@@ -57,6 +57,7 @@ However, often you don’t really need full equality, just to verify that the re
 or that it has certain things in common with the expected output.
 
 - `map` allows you to provide a mapping function that will be applied to both the result and the expected value before comparing them.
+If the return value is an array, each individual item will be mapped separately.
 - `check` allows you to provide a custom function that takes the result and the expected value (if present) as argments and returns a boolean indicating whether the test passed.
 If the return value is not a boolean, it is coerced to one.
 

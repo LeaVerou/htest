@@ -142,8 +142,8 @@ export default class TestResult extends BubblingEventTarget {
 
 		if (test.map) {
 			this.mapped = {
-				actual: test.map(this.actual),
-				expect: test.map(test.expect)
+				actual: Array.isArray(this.actual) ? this.actual.map(test.map) : test.map(this.actual),
+				expect: Array.isArray(test.expect) ? test.expect.map(test.map) : test.map(test.expect),
 			};
 
 			ret.pass = test.check(this.mapped.actual, this.mapped.expect);
@@ -158,7 +158,27 @@ export default class TestResult extends BubblingEventTarget {
 ${ this.error.stack }`);
 			}
 			else {
-				ret.details.push(`Got ${this.actual}, expected ${test.expect}${ this.mapped? ` (${ this.mapped.actual } and ${ this.mapped.expect } mapped)` : "" }`);
+				let actual = this.mapped?.actual ?? this.actual;
+
+				let message = `Got ${actual}`;
+
+				if (this.mapped && actual !== this.actual) {
+					message += ` (${this.actual} unmapped)`;
+				}
+
+				if ("expect" in test) {
+					let expect = this.mapped?.expect ?? test.expect;
+					message += `, expected ${expect}`;
+
+					if (this.mapped && expect !== test.expect) {
+						message += ` (${test.expect} unmapped)`;
+					}
+				}
+				else {
+					message += "which doesn’t pass the test provided";
+				}
+
+				ret.details.push(message);
 			}
 		}
 
