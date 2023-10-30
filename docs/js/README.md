@@ -67,7 +67,7 @@ There are many helpers for this in `/src/check.js` and `/src/map.js`,
 with either predefined functions or functions that return functions for more flexibility.
 
 ```js
-import * as check from "../node_modules/htest/src/check.js";
+import * as check from "../node_modules/htest.dev/src/check.js";
 
 export default {
 	run: Math.random,
@@ -80,7 +80,7 @@ You can even do logical operations on them:
 
 ```js
 import getHue from "../src/getHue.js";
-import * as check from "../node_modules/htest/src/check.js";
+import * as check from "../node_modules/htest.dev/src/check.js";
 
 export default {
 	run (color) { getHue(color) },
@@ -97,7 +97,7 @@ Or, for nicer syntax:
 
 ```js
 import getHue from "../src/getHue.js";
-import {and, is, closeEnough } from "../node_modules/htest/src/check.js";
+import {and, is, closeEnough } from "../node_modules/htest.dev/src/check.js";
 
 export default {
 	run (color) { getHue(color) },
@@ -160,7 +160,7 @@ npm install htest --save-dev
 To run the tests, all you need is a script that imports the testsuite and runs it:
 
 ```js
-import run from "../node_modules/htest/src/js/cli.js";
+import run from "../node_modules/htest.dev/src/js/cli.js";
 
 let test = {
 	name: "Addtion",
@@ -182,7 +182,7 @@ Try running it:
 More realistically, you’d be defining sets of tests in individual modules, then importing them into a main test suite:
 
 ```js
-import run from "../node_modules/htest/src/js/cli.js";
+import run from "../node_modules/htest.dev/src/js/cli.js";
 import fooTests from "./foo.js";
 import barTests from "./bar.js";
 
@@ -215,7 +215,7 @@ export default {
 tests/index.js:
 
 ```js
-import run from "../node_modules/htest/src/js/cli.js";
+import run from "../node_modules/htest.dev/src/js/cli.js";
 import tests from "./index-fn.js";
 
 run(tests);
