@@ -91,19 +91,15 @@ export default class TestResult extends BubblingEventTarget {
 
 	evaluate () {
 		let test = this.test;
-		test.validate();
 
-		if (test.types.throws) {
+		if (test.throws) {
 			Object.assign(this, this.evaluateThrown());
 		}
-		else if (test.types.expect) {
-			Object.assign(this, this.evaluateExpected());
+		else if (test.maxTime || test.maxTimeAsync) {
+			Object.assign(this, this.evaluateTimeTaken());
 		}
-
-		if (test.types.time) {
-			let ret = this.evaluateTimeTaken();
-			this.pass &&= ret.pass;
-			this.details.push(...ret.details);
+		else {
+			Object.assign(this, this.evaluateResult());
 		}
 
 		this.dispatchEvent(new Event("done", {bubbles: true}));
@@ -140,7 +136,7 @@ export default class TestResult extends BubblingEventTarget {
 		return ret;
 	}
 
-	evaluateExpected () {
+	evaluateResult () {
 		let test = this.test;
 		let ret = {pass: true, details: []};
 

@@ -1,7 +1,5 @@
 import * as check from "../../check.js";
 
-let anonymousGroup = 0;
-
 export default class Test {
 	constructor (test, parent) {
 		if (parent) {
@@ -78,31 +76,6 @@ export default class Test {
 
 		if (this.constructor.warn) {
 			this.constructor.warn(message);
-		}
-	}
-
-	validate () {
-		if (this.types) {
-			// Already validated
-			return;
-		}
-
-		let types = this.types = {
-			throws: !!this.throws,
-			expect: "expect" in this || (this.run && this.args),
-			time: this.maxTime > 0 || this.maxTimeAsync > 0,
-		};
-
-		if (types.throws && types.expect) {
-			this.warn(`Test has both an expect and a throws clause. Your test cannot be *both* throwing *and* returning a value. "expect" ignored for now.`);
-		}
-
-		if (types.time && (types.throws || types.expect)) {
-			this.warn(`Do not combine time-based pass criteria with expect or throws clauses, as it makes it hard to interpret the results`);
-		}
-
-		if (!types.throws && !types.expect && !types.time) {
-			this.warn(`Test appears to have no pass criteria. Did you forget to add an expect or throws clause?`);
 		}
 	}
 }
