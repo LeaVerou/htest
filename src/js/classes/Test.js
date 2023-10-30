@@ -21,7 +21,7 @@ export default class Test {
 		// This works recursively because the parent is ran before its children
 		if (this.parent) {
 			this.run ??= this.parent.run;
-			this.map ?? this.parent.map;
+			this.map ??= this.parent.map;
 			this.check ??= this.parent.check;
 			this.getName ??= this.parent.getName;
 		}
