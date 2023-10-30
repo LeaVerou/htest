@@ -52,3 +52,7 @@ footer {
 h2 {
 	color: var(--color-accent);
 }
+
+code .colored.colored * {
+	color: inherit;
+}

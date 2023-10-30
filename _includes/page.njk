@@ -5,9 +5,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>htest: Unit testing with HTML!</title>
-	<link rel="stylesheet" href="https://prismjs.com/themes/prism-solarizedlight.min.css">
-	<link rel="stylesheet" href="style.css">
-	<script src="https://prismjs.com/prism.js"></script>
+	<link rel="stylesheet" href="{{ page | relative }}/assets/prism.css">
+	<link rel="stylesheet" href="{{ page | relative }}/assets/style.css">
+	<script src="{{ page | relative }}/assets/prism.js"></script>
 </head>
 <body class="language-html">
 	{{ content | safe }}
