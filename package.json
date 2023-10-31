@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:html": "npx @11ty/eleventy --config=.eleventy.cjs",
+    "build:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs",
     "build": "npm run build:html",
-    "watch:html": "npx @11ty/eleventy --config=.eleventy.cjs --watch",
+    "watch:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs --watch",
     "watch": "npm run watch:html"
   },
   "type": "module",
