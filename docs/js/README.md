@@ -197,7 +197,7 @@ run({
 
 You could even have separate files for this:
 
-tests/index-fn.js:
+`tests/index-fn.js`:
 
 ```js
 import fooTests from "./foo.js";
@@ -212,13 +212,36 @@ export default {
 }
 ```
 
-tests/index.js:
+`tests/index.js:`
 
 ```js
 import run from "../node_modules/htest.dev/src/js/cli.js";
 import tests from "./index-fn.js";
 
 run(tests);
+```
+
+Any string arguments in the `run()` function are interpreted as globs (relative to the current working directory),
+so you could even let hTest do your fetching:
+
+```js
+import run from "../node_modules/htest.dev/src/js/cli.js";
+
+run("tests/*.js");
+```
+
+This also means you can accept a command line argument
+to run a subset of tests with one line of code:
+
+```js
+let argv = process.argv.slice(2);
+run(argv[0] || tests);
+```
+
+Then you can run tests from a specific file like so:
+
+```sh
+node tests/index.js tests/foo.js
 ```
 
 ### In the browser
