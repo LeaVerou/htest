@@ -10,7 +10,20 @@
 	<script src="{{ page | relative }}/assets/prism.js"></script>
 </head>
 <body class="language-html">
-	{{ content | safe }}
+
+{% if not ('<header>' in content ) %}
+<header>
+
+<h1>
+	<a href="/"><strong>h</strong>Test</a>
+</h1>
+
+<p>Truly declarative unit testing!</p>
+
+</header>
+{% endif %}
+
+{{ content | safe }}
 
 <footer>
 	<p>By <a href="https://lea.verou.me">Lea Verou</a>
