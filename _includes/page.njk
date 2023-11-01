@@ -1,16 +1,21 @@
+{%- set toc = toc and content | toc -%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>htest: Unit testing with HTML!</title>
+	{% if title -%}
+	<title>{{ title }} • htest</title>
+	{%- else -%}
+	<title>hTest: Unit testing with HTML!</title>
+	{%- endif %}
 	<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">✅</text></svg>'>
 	<link rel="stylesheet" href="{{ page | relative }}/assets/prism.css">
 	<link rel="stylesheet" href="{{ page | relative }}/assets/style.css">
 	<script src="{{ page | relative }}/assets/prism.js"></script>
 </head>
-<body class="language-html">
+<body class="language-html{{ ' has-toc' if toc }}">
 
 {% if not ('<header>' in content ) %}
 <header>
@@ -28,7 +33,28 @@
 	<a href="https://github.com/leaverou/htest/">GitHub</a>
 </nav>
 
+<div class="content">
+
+{% if toc %}
+<aside class="sidebar">
+	<div class="toc">
+		<h2>On this page</h2>
+		{{ content | toc | safe }}
+	</div>
+</aside>
+{% endif %}
+
+{% if not ('<main>' in content ) %}
+<main>
+{% endif %}
+
 {{ content | safe }}
+
+{% if not ('</main>' in content ) %}
+</main>
+{% endif %}
+
+</div>
 
 <footer>
 	<p>By <a href="https://lea.verou.me">Lea Verou</a>

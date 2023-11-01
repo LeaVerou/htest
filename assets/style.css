@@ -2,9 +2,10 @@
 	--color-magenta: hsl(340 90% 50%);
 	--color-pink: hsl(340 90% 80%);
 	--color-accent: var(--color-magenta);
-	--color-accent-lighter: var(--color-pink);
+	--color-accent-95: color-mix(in oklch, var(--color-accent) 0%, oklch(95% none none));
+	--color-accent-98: color-mix(in oklch, color-mix(in oklch, var(--color-accent) 0%, oklch(98% none none)) 30%, oklch(none 0% none));
 
-	--color-gray: hsl(220 10% 50%);
+	--color-gray: hsl(210 10% 50%);
 	--color-gray-95: color-mix(in oklch, var(--color-gray) 0%, oklch(95% none none));
 	--color-gray-60: color-mix(in oklch, var(--color-gray) 0%, oklch(60% none none));
 	--color-gray-50: color-mix(in oklch, var(--color-gray) 0%, oklch(50% none none));
@@ -13,7 +14,8 @@
 	--color-gray-30: color-mix(in oklch, var(--color-gray) 0%, oklch(30% none none));
 
 
-	--page-width: 100rem;
+	--page-width: min(100rem, 100vw - 4rem);
+	--page-margin: calc(50vw - var(--page-width) / 2);
 	--font-body: system-ui, Helvetica Neue, Segoe UI, sans-serif;
 }
 
@@ -28,36 +30,46 @@ body {
 
 a {
 	color: inherit;
-}
 
-a:not(:hover) {
-	filter: saturate(.5);
-}
-
-pre[class],
-body > * {
-	padding: var(--padding-block, 0rem) calc(50vw - var(--page-width) / 2);
-}
-
-/* Main content */
-:is(body > :where(:not(header, nav, footer)), body > main > *) {
-	&:is(h1, > h1) {
-		margin-top: 1rem;
-		color: var(--color-gray);
-		font-size: 300%;
-		margin-bottom: 0;
+	&:not(:hover) {
+		text-decoration: none;
 	}
 }
 
-body > :where(:is(header, nav) + :not(nav)) {
-	margin-top: auto;
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl {
+	margin-block: .5rem;
 }
 
-body > :has(+ footer) {
-	margin-bottom: auto;
+h1, h2, h3, h4, h5, h6 {
+	line-height: 1.1;
+	margin-top: 1.5rem;
+}
+
+ul, ol {
+	& & {
+		padding-inline-start: 2em;
+	}
+	&:not(& *) {
+		padding-inline-start: 0;
+	}
+}
+
+pre {
+	--padding-block: .6rem;
+	border-radius: .25rem;
+}
+
+code .colored.colored * {
+	color: inherit;
+}
+
+body > :not(.content),
+body > .content > * {
+	padding: var(--padding-block, 0rem) calc(50vw - var(--page-width) / 2);
 }
 
 body > header {
+	grid-area: header;
 	--padding-block: 2rem;
 	background: var(--color-gray-30);
 	color-scheme: dark;
@@ -77,12 +89,13 @@ body > header {
 		}
 
 		& strong {
-			color: var(--color-accent-lighter);
+			color: var(--color-accent-95);
 		}
 	}
 }
 
 body > nav {
+	grid-area: nav;
 	display: flex;
 	background: var(--color-gray-60);
 	color-scheme: dark;
@@ -105,19 +118,77 @@ body > nav {
 	}
 }
 
-pre {
-	--padding-block: .6rem;
+body > .content {
+	display: flex;
+	flex-flow: column;
+	flex: 1;
+
+	@media (width > 1000px) {
+		flex-flow: row;
+		position: relative;
+
+		> .sidebar {
+			padding-inline-end: 2rem;
+			max-width: 20rem;
+
+			.toc {
+				position: sticky;
+				top: 0;
+			}
+		}
+
+		> main {
+			padding-inline-start: 2rem;
+		}
+	}
 }
 
-footer {
+.sidebar {
+	--padding-block: 1rem;
+	background: var(--color-accent-98);
+
+	& h2 {
+		text-transform: uppercase;
+		font-size: 90%;
+		color: var(--color-accent);
+	}
+
+	.toc {
+		& ol {
+			counter-reset: index;
+			list-style-type: none;
+
+			> li {
+				counter-increment: index;
+
+				&::marker {
+					content: counters(index, '.', decimal) '. ';
+					font-weight: bold;
+					color: var(--color-gray);
+				}
+			}
+		}
+	}
+}
+
+body > .content > main {
+	grid-area: main;
+	flex: 1;
+
+	& h1 {
+		margin-top: 1rem;
+		color: var(--color-gray);
+		font-size: 300%;
+		margin-bottom: 0;
+	}
+
+	& h2 {
+		color: var(--color-accent);
+	}
+}
+
+body > footer {
+	grid-area: footer;
 	--padding-block: .6rem;
 	background: var(--color-gray-95);
-}
-
-h2 {
-	color: var(--color-accent);
-}
-
-code .colored.colored * {
-	color: inherit;
 }

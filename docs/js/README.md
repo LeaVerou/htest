@@ -1,3 +1,7 @@
+---
+title: JS-first mode
+toc: true
+---
 # JS-first mode
 
 ## Defining tests

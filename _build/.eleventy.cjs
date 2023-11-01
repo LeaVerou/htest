@@ -1,4 +1,6 @@
-let markdownIt = require("markdown-it");
+const markdownIt = require("markdown-it");
+const anchor = require('markdown-it-anchor')
+const pluginTOC = require('eleventy-plugin-toc');
 
 module.exports = config => {
 	let data = {
@@ -16,6 +18,9 @@ module.exports = config => {
 			html: true,
 		})
 		.disable("code")
+		.use(anchor, {
+			permalink: anchor.permalink.headerLink()
+		})
 	);
 
 	config.addFilter(
@@ -32,6 +37,8 @@ module.exports = config => {
 		"unslugify",
 		slug => slug.replace(/(^|-)([a-z])/g, ($0, $1, $2) => ($1? " " : "") + $2.toUpperCase())
 	);
+
+	config.addPlugin(pluginTOC);
 
 	return {
 		markdownTemplateEngine: "njk",

@@ -1,3 +1,6 @@
+---
+toc: false
+---
 ## Contents
 
 - [HTML-first mode](html/)
