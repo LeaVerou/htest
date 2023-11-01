@@ -1,4 +1,5 @@
 import { doClick, create, $$, bind, } from "./util.js";
+import { formatDuration } from "../util.js";
 import hooks from "../hooks.js";
 import * as compare from "./compare.js";
 
@@ -11,31 +12,22 @@ export default class RefTest {
 	}
 
 	async init () {
+		this.compare = this.manual ? null : await RefTest.getTest(this.table.getAttribute("data-test"));
+		this.setup();
+
 		if (!this.manual) {
-			this.compare = await RefTest.getTest(this.table.getAttribute("data-test"));
-			this.setup();
 			this.startup = performance.now();
 			this.test();
 		}
 	}
 
 	setup () {
-		// Remove any <script> elements to prevent them messing up the contents. They've already been processed anyway.
-		// Keep them in an attribute though, as they may be useful to display
-		// for (let script of $$("script", this.table)) {
-		// 	if (!script.type || script.type === "text/javascript") {
-		// 		script.remove();
-		// 	}
-		// }
-
 		if (this.table.rows.length === 0) {
 			console.warn("Empty reftest:", this.table);
 			return;
 		}
 
 		// Add table header if not present
-		var cells = [...this.table.rows[0].cells];
-
 		if (!this.table.querySelector("thead") && this.columns > 1) {
 			var header = [...Array(Math.max(0, this.columns - 2)).fill("Test"), "Actual", "Expected"].slice(-this.columns);
 
@@ -52,33 +44,51 @@ export default class RefTest {
 			});
 		}
 
-		var test = x => {
-			requestAnimationFrame(() => this.test());
-		};
+		// Observe class changes on <tr>s and update the results
+		this.resultObserver = new MutationObserver(mutation => {
+			for (let {target} of mutation) {
+				if (target.matches("tbody tr")) {
+					RefTest.updateResults();
+				}
+			}
+		});
+		this.resultObserver.observe(this.table, {
+			subtree: true,
+			attributes: true,
+			attributeFilter: ["class"]
+		});
 
-		this.observer = new MutationObserver(test);
-		this.observe();
+		if (this.manual) {
+			var test = x => {
+				requestAnimationFrame(() => this.test());
+			};
 
-		bind(this.table, "input change click mv-change", test);
+			this.observer = new MutationObserver(test);
+			this.observe();
 
-		this.table.closest("[mv-app]")?.addEventListener("mv-load", test);
+			bind(this.table, "input change click mv-change", test);
 
-		$$("[data-click]", this.table)
-			.concat(this.table.matches("[data-click]")? [this.table] : [])
-			.forEach(target => {
-				target.getAttribute("data-click").trim().split(/\s*,\s*/).forEach(doClick);
-			});
+			this.table.closest("[mv-app]")?.addEventListener("mv-load", test);
+
+			$$("[data-click]", this.table)
+				.concat(this.table.matches("[data-click]")? [this.table] : [])
+				.forEach(target => {
+					target.getAttribute("data-click").trim().split(/\s*,\s*/).forEach(doClick);
+				});
+		}
+
+		RefTest.updateResults();
 	}
 
 	observe () {
 		this.observerRunning = true;
 
-		// TODO move this somewhere else, it's Mavo specific
 		this.observer.observe(this.table, {
 			subtree: true,
 			childList: true,
 			attributes: true,
 			characterData: true,
+			// TODO move this somewhere else, it's Mavo specific
 			attributeFilter: ["mv-mode"]
 		});
 	}
@@ -171,29 +181,13 @@ export default class RefTest {
 
 			if (className == "pass" && className != previousClass && !tr.classList.contains("interactive")) {
 				// Display how long it took
-				var time = performance.now() - this.startup;
-				var unit = "ms";
-
-				time = +time.toFixed(2);
-
-				if (time > 100) {
-					time = Math.round(time);
-				}
-
-				if (time > 1000) {
-					time /= 1000;
-					unit = "s";
-				}
-
-				tr.setAttribute("data-time", time + unit);
+				let time = performance.now() - this.startup;
+				tr.setAttribute("data-time", formatDuration(time));
 			}
-
-			RefTest.updateResults();
 		}
 	}
 
 	static hooks = hooks
-
 
 	// Retrieve the comparator function based on a data-test string
 	static async getTest (test, fallback) {

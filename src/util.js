@@ -32,3 +32,20 @@ export function toPrecision (number, significantDigits) {
 
 	return Math.abs(n) > 1 ? n : n.toPrecision(significantDigits);
 }
+
+export function formatDuration (ms) {
+	var unit = "ms";
+
+	ms = +ms.toFixed(2);
+
+	if (ms > 100) {
+		ms = Math.round(ms);
+	}
+
+	if (ms > 1000) {
+		ms /= 1000;
+		unit = "s";
+	}
+
+	return ms + unit;
+}
