@@ -180,7 +180,11 @@ cells.forEach(td => {
 	cellHTML.set(td, td.attributes.length > 0? td.outerHTML : td.innerHTML);
 });
 
-$$("table.reftest").forEach(table => table.reftest = new RefTest(table));
+$$("table.reftest").forEach(table => {
+	if (!table.reftest) {
+		new RefTest(table);
+	}
+});
 
 function loadCSS(url) {
 	document.head.insertAdjacentHTML("beforeend", `<link rel="stylesheet" href="${url}">`);

@@ -6,6 +6,7 @@ import * as compare from "./compare.js";
 export default class RefTest {
 	constructor (table) {
 		this.table = table;
+		table.reftest = this;
 		this.columns = +this.table.getAttribute("data-columns") || Math.max.apply(Math, [...this.table.rows].map(row => row.cells.length));
 		this.manual = this.table.matches(".manual");
 		this.init();
@@ -52,13 +53,14 @@ export default class RefTest {
 				}
 			}
 		});
+
 		this.resultObserver.observe(this.table, {
 			subtree: true,
 			attributes: true,
 			attributeFilter: ["class"]
 		});
 
-		if (this.manual) {
+		if (!this.manual) {
 			var test = x => {
 				requestAnimationFrame(() => this.test());
 			};
@@ -215,6 +217,7 @@ export default class RefTest {
 	static compare = compare
 
 	// Prettify code for presentation
+	// TODO just use Prism whitespace plugin
 	static presentCode (code) {
 		// Remove blank line in the beginning and end
 		code = code.replace(/^\s*\n|\n\s*$/g, "");
