@@ -1,4 +1,4 @@
-import { delay } from "../util.js";
+import { delay, getType } from "../util.js";
 export {default as create} from "https://v2.blissfuljs.com/src/dom/create.js";
 export {default as bind} from "https://v2.blissfuljs.com/src/events/bind.js";
 export {default as include} from "https://v2.blissfuljs.com/src/async/include.js";
