@@ -48,7 +48,7 @@ export default class RefTest {
 		// Observe class changes on <tr>s and update the results
 		this.resultObserver = new MutationObserver(mutation => {
 			for (let {target} of mutation) {
-				if (target.matches("tbody tr")) {
+				if (target.matches("tr")) {
 					RefTest.updateResults();
 				}
 			}
@@ -61,7 +61,7 @@ export default class RefTest {
 		});
 
 		if (!this.manual) {
-			var test = x => {
+			let test = x => {
 				requestAnimationFrame(() => this.test());
 			};
 
@@ -249,8 +249,13 @@ export default class RefTest {
 
 		let nav = document.querySelector("body > nav");
 
-		nav.querySelector(".count-pass .count").textContent = detail.pass;
-		nav.querySelector(".count-fail .count").textContent = detail.fail;
+		let passCount = nav.querySelector(".count-pass");
+		let failCount = nav.querySelector(".count-fail");
+		passCount.querySelector(".count").textContent = detail.pass;
+		failCount.querySelector(".count").textContent = detail.fail;
+
+		passCount.hidden = !detail.pass;
+		failCount.hidden = !detail.fail;
 
 		nav.style.setProperty("--pass", detail.pass);
 		nav.style.setProperty("--fail", detail.fail);

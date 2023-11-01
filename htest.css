@@ -126,12 +126,16 @@ html:not(.index) {
 		& .count-fail,
 		& .count-pass {
 			flex-shrink: 0;
-			display: flex;
+			min-width: 0;
 			align-items: center;
 			padding: .2em;
 			background: var(--dark-color);
 			cursor: pointer;
 			transition: .4s;
+
+			&:not([hidden]) {
+				display: flex;
+			}
 		}
 
 		& .nav:not([hidden]) {
