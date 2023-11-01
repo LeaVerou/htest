@@ -17,7 +17,6 @@
 </head>
 <body class="language-html{{ ' has-toc' if toc }}">
 
-{% if not ('<header>' in content ) %}
 <header>
 
 <h1>
@@ -27,7 +26,6 @@
 <p>Truly declarative unit testing!</p>
 
 </header>
-{% endif %}
 <nav>
 	<a href="{{ page | relative }}/docs/">Docs</a>
 	<a href="https://github.com/leaverou/htest/">GitHub</a>
