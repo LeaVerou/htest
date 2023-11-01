@@ -76,7 +76,7 @@ export function output (obj) {
 		var arr = [...obj];
 
 		if (obj && arr.length > 1) {
-			return arr.map(o => output(o)).join(" ");
+			return arr.map(o => output(o)).join(", ");
 		}
 		else if (arr.length == 1) {
 			obj = arr[0];
