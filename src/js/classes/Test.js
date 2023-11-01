@@ -1,6 +1,8 @@
 import * as check from "../../check.js";
 
 export default class Test {
+	data = {};
+
 	constructor (test, parent) {
 		if (parent) {
 			test.parent = parent;
@@ -11,6 +13,8 @@ export default class Test {
 		}
 
 		Object.assign(this, test);
+		Object.assign(this.data, this.parent?.data);
+
 		this.originalName = this.name;
 
 		if (typeof this.name === "function") {

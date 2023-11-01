@@ -14,12 +14,15 @@ and the syntax is designed to make it easier to evolve it over time.
 The main idea is that a lot of these properties inherit down to descendants unless overridden,
 allowing you to only specify what’s different in each test.
 
-### Defining the test: `run` and `args`
+### Defining the test: `run`, `args`, `data`
 
 - `run` defines the code to run, as a function. It can be either sync or async.
 This inherits down, so subtests only need it if different than the parent.
 - `args` is an array of arguments to pass to the running function.
 If you pass a single argument, it will be converted to an array.
+- `data` is ab optional object with data that will be accessible to the running function as `this.data`.
+Data inherits down unless overridden.
+It is useful for differentiating the behavior of `run()` across groups of tests without having to redefine it or pass repetitive arguments.
 
 It is common to define a single `run` function and several subtests that pass different arguments to it.
 
