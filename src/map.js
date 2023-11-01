@@ -1,3 +1,5 @@
+import { getType } from "./util.js";
+
 /**
  * Extract lists of numbers from a value
  * @param {*} value
