@@ -33,11 +33,6 @@ module.exports = config => {
 		}
 	);
 
-	config.addFilter(
-		"unslugify",
-		slug => slug.replace(/(^|-)([a-z])/g, ($0, $1, $2) => ($1? " " : "") + $2.toUpperCase())
-	);
-
 	config.addPlugin(pluginTOC);
 
 	return {
