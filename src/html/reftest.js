@@ -1,4 +1,4 @@
-import { doClick, create, $$, bind, } from "./util.js";
+import { doClick, create, $$, bind, ready, } from "./util.js";
 import { formatDuration } from "../util.js";
 import hooks from "../hooks.js";
 import * as compare from "./compare.js";
@@ -79,7 +79,7 @@ export default class RefTest {
 				});
 		}
 
-		RefTest.updateResults();
+		ready().then(() => RefTest.updateResults());
 	}
 
 	observe () {
@@ -242,23 +242,16 @@ export default class RefTest {
 			// interactive: $$("table.reftest tr.interactive")
 		};
 
-		var detail = {
+		let detail = {
 			pass: this.results.pass.length,
 			fail: this.results.fail.length
 		};
 
-		let nav = document.querySelector("body > nav");
+		document.body.style.setProperty("--pass", detail.pass);
+		document.body.style.setProperty("--fail", detail.fail);
 
-		let passCount = nav.querySelector(".count-pass");
-		let failCount = nav.querySelector(".count-fail");
-		passCount.querySelector(".count").textContent = detail.pass;
-		failCount.querySelector(".count").textContent = detail.fail;
-
-		passCount.hidden = !detail.pass;
-		failCount.hidden = !detail.fail;
-
-		nav.style.setProperty("--pass", detail.pass);
-		nav.style.setProperty("--fail", detail.fail);
+		document.body.classList.toggle("no-passed", detail.pass === 0);
+		document.body.classList.toggle("no-failed", detail.fail === 0);
 
 		// $(".count-interactive", RefTest.nav).textContent = RefTest.results.interactive.length;
 

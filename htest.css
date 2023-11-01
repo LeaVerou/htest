@@ -88,6 +88,8 @@ html:not(.index) {
 		width: 80em;
 		max-width: calc(100vw - 5em);
 		padding-top: 2em;
+
+		counter-reset: passed var(--pass, 0) failed var(--fail, 0);
 	}
 
 	& body > nav {
@@ -136,6 +138,23 @@ html:not(.index) {
 			&:not([hidden]) {
 				display: flex;
 			}
+		}
+
+		.count-pass {
+			.count::before {
+				content: counter(passed);
+			}
+		}
+
+		.count-fail {
+			.count::before {
+				content: counter(failed);
+			}
+		}
+
+		.count-fail:is(.no-failed *),
+		.count-pass:is(.no-passed *) {
+			display: none;
 		}
 
 		& .nav:not([hidden]) {
