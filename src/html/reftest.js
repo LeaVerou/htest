@@ -6,14 +6,17 @@ export default class RefTest {
 	constructor (table) {
 		this.table = table;
 		this.columns = +this.table.getAttribute("data-columns") || Math.max.apply(Math, [...this.table.rows].map(row => row.cells.length));
+		this.manual = this.table.matches(".manual");
 		this.init();
 	}
 
 	async init () {
-		this.compare = await RefTest.getTest(this.table.getAttribute("data-test"));
-		this.setup();
-		this.startup = performance.now();
-		this.test();
+		if (!this.manual) {
+			this.compare = await RefTest.getTest(this.table.getAttribute("data-test"));
+			this.setup();
+			this.startup = performance.now();
+			this.test();
+		}
 	}
 
 	setup () {
