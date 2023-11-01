@@ -57,7 +57,7 @@ export function equals (actual, expect) {
  * @param {number} [ε=0]
  * @returns {function(actual, expect): boolean}
  */
-export function closeEnough ({epsilon = 0} = {}) {
+export function proximity ({epsilon = 0} = {}) {
 	let ret = function(actual, expect) {
 		if (Array.isArray(actual) && Array.isArray(expect)) {
 			if (actual.length !== expect.length) {

@@ -5,7 +5,7 @@ import { getType } from "./util.js";
  * @param {*} value
  * @returns
  */
-export function numbersOnly (value) {
+export function extractNumbers (value) {
 	let type = getType(value);
 	let rNumber = /-?\d*\.?\d+(?:e-?\d+)?|NaN/g;
 
@@ -16,7 +16,7 @@ export function numbersOnly (value) {
 		return [value]
 	}
 	else if (Array.isArray(value)) {
-		return value.map(n => numbersOnly(n));
+		return value.map(n => extractNumbers(n));
 	}
 	else {
 		return [];

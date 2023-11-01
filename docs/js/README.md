@@ -95,7 +95,7 @@ export default {
 	expect: 90,
 	check: check.and(
 		check.is("number"),
-		check.closeEnough({epsilon: 1})
+		check.proximity({epsilon: 1})
 	)
 }
 ```
@@ -104,7 +104,7 @@ Or, for nicer syntax:
 
 ```js
 import getHue from "../src/getHue.js";
-import {and, is, closeEnough } from "../node_modules/htest.dev/src/check.js";
+import {and, is, proximity } from "../node_modules/htest.dev/src/check.js";
 
 export default {
 	run (color) { getHue(color) },
@@ -112,7 +112,7 @@ export default {
 	expect: 90,
 	check: and(
 		is("number"),
-		closeEnough({epsilon: 1})
+		proximity({epsilon: 1})
 	)
 }
 ```
