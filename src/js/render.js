@@ -19,15 +19,7 @@ export default function render (test) {
 	let testRows = new Map();
 
 	root.tests?.map?.(t => {
-		let tests = [];
-
-		if (t.isTest) {
-			tests.push(t);
-		}
-
-		if (t.isGroup) {
-			tests.push(...t.tests);
-		}
+		let tests = t.isGroup ? t.tests : [t];
 
 		let table;
 		let section = create("section", {

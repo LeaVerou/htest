@@ -216,7 +216,7 @@ ${ this.error.stack }`);
 
 	getResult (o) {
 		let color = this.pass ? "green" : "red";
-		let ret = `<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b> <c light${color}> ${this.name} </c> <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
+		let ret = `<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b> <c light${color}>${this.name}</c> <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
 
 		if (this.details?.length > 0) {
 			ret += ": " + this.details.join(", ");
@@ -253,8 +253,7 @@ ${ this.error.stack }`);
 		if (this.test.isGroup) {
 			ret.push(this.getSummary(o));
 		}
-
-		if (this.test.isTest && (this.pass === false || o?.verbose)) {
+		else if (this.pass === false || o?.verbose) {
 			ret.push(this.getResult(o));
 		}
 

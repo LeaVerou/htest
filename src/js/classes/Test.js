@@ -56,9 +56,6 @@ export default class Test {
 		if (this.isGroup) {
 			this.tests = this.tests.map(t => t instanceof Test ? t : new Test(t, this));
 		}
-		else if (!this.isTest) {
-			this.warn("Test has no tests and is not a test itself");
-		}
 	}
 
 	get isTest () {

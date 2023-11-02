@@ -7,12 +7,10 @@ toc: true
 ## Defining tests
 
 Tests are defined and grouped by object literals with a defined structure.
-Each of these objects can contain child tests, its own test, both, or even neither.
-There is no strict distinction between tests and groups of tests, you decide how you want to organize your testsuite,
-and the syntax is designed to make it easier to evolve it over time.
-
-The main idea is that a lot of these properties inherit down to descendants unless overridden,
-allowing you to only specify what’s different in each test.
+Each of these objects can either be a test, or contain child tests.
+All properties work across both: if a property doesn’t directly apply to a group, it inherits down to the tests it contains.
+This allows you to only specify what is different in each test,
+and makes it easier to evolve the testsuite over time.
 
 ### Defining the test: `run`, `args`, `data`
 
