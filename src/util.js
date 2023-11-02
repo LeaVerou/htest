@@ -60,7 +60,7 @@ export function formatDuration (ms) {
 		}
 		else {
 			if (n < 10) {
-				n = +n.toFixed(1);
+				n = toPrecision(+n, 1);
 			}
 			else if (n < next.from) {
 				n = Math.round(n);
