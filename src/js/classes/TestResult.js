@@ -1,6 +1,6 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
 import format, { stripFormatting } from "../format-console.js";
-import { toPrecision, delay, formatDuration } from "../../util.js";
+import { delay, formatDuration } from "../../util.js";
 
 export default class TestResult extends BubblingEventTarget {
 	pass;
@@ -211,25 +211,18 @@ ${ this.error.stack }`);
 	}
 
 	get prefix () {
-		return this.name ? `<dim>[</dim>${this.name}<dim>]</dim> ` : "";
+		return this.name ? `<bg white>${this.name}</bg> ` : "";
 	}
 
 	getResult (o) {
-		let timeTaken = "";
-
-		if (this.timeTaken > 0) {
-			timeTaken = ` <dim>(${ formatDuration(this.timeTaken) })</dim>`;
-		}
-
-		let msg = `<b>${ this.pass? "PASS" : "FAIL" }</b>${ timeTaken }`;
+		let color = this.pass ? "green" : "red";
+		let ret = `<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b> <c light${color}> ${this.name} </c> <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
 
 		if (this.details?.length > 0) {
-			msg += ": " + this.details.join(", ");
+			ret += ": " + this.details.join(", ");
 		}
 
-		let ret = this.prefix + `<c ${ this.pass ? "green" : "red" }>${msg}</c>`;
-
-		return o?.format === "rich" ? format(ret) : stripFormatting(ret);
+		return o?.format === "rich" ? ret : stripFormatting(ret);
 	}
 
 	getSummary (o) {
@@ -248,15 +241,10 @@ ${ this.error.stack }`);
 			ret.push(`<b>${ stats.pending }</b>/${ stats.total } remaining`);
 		}
 
-		let timeTaken = "";
-		if (stats.timeTaken > 0) {
-			let ms = toPrecision(stats.timeTaken, 1);
-			timeTaken = ` <dim>(${ms} ms)</dim>`;
-		}
+		let color = stats.fail > 0 ? "red" : (stats.pending > 0 ? "yellow" : "green");
+		ret = `${this.name} ${ ret.join(", ") } <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
 
-		ret = this.prefix + ret.join(", ") + timeTaken;
-
-		return o?.format === "rich" ? format(ret) : stripFormatting(ret);
+		return o?.format === "rich" ? ret : stripFormatting(ret);
 	}
 
 	toString (o) {
@@ -274,7 +262,7 @@ ${ this.error.stack }`);
 
 		if (this.tests) {
 			ret = new String(ret);
-			ret.children = this.tests.flatMap(t => t.toString(o));
+			ret.children = this.tests.flatMap(t => t.toString(o)).filter(Boolean);
 		}
 
 		return ret;

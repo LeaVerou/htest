@@ -33,21 +33,44 @@ export function toPrecision (number, significantDigits) {
 	return Math.abs(n) > 1 ? n : n.toPrecision(significantDigits);
 }
 
+let durations = [
+	{ unit: "ms", from: 0 },
+	{ unit: "s", from: 1000 },
+	{ unit: "m", from: 60 },
+	{ unit: "h", from: 60 },
+	{ unit: "d", from: 24 },
+	{ unit: "w", from: 7 },
+	{ unit: "y", from: 52 },
+];
+
 export function formatDuration (ms) {
-	var unit = "ms";
-
-	ms = +ms.toFixed(2);
-
-	if (ms > 100) {
-		ms = Math.round(ms);
+	if (!ms) {
+		return "0 ms";
 	}
 
-	if (ms > 1000) {
-		ms /= 1000;
-		unit = "s";
+	let unit = "ms";
+	let n = ms;
+
+	for (let i = 0; i < durations.length; i++) {
+		let next = durations[i + 1];
+
+		if (next && n >= next.from) {
+			n /= next.from;
+			unit = next.unit;
+		}
+		else {
+			if (n < 10) {
+				n = +n.toFixed(1);
+			}
+			else if (n < next.from) {
+				n = Math.round(n);
+			}
+
+			break;
+		}
 	}
 
-	return ms + unit;
+	return n + " " + unit;
 }
 
 /**

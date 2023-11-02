@@ -5,6 +5,7 @@ import path from 'path';
 
 import Test from "./classes/Test.js";
 import TestResult from "./classes/TestResult.js";
+import format from "./format-console.js";
 import { getType } from '../util.js';
 
 // Set up environment for Node
@@ -16,8 +17,8 @@ TestResult.warn = function (msg) {
 	console.warn(msg);
 }
 
-function getTree (msg) {
-	return new AsciiTree(msg, ...(msg.children?.map(getTree) ?? []));
+function getTree (msg, i) {
+	return new AsciiTree(`</dim>${ msg }<dim>`, ...(msg.children?.map(getTree) ?? []));
 }
 
 /**
@@ -26,6 +27,7 @@ function getTree (msg) {
  */
 export default function run (test, options = {}) {
 	if (getType(test) == "string") {
+		// Glob provided, resolve to test(s)
 		Promise.all(globSync(test).flatMap(paths => {
 			// Convert paths to imported modules
 			paths = getType(paths) == "string" ? [paths] : paths;
@@ -55,8 +57,9 @@ export default function run (test, options = {}) {
 	let ret = new TestResult(test);
 
 	ret.addEventListener("done", e => {
-		let messages = ret.toString({ format: "rich" });
-		let tree = getTree(messages).toString(options);
+		let messages = ret.toString({ format: options.format ?? "rich" });
+		let tree = getTree(messages).toString();
+		tree = format(tree);
 		logUpdate(tree);
 	});
 

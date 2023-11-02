@@ -4,6 +4,11 @@ export default class Test {
 	data = {};
 
 	constructor (test, parent) {
+		if (!test) {
+			console.warn("Empty test: ", test);
+			return;
+		}
+
 		if (parent) {
 			test.parent = parent;
 			this.level = parent.level + 1;
@@ -57,7 +62,7 @@ export default class Test {
 	}
 
 	get isTest () {
-		return this.run && this.args?.length > 0;
+		return !this.isGroup;
 	}
 
 	get isGroup () {
