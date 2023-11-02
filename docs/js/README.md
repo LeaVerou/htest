@@ -28,14 +28,16 @@ It is common to define a single `run` function and several subtests that pass di
 
 For a test to run, it needs at least a `run` function (possibly inherited) and an `args` array (possibly empty).
 
-### Naming the test: `name`
+### Describing the test: `name`, `description`
 
 `name` is a string that describes the test.
 It is optional, but recommended, as it makes it easier to identify the test in the results.
 If not provided, it defaults to the first argument passed to `run`, if any.
 
-You can also provide a function that takes the arguments as arguments and returns a string.
+`name` can also be a function, which accepts the same arguments as `run()` and returns the default name a string.
 In that case, it will inherit down to descendants.
+
+`description` is an optional longer description of the test or group of tests.
 
 ### Setting expectations: `expect`, `throws`, `maxTime`, `maxTimeAsync`
 
