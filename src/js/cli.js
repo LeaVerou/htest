@@ -1,12 +1,10 @@
 import logUpdate from 'log-update';
-import chalk from 'chalk';
 import { AsciiTree } from 'oo-ascii-tree';
-import { glob, globSync, globStream, globStreamSync, Glob } from 'glob';
+import { globSync } from 'glob';
 import path from 'path';
 
 import Test from "./classes/Test.js";
 import TestResult from "./classes/TestResult.js";
-import { formats } from "./format-console.js";
 import { getType } from '../util.js';
 
 // Set up environment for Node
@@ -16,13 +14,6 @@ Test.warn = function (msg) {
 
 TestResult.warn = function (msg) {
 	console.warn(msg);
-}
-
-// Hook up chalk with formatting function
-
-let modifiers = "red green yellow bold dim".split(" ");
-for (let prop of modifiers) {
-	formats[prop] = chalk[prop];
 }
 
 function getTree (msg) {
@@ -64,7 +55,7 @@ export default function run (test, options = {}) {
 	let ret = new TestResult(test);
 
 	ret.addEventListener("done", e => {
-		let messages = ret.toString();
+		let messages = ret.toString({ format: "rich" });
 		let tree = getTree(messages).toString(options);
 		logUpdate(tree);
 	});

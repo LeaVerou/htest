@@ -1,6 +1,6 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
-import format from "../format-console.js";
-import { toPrecision, delay } from "../../util.js";
+import format, { stripFormatting } from "../format-console.js";
+import { toPrecision, delay, formatDuration } from "../../util.js";
 
 export default class TestResult extends BubblingEventTarget {
 	pass;
@@ -211,62 +211,52 @@ ${ this.error.stack }`);
 	}
 
 	get prefix () {
-		// let level = this.test.level;
-		let ret = "";
-
-		// if (level > 0) {
-		// 	let indent = (this.isLast? "   " : "│  ").repeat(this.test.level - 1);
-
-		// 	ret += indent + (this.isLast? "└──" : "├──");
-		// }
-
-		if (this.name) {
-			ret += format("[", "dim") + this.name + format("] ", "dim");
-		}
-
-		return ret;
+		return this.name ? `<dim>[</dim>${this.name}<dim>]</dim> ` : "";
 	}
 
-	getResult () {
+	getResult (o) {
 		let timeTaken = "";
 
 		if (this.timeTaken > 0) {
-			let ms = toPrecision(this.timeTaken, 1);
-			timeTaken = format(` (${ms} ms)`, "dim");
+			timeTaken = ` <dim>(${ formatDuration(this.timeTaken) })</dim>`;
 		}
 
-		let msg = `${ format(this.pass? "PASS" : "FAIL", "bold") }${ timeTaken }`;
+		let msg = `<b>${ this.pass? "PASS" : "FAIL" }</b>${ timeTaken }`;
 
 		if (this.details?.length > 0) {
 			msg += ": " + this.details.join(", ");
 		}
 
-		return this.prefix + format(msg, this.pass ? "green" : "red");
+		let ret = this.prefix + `<c ${ this.pass ? "green" : "red" }>${msg}</c>`;
+
+		return o?.format === "rich" ? format(ret) : stripFormatting(ret);
 	}
 
-	getSummary () {
+	getSummary (o) {
 		let stats = this.stats;
 		let ret = [];
 
 		if (stats.pass > 0) {
-			ret.push(format(`${ format(stats.pass, "bold") }/${stats.total} PASS`, "green"));
+			ret.push(`<c green><b>${ stats.pass }</b>/${ stats.total } PASS</c>`);
 		}
 
 		if (stats.fail > 0) {
-			ret.push(format(`${ format(stats.fail, "bold") }/${stats.total} FAIL`, "red"));
+			ret.push(`<c red><b>${ stats.fail }</b>/${ stats.total } FAIL</c>`);
 		}
 
 		if (stats.pending > 0) {
-			ret.push(`${ format(stats.pending, "bold") }/${stats.total} remaining`);
+			ret.push(`<b>${ stats.pending }</b>/${ stats.total } remaining`);
 		}
 
 		let timeTaken = "";
 		if (stats.timeTaken > 0) {
 			let ms = toPrecision(stats.timeTaken, 1);
-			timeTaken = format(` (${ms} ms)`, "dim");
+			timeTaken = ` <dim>(${ms} ms)</dim>`;
 		}
 
-		return this.prefix + ret.join(", ") + timeTaken;
+		ret = this.prefix + ret.join(", ") + timeTaken;
+
+		return o?.format === "rich" ? format(ret) : stripFormatting(ret);
 	}
 
 	toString (o) {
