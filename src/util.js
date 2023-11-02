@@ -49,3 +49,12 @@ export function formatDuration (ms) {
 
 	return ms + unit;
 }
+
+/**
+ * Escape a string so it can be used literally in regular expressions
+ * @param {string} str
+ * @returns {string}
+ */
+export function regexEscape (str) {
+	return str.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+}
