@@ -5,6 +5,7 @@ import { delay, formatDuration } from "../../util.js";
 export default class TestResult extends BubblingEventTarget {
 	pass;
 	details = [];
+	timeTaken = 0;
 
 	constructor(test, parent) {
 		super();
@@ -23,10 +24,11 @@ export default class TestResult extends BubblingEventTarget {
 					this.stats.fail++;
 				}
 
-				this.stats.totalTime += originalTarget.timeTaken;
+				this.timeTaken += originalTarget.timeTaken;
 
 				if (originalTarget.timeTakenAsync) {
-					this.stats.totalTimeAsync += originalTarget.timeTakenAsync;
+					this.timeTakenAsync ??= 0;
+					this.timeTakenAsync += originalTarget.timeTakenAsync;
 				}
 
 				this.stats.pending--;
