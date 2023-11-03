@@ -57,21 +57,29 @@ export function equals (actual, expect) {
  * @param {number} [ε=0]
  * @returns {function(actual, expect): boolean}
  */
-export function proximity ({epsilon = 0} = {}) {
-	let ret = function(actual, expect) {
-		if (Array.isArray(actual) && Array.isArray(expect)) {
-			if (actual.length !== expect.length) {
-				// One has more numbers than the other
+export function proximity (o = {}) {
+	let callee = function proximity (actual, expect) {
+		if (Array.isArray(expect)) {
+			if (!Array.isArray(actual) || actual.length !== expect.length) {
 				return false;
 			}
 
-			return expect.every((ref, i) => ret(actual[i], ref));
+			return expect.every((ref, i) => callee(actual[i], ref));
 		}
 
-		return Number.isNaN(expect) === Number.isNaN(actual)
-		       && Math.abs(expect - actual) <= epsilon;
+		let {epsilon = 0} = o;
+
+		if (Number.isNaN(expect)) {
+			return Number.isNaN(actual);
+		}
+		else if (expect === null) {
+			return actual === null;
+		}
+		else {
+			return Math.abs(expect - actual) <= epsilon;
+		}
 	}
-	return ret;
+	return callee;
 }
 
 export function between({min, max}) {
