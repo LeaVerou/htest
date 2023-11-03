@@ -1,68 +1,32 @@
-import logUpdate from 'log-update';
-import { AsciiTree } from 'oo-ascii-tree';
-import { globSync } from 'glob';
-import path from 'path';
+#! /usr/bin/env node
+import run from "./node-run.js";
 
-import Test from "./classes/Test.js";
-import TestResult from "./classes/TestResult.js";
-import format from "./format-console.js";
-import { getType } from '../util.js';
+let argv = process.argv.slice(2);
 
-// Set up environment for Node
-Test.warn = function (msg) {
-	console.warn(msg);
-};
+if (argv.length > 0) {
+	// Read filenames in CWD
+	let location = argv[0];
 
-TestResult.warn = function (msg) {
-	console.warn(msg);
+	// Is location a directory?
+	let stats = fs.statSync(location);
+	if (stats.isDirectory()) {
+		// Read filenames in this directory
+		let filenames = fs.readdirSync(location)
+			.filter(name => !name.startsWith("index") && name.endsWith(".js"));
+
+		let tests = await Promise.all(filenames.map(name => import(`./${name}`).then(module => module.default)));
+
+		let root = {
+			name: "All tests",
+			tests
+		};
+
+		run(root);
+	}
+	else {
+		// Let glob figure it out
+		run(location);
+	}
 }
 
-function getTree (msg, i) {
-	return new AsciiTree(`</dim>${ msg }<dim>`, ...(msg.children?.map(getTree) ?? []));
-}
-
-/**
- * Run a test or group of tests in Node.js
- * @param {Test | object} test
- */
-export default function run (test, options = {}) {
-	if (getType(test) == "string") {
-		// Glob provided, resolve to test(s)
-		Promise.all(globSync(test).flatMap(paths => {
-			// Convert paths to imported modules
-			paths = getType(paths) == "string" ? [paths] : paths;
-			return paths.map(p => {
-				p = path.join(process.cwd(), p);
-				return import(p).then(m => m.default ?? m);
-			});
-		})).then(tests => {
-			run(tests, options);
-		});
-		return;
-	}
-
-	if (Array.isArray(test)) {
-		if (test.length === 1) {
-			test = test[0];
-		}
-		else {
-			return run ({tests: test}, options);
-		}
-	}
-
-	if (!(test instanceof Test)) {
-		test = new Test(test);
-	}
-
-	let ret = new TestResult(test);
-
-	ret.addEventListener("done", e => {
-		let messages = ret.toString({ format: options.format ?? "rich" });
-		let tree = getTree(messages).toString();
-		tree = format(tree);
-		logUpdate(tree);
-	});
-
-	return ret.runAll();
-}
-
+export default run;

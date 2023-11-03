@@ -13,6 +13,9 @@
   "exports": {
     "import": "./src/index.js"
   },
+  "bin": {
+    "htest": "./src/cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leaverou/htest.git"
