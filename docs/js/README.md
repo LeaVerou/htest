@@ -161,7 +161,7 @@ While to [run HTML tests](../html/) it may be enough to simply link to hTest’s
 to run JS tests in Node, you need to use npm to install hTest:
 
 ```sh
-npm install htest --save-dev
+npm install htest.dev --save-dev
 ```
 
 To run the tests, all you need is a script that imports the testsuite and runs it:
