@@ -1,6 +1,6 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
 import format, { stripFormatting } from "../format-console.js";
-import { delay, formatDuration } from "../../util.js";
+import { delay, formatDuration, stringify } from "../../util.js";
 
 export default class TestResult extends BubblingEventTarget {
 	pass;
@@ -130,7 +130,7 @@ export default class TestResult extends BubblingEventTarget {
 			}
 			else {
 				if (!ret.pass) {
-					ret.details.push(`Expected error but ${ this.actual !== undefined? ` got ${ this.actual }` : "none was thrown" }`);
+					ret.details.push(`Expected error but ${ this.actual !== undefined? ` got ${ stringify(this.actual) }` : "none was thrown" }`);
 				}
 			}
 		}
@@ -162,18 +162,18 @@ ${ this.error.stack }`);
 			else {
 				let actual = this.mapped?.actual ?? this.actual;
 
-				let message = `Got ${actual}`;
+				let message = `Got ${ stringify(actual) }`;
 
 				if (this.mapped && actual !== this.actual) {
-					message += ` (${this.actual} unmapped)`;
+					message += ` (${ stringify(this.actual) } unmapped)`;
 				}
 
 				if ("expect" in test) {
 					let expect = this.mapped?.expect ?? test.expect;
-					message += `, expected ${expect}`;
+					message += `, expected ${ stringify(expect) }`;
 
 					if (this.mapped && expect !== test.expect) {
-						message += ` (${test.expect} unmapped)`;
+						message += ` (${ stringify(test.expect) } unmapped)`;
 					}
 				}
 				else {
@@ -243,7 +243,13 @@ ${ this.error.stack }`);
 			ret.push(`<b>${ stats.pending }</b>/${ stats.total } remaining`);
 		}
 
-		ret = `${this.name ?? (this.test.level === 0? "<i>(All tests)</i>" : "")} ${ ret.join(", ") } <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
+		let icon = stats.fail > 0? "❌" : stats.pending > 0? "⏳" : "✅";
+		ret = [
+			`${this.name ?? (this.test.level === 0? "<i>(All tests)</i>" : "")}`,
+			icon,
+			`${ ret.join(", ") }`,
+			`<dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`
+		].join(" ");
 
 		return o?.format === "rich" ? ret : stripFormatting(ret);
 	}

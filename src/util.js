@@ -1,8 +1,8 @@
-
+import * as objects from "./objects.js";
 
 /**
  * Determine the internal JavaScript [[Class]] of an object.
- * @param {*} o - Value to check
+ * @param {*} value - Value to check
  * @returns {string}
  */
 export function getType (value, { preserveCase = false } = {}) {
@@ -87,3 +87,44 @@ export function formatDuration (ms) {
 export function regexEscape (str) {
 	return str.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 }
+
+/**
+ * Stringify object in a useful way
+ */
+export function stringify (obj) {
+	return objects.stringify(obj, (obj, level) => {
+		switch(typeof obj) {
+			case "symbol":
+				return `Symbol(${obj.description})`;
+			case "function":
+				return obj.toString();
+		}
+
+		let type = getType(obj, { preserveCase: true });
+
+		if (!(typeof obj === "object") || !obj || Array.isArray(obj)) {
+			return;
+		}
+
+		let indent = "\t".repeat(level);
+
+		if (obj?.[Symbol.iterator] && !["String", "Array"].includes(type)) {
+			return `${type}(${ obj.length ?? obj.size }) ` + objects.join(obj, ", ", {
+				indent,
+				map: o => stringify(o),
+			 });
+		}
+		else if (globalThis.HTMLElement && obj instanceof HTMLElement) {
+			return obj.outerHTML;
+		}
+
+		let toString = obj + "";
+
+		if (!/\[object \w+/.test(toString)) {
+			// Has reasonable toString method, return that
+			return toString;
+		}
+	});
+
+
+};

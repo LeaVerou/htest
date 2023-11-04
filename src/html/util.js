@@ -1,4 +1,4 @@
-import { delay, getType } from "../util.js";
+import { delay, getType, stringify } from "../util.js";
 export {default as create} from "https://v2.blissfuljs.com/src/dom/create.js";
 export {default as bind} from "https://v2.blissfuljs.com/src/events/bind.js";
 export {default as include} from "https://v2.blissfuljs.com/src/async/include.js";
@@ -68,44 +68,7 @@ export function ready (doc = document) {
 	});
 }
 
-// Stringify object in a useful way
-export function output (obj) {
-	let type = getType(obj);
-
-	if (obj && obj[Symbol.iterator] && type != "string") {
-		var arr = [...obj];
-
-		if (obj && arr.length > 1) {
-			return arr.map(o => output(o)).join(", ");
-		}
-		else if (arr.length == 1) {
-			obj = arr[0];
-		}
-		else {
-			return `(empty ${type})`;
-		}
-	}
-
-	if (obj instanceof HTMLElement) {
-		return obj.outerHTML;
-	}
-
-	let toString = obj + "";
-
-	if (!/\[object \w+/.test(toString)) {
-		// Has reasonable toString method, return that
-		return toString;
-	}
-
-	return JSON.stringify(obj, function(key, value) {
-		switch (getType(value)) {
-			case "set":
-				return {
-					type: "Set",
-					value: [...value]
-				};
-			default:
-				return value;
-		}
-	}, "\t");
-};
+export function output(...args) {
+	console.warn("output() was renamed to stringify() and moved to src/util.js");
+	return stringify(...args);
+}
