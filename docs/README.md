@@ -3,6 +3,12 @@ toc: false
 ---
 ## Contents
 
-- [HTML-first mode](html/)
-- [JS-first mode](js/)
-- [Running tests in the browser](html-view/)
+### Defining tests
+
+- […with HTML](define/html/)
+- […with JS](define/js/)
+
+### Running tests
+
+- […in the browser](run/html/)
+- […in Node.js](run/node/)

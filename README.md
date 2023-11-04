@@ -15,13 +15,13 @@ Forget copy-pasting 10 lines for boilerplate to write a single test.
 TDD is hard enough as it stands — the more friction in writing tests, the fewer are written.
 htest aims to eliminate all boilerplate, so you can focus on the tests themselves.
 
-htest can be used in one of two ways: [HTML-first](docs/html/) or [JS-first](docs/js/):
-- In [**HTML-first mode**](docs/html/) you write your tests in HTML files and run them only in the browser.
+htest can be used in one of two ways: [HTML-first](docs/define/html/) or [JS-first](docs/define/js/):
+- In [**HTML-first mode**](docs/define/html/) you write your tests in HTML files and run them only in the browser.
 	* More suitable for UI-heavy code
 	* Pass-criteria extends beyond value matching or error catching, and could even be things like what CSS selectors match or what the DOM looks like.
 	* Reactive evaluation: if the HTML changes or the user interacts with the UI, relevant tests are re-evaluated.
 	* Mock interactions like click or focus with HTML attributes.
-- In [**JS-first mode**](docs/js/) you write your tests in object literals, and you can run them either in Node or in the browser.
+- In [**JS-first mode**](docs/define/js/) you write your tests in object literals, and you can run them either in Node or in the browser.
 	* More suitable for pure JS code
 	* Tests are defined in a tree-like structure of object literals, with inheritance so you never have to repeat anything twice.
 	* Compatible with CI and other automated test running processes.

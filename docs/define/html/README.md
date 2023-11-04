@@ -82,3 +82,7 @@ Sometimes what is tested is pure JS output with no UI.
 While the JS-first mode is typically better for those use cases, it is possible to use HTML-first mode as well.
 In that case, use `<script>` tags and the `$out()` or `$outln()` functions.
 Their only difference is that `$outln()` also prints a line break.
+
+## Running tests
+
+HTML-first tests can currently only [run in the browser](../../run/html), by opening the HTML file.
