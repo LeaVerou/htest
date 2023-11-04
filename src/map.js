@@ -32,17 +32,21 @@ export function extract (patterns) {
 /**
  * Extract lists of numbers from a value
  * @param {*} value
+ *
  * @returns
  */
-let rNumber = /-?\d*\.?\d+(?:e-?\d+)?|NaN/g;
-export function extractNumbers (value, keywords = []) {
+let rNumber = /-?\d*\.?\d+(?:e-?\d+)?/g;
+export function extractNumbers (value) {
 	let type = getType(value);
 
 	if (type === "number") {
 		return [value]
 	}
 	else {
-		return extract([rNumber, ...keywords]).map(n => !Number.isNaN(n) ? parseFloat(n) : n);
+		let patterns = [rNumber, "NaN", "null", "Infinity", "-Infinity"];
+
+		let f = extract(patterns);
+		return f(value).map(n => !Number.isNaN(n) ? parseFloat(n) : n);
 	}
 }
 
