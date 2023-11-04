@@ -1,17 +1,32 @@
 import { getType } from "./util.js";
 
+/**
+ * Combine multiple checks, requiring a test to pass all of them to pass
+ * @param  {...function} fns
+ * @returns {function}
+ */
 export function and (...fns) {
 	return function (...args) {
 		return fns.every(fn => fn(...args));
 	}
 }
 
+/**
+ * Combine multiple checks, requiring a test to pass any of them to pass
+ * @param  {...function} fns
+ * @returns {function}
+ */
 export function or (...fns) {
 	return function (...args) {
 		return fns.some(fn => fn(...args));
 	}
 }
 
+/**
+ * Check value type
+ * @param {string} type
+ * @returns {function}
+ */
 export function is (type) {
 	type = type.toLowerCase();
 
@@ -21,54 +36,69 @@ export function is (type) {
 }
 
 /**
+ * Apply a checking function recursively to objects and collections
+ * @param {function} [check] Function to apply to compare primitive values
+ * @returns {function}
+ */
+export function deep (check = (a, b) => a === b) {
+	let callee = function(actual, expect) {
+		if (check.call(this, actual, expect)) {
+			return true;
+		}
+
+		if (typeof expect !== "object") {
+			// If not an object, it's definitely not a container object,
+			// and we know it doesn't pass, so we can fail early.
+			return false;
+		}
+
+		if (Array.isArray(expect)) {
+			if (!Array.isArray(actual) || actual.length !== expect.length) {
+				return false;
+			}
+
+			return expect.every((ref, i) => callee.call(this, actual[i], ref));
+		}
+
+		let type = getType(expect);
+
+		if (expect?.[Symbol.iterator]) {
+			// Iterable collection (Array, Set, Map, NodeList, etc.)
+			if (getType(actual) !== type) {
+				return false;
+			}
+
+			return callee.call(this, [...actual], [...expect]);
+		}
+
+		// Compare objects recursively
+		if (type === "object") {
+			let propertyUnion = new Set([...Object.keys(expect), ...Object.keys(actual)]);
+			return [...propertyUnion].every(key => callee(actual[key], expect[key]));
+		}
+
+		return false;
+	}
+	return callee;
+};
+
+/**
  * Compare by equality, but also compare objects and arrays recursively
  * @param {*} expect
  * @param {*} actual
  * @returns {boolean}
  */
-export function equals (actual, expect) {
-	if (expect === actual) {
-		return true;
-	}
-
-	let type = getType(expect);
-
-	if (type === getType(actual)) {
-		if (expect == actual) {
-			return true;
-		}
-
-		if (Array.isArray(expect) && Array.isArray(actual)) {
-			return expect.length === actual.length && expect.reduce((prev, current, i) => prev && equals(current, actual[i]), true);
-		}
-
-		if (type == "object") {
-			// Compare objects recursively
-			let propertyUnion = new Set([...Object.keys(expect), ...Object.keys(actual)]);
-			return [...propertyUnion].reduce((prev, current) => prev && equals(expect[current], actual[current]), true);
-		}
-	}
-
-	return false;
-};
+export const equals = deep(function (actual, expect) {
+	return expect === actual || (getType(expect) === getType(actual) && expect == actual);
+});
 
 /**
  * Compare numbers or lists of numbers with an optional epsilon
  * @param {number} [ε=0]
  * @returns {function(actual, expect): boolean}
  */
-export function proximity (o = {}) {
-	let callee = function proximity (actual, expect) {
-		if (Array.isArray(expect)) {
-			if (!Array.isArray(actual) || actual.length !== expect.length) {
-				return false;
-			}
-
-			return expect.every((ref, i) => callee(actual[i], ref));
-		}
-
-		let {epsilon = 0} = o;
-
+export function proximity(o = {}) {
+	return function (actual, expect) {
 		if (Number.isNaN(expect)) {
 			return Number.isNaN(actual);
 		}
@@ -76,10 +106,10 @@ export function proximity (o = {}) {
 			return actual === null;
 		}
 		else {
+			let {epsilon = 0} = o;
 			return Math.abs(expect - actual) <= epsilon;
 		}
-	}
-	return callee;
+	};
 }
 
 export function between({min, max}) {
