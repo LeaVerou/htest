@@ -1,32 +1,41 @@
 #! /usr/bin/env node
 import run from "./node-run.js";
+import fs from "fs";
 
-let argv = process.argv.slice(2);
+async function getTestsIn (dir) {
+	let filenames = fs.readdirSync(dir)
+		.filter(name => !name.startsWith("index") && name.endsWith(".js"));
 
-if (argv.length > 0) {
-	// Read filenames in CWD
-	let location = argv[0];
+	return Promise.all(filenames.map(name => import(`./${name}`).then(module => module.default)));
+}
 
-	// Is location a directory?
-	let stats = fs.statSync(location);
-	if (stats.isDirectory()) {
-		// Read filenames in this directory
-		let filenames = fs.readdirSync(location)
-			.filter(name => !name.startsWith("index") && name.endsWith(".js"));
+/**
+ * Run tests:
+ * - If command line arguments are provided, read those files and run them
+ * - If no arguments are provided, but a defalt value is passed to the function, run that
+ * - If neither are provided, try to find tests in the current directory
+ * @param {object | object[]} defaultTest
+ */
+export default async function cli (defaultTest) {
+	let argv = process.argv.slice(2);
+	let location = argv[0] ?? (defaultTest ? undefined : process.cwd());
 
-		let tests = await Promise.all(filenames.map(name => import(`./${name}`).then(module => module.default)));
-
-		let root = {
-			name: "All tests",
-			tests
-		};
-
-		run(root);
+	if (location) {
+		// Read filenames in CWD
+		if (fs.statSync(location).isDirectory()) {
+			run({
+				name: "All tests",
+				tests: await getTestsIn(location),
+			});
+		}
+		else {
+			// 🤷🏽‍♀️ Let glob figure it out
+			run(location);
+		}
 	}
 	else {
-		// Let glob figure it out
-		run(location);
+		run(defaultTest);
 	}
 }
 
-export default run;
+export { run };
