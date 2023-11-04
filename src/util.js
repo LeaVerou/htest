@@ -5,10 +5,16 @@
  * @param {*} o - Value to check
  * @returns {string}
  */
-export function getType (o) {
-	let str = Object.prototype.toString.call(o);
+export function getType (value, { preserveCase = false } = {}) {
+	let str = Object.prototype.toString.call(value);
 
-	return (str.match(/^\[object\s+(.*?)\]$/)[1] || "").toLowerCase();
+	let ret = (str.match(/^\[object\s+(.*?)\]$/)[1] || "");
+
+	if (!preserveCase) {
+		ret = ret.toLowerCase();
+	}
+
+	return ret;
 }
 
 export function idify (readable) {
