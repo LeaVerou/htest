@@ -200,10 +200,13 @@ export function join (obj, {
  * Like JSON.stringify but its serialization can be customized
  * and prevents cycles
  * @param {*} obj
- * @param {function} replacer
+ * @param {object} options
+ * @param {function | function[]} custom - Override how a certain value is serialized.
+ * 	Should return undefined if the value should be serialized normally.
+ *  If an array, the first function that returns a non-undefined value is used.
  * @returns {string}
  */
-export function stringify (obj, replacer) {
+export function stringify (obj, options = {}) {
 	let seen = new WeakSet();
 
 	return callee(obj, 0);
@@ -216,10 +219,13 @@ export function stringify (obj, replacer) {
 			seen.add(obj);
 		}
 
-		if (typeof replacer === 'function') {
-			const ret = replacer(obj, level);
-			if (ret !== undefined) {
-				return ret;
+		if (options.custom) {
+			let fns = Array.isArray(options.custom)? options.custom : [options.custom];
+			for (let fn of fns) {
+				let ret = fn(obj, level);
+				if (ret !== undefined) {
+					return ret;
+				}
 			}
 		}
 
