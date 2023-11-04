@@ -37,7 +37,7 @@ export function is (type) {
 
 /**
  * Apply a checking function recursively to objects and collections
- * @param {function} [check] Function to apply to compare primitive values
+ * @param {function} [check] Function to apply to compare primitive values. Defaults to strict equality
  * @returns {function}
  */
 export function deep (check = (a, b) => a === b) {
