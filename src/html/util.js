@@ -68,7 +68,16 @@ export function ready (doc = document) {
 	});
 }
 
-export function output(...args) {
-	console.warn("output() was renamed to stringify() and moved to src/util.js");
-	return stringify(...args);
+export function output(obj) {
+	return stringify(obj, {
+		custom: (obj) => {
+			if (Array.isArray(obj)) {
+				return obj.map(output).join(", ");
+			}
+
+			if (typeof obj === "string") {
+				return obj;
+			}
+		}
+	});
 }

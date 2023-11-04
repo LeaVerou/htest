@@ -23,7 +23,7 @@ export function numbers (...cells) {
 	let tr = cells[0].parentNode;
 	let ε = +(tr.closest("[data-epsilon]")?.dataset.epsilon) || 0;
 
-	return compare(cells, td => map.extractNumbers(content(td)), check.proximity({epsilon: ε}));
+	return compare(cells, td => map.extractNumbers(content(td)), check.deep(check.proximity({epsilon: ε})));
 }
 
 export function attribute (attribute, td, ref) {

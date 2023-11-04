@@ -91,8 +91,8 @@ export function regexEscape (str) {
 /**
  * Stringify object in a useful way
  */
-export function stringify (obj) {
-	return objects.stringify(obj, (obj, level) => {
+export const stringifyFlavors = {
+	console: (obj, level) => {
 		switch(typeof obj) {
 			case "symbol":
 				return `Symbol(${obj.description})`;
@@ -124,7 +124,14 @@ export function stringify (obj) {
 			// Has reasonable toString method, return that
 			return toString;
 		}
+	},
+}
+export function stringify (obj, options = {}) {
+	let overrides = options.custom ? [].concat(options.custom) : [];
+
+	overrides.push(stringifyFlavors.console);
+
+	return objects.stringify(obj, {
+		custom: overrides
 	});
-
-
 };
