@@ -212,13 +212,13 @@ ${ this.error.stack }`);
 		return this.parent.tests[this.parent.tests.length - 1] === this;
 	}
 
-	get prefix () {
-		return this.name ? `<bg white>${this.name}</bg> ` : "";
-	}
-
 	getResult (o) {
 		let color = this.pass ? "green" : "red";
-		let ret = `<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b> <c light${color}>${this.name}</c> <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
+		let ret = [
+			`<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b>`,
+			`<c light${color}>${this.name ?? "(Anonymous"}</c>`,
+			`<dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`,
+		].join(" ");
 
 		if (this.details?.length > 0) {
 			ret += ": " + this.details.join(", ");
@@ -243,8 +243,7 @@ ${ this.error.stack }`);
 			ret.push(`<b>${ stats.pending }</b>/${ stats.total } remaining`);
 		}
 
-		let color = stats.fail > 0 ? "red" : (stats.pending > 0 ? "yellow" : "green");
-		ret = `${this.name} ${ ret.join(", ") } <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
+		ret = `${this.name ?? (this.test.level === 0? "<i>(All tests)</i>" : "")} ${ ret.join(", ") } <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
 
 		return o?.format === "rich" ? ret : stripFormatting(ret);
 	}
