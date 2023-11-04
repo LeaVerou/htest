@@ -16,7 +16,7 @@ async function getTestsIn (dir) {
  * - If neither are provided, try to find tests in the current directory
  * @param {object | object[]} defaultTest
  */
-export default async function cli (defaultTest) {
+export default async function cli (defaultTest, defaultOptions) {
 	let argv = process.argv.slice(2);
 	let location = argv[0] ?? (defaultTest ? undefined : process.cwd());
 
@@ -26,15 +26,15 @@ export default async function cli (defaultTest) {
 			run({
 				name: "All tests",
 				tests: await getTestsIn(location),
-			});
+			}, defaultOptions);
 		}
 		else {
 			// 🤷🏽‍♀️ Let glob figure it out
-			run(location);
+			run(location, defaultOptions);
 		}
 	}
 	else {
-		run(defaultTest);
+		run(defaultTest, defaultOptions);
 	}
 }
 
