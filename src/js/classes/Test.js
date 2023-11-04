@@ -36,7 +36,10 @@ export default class Test {
 		}
 
 		// Single args don't need to be wrapped in an array
-		if (this.args !== undefined && !Array.isArray(this.args)) {
+		if (this.arg !== undefined) {
+			this.args = [this.arg];
+		}
+		else if (this.args !== undefined && !Array.isArray(this.args)) {
 			this.args = [this.args];
 		}
 
@@ -45,7 +48,7 @@ export default class Test {
 				this.name = this.getName.apply(this, this.args);
 			}
 			else if (this.isTest) {
-				this.name = test.args.length > 0 ? test.args[0] : "(No args)";
+				this.name = this.args.length > 0 ? this.args[0] : "(No args)";
 			}
 		}
 
