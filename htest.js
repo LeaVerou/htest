@@ -32,7 +32,7 @@ async function ready (doc = document) {
 	});
 	await Promise.all([
 		loaded,
-		import("./src/html/util.js").then(m => util = m)
+		import("./src/util.js").then(m => util = m)
 	]);
 }
 
@@ -54,7 +54,7 @@ async function $out (...texts) {
 			}
 		}
 
-		text = util.output(text);
+		text = util.stringify(text);
 
 		if (document.readyState == "loading") {
 			document.write(text);
