@@ -1,4 +1,5 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
+
 import run from "./node-run.js";
 import fs from "fs";
 
