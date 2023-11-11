@@ -14,7 +14,7 @@
     "import": "./src/index.js"
   },
   "bin": {
-    "htest": "./bin/htest.js"
+    "htest": "bin/htest.js"
   },
   "repository": {
     "type": "git",
