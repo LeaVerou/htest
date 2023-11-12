@@ -11,7 +11,7 @@ Boilerplate-free unit testing, for everyone.
 ## What the hTest? Do we really need another unit testing framework?
 
 htest is a unit testing framework that focuses on making unit testing as quick and painless as possible.
-Forget copy-pasting 10 lines for boilerplate to write a single test.
+Forget copy-pasting 10 lines of boilerplate to write a single test.
 TDD is hard enough as it stands — the more friction in writing tests, the fewer are written.
 htest aims to eliminate all boilerplate, so you can focus on the tests themselves.
 

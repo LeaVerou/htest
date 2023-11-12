@@ -13,16 +13,10 @@ While to [run HTML tests](../define/html it may be enough to simply link to hTes
 to run JS tests in Node, you need to use npm to install hTest:
 
 ```sh
-npm install htest --save-dev
+npm i htest.dev -D
 ```
 
 ## Zero hassle, some control
-
-<div class=note>
-
-**Note**: This does not currently work.
-
-</div>
 
 You just use the `htest` command line tool to run your tests:
 
@@ -60,11 +54,9 @@ Try running it:
 node my-test.js
 ```
 
-
-
 ## More hassle, total control
 
-With both previous methods can still pass command line arguments as well and htest processes them:
+With both previous methods you can still pass command line arguments as well and htest processes them:
 
 ```sh
 node my-test.js footests.js

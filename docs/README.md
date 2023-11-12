@@ -11,4 +11,4 @@ toc: false
 ### Running tests
 
 - […in the browser](run/html/)
-- […in Node.js](run/node/)
+- […in the CLI](run/node/)
