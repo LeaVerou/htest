@@ -10,14 +10,9 @@ else {
 
 document.documentElement.style.setProperty("--page", `"${currentPage}"`);
 
-let loaded;
 
-if (document.documentElement.classList.contains("index")) {
-	loaded = import("./src/html/harness.js");
-}
-else {
-	loaded = import("./src/html/testpage.js");
-}
+let isIndex = document.documentElement.classList.contains("index");
+let loaded = import(`./src/html/${isIndex? "harness" : "testpage"}.js`);
 
 let util;
 
