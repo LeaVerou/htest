@@ -2,14 +2,18 @@
 
 import run from "./node-run.js";
 import fs from "fs";
+import path from "path";
 
 async function getTestsIn (dir) {
-	let filenames = fs.readdirSync(dir)
-		.filter(name => !name.startsWith("index") && name.endsWith(".js"));
-
-	return Promise.all(filenames.map(name => import(`./${name}`).then(module => module.default)));
+	let filenames = fs.readdirSync(dir).filter(name => !name.startsWith("index") && name.endsWith(".js"));
+	let cwd = process.cwd();
+	let paths = filenames.map(name => path.join(dir, name));
+console.log(paths);
+	return Promise.all(paths.map(path => import(path).then(module => module.default, err => {
+		console.error(`Error importing ${path}:`, err);
+	})));
 }
-
+console.log(process.cwd());
 /**
  * Run tests:
  * - If command line arguments are provided, read those files and run them
