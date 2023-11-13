@@ -36,7 +36,19 @@ export function toPrecision (number, significantDigits) {
 		return number;
 	}
 
-	return Math.abs(n) > 1 ? n : n.toPrecision(significantDigits);
+	let abs = Math.abs(n);
+
+
+	if (abs < 1) {
+		return n.toPrecision(significantDigits);
+	}
+
+	let f10 = 10 ** significantDigits;
+	if (abs < f10) {
+		return Math.round(n * f10) / f10;
+	}
+
+	return Math.round(n);
 }
 
 let durations = [
@@ -68,7 +80,7 @@ export function formatDuration (ms) {
 			if (n < 10) {
 				n = toPrecision(+n, 1);
 			}
-			else if (n < next.from) {
+			else {
 				n = Math.round(n);
 			}
 
