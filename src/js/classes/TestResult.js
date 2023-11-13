@@ -6,6 +6,7 @@ export default class TestResult extends BubblingEventTarget {
 	pass;
 	details = [];
 	timeTaken = 0;
+	stats = {};
 
 	constructor(test, parent) {
 		super();
