@@ -7,13 +7,13 @@ import path from "path";
 async function getTestsIn (dir) {
 	let filenames = fs.readdirSync(dir).filter(name => !name.startsWith("index") && name.endsWith(".js"));
 	let cwd = process.cwd();
-	let paths = filenames.map(name => path.join(dir, name));
-console.log(paths);
+	let paths = filenames.map(name => path.join(cwd, dir, name));
+
 	return Promise.all(paths.map(path => import(path).then(module => module.default, err => {
 		console.error(`Error importing ${path}:`, err);
 	})));
 }
-console.log(process.cwd());
+
 /**
  * Run tests:
  * - If command line arguments are provided, read those files and run them
