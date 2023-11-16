@@ -29,10 +29,11 @@ export default class Test {
 		// Inherit properties from parent
 		// This works recursively because the parent is ran before its children
 		if (this.parent) {
-			this.run ??= this.parent.run;
-			this.map ??= this.parent.map;
-			this.check ??= this.parent.check;
-			this.getName ??= this.parent.getName;
+			for (let prop of ["run", "map", "check", "getName", "args"]) {
+				if (!(prop in this) && prop in this.parent) {
+					this[prop] = this.parent[prop];
+				}
+			}
 		}
 
 		// Single args don't need to be wrapped in an array
