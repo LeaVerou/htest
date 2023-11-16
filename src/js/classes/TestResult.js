@@ -8,11 +8,19 @@ export default class TestResult extends BubblingEventTarget {
 	timeTaken = 0;
 	stats = {};
 
-	constructor(test, parent) {
+	/**
+	 *
+	 * @param {object} test
+	 * @param {object} [parent = null]
+	 * @param {object} [options]
+	 * @param {boolean} [options.verbose] Show all tests, not just failed ones
+	 */
+	constructor(test, parent, options = {}) {
 		super();
 
 		this.test = test;
-		this.parent = parent;
+		this.parent = parent ?? null;
+		this.options = options;
 
 		this.addEventListener("done", e => {
 			let originalTarget = e.detail?.target ?? e.target;

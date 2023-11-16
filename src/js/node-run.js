@@ -24,6 +24,8 @@ function getTree (msg, i) {
 /**
  * Run a test or group of tests in Node.js
  * @param {Test | object} test
+ * @param {object} [options]
+ * @param {"rich" | "plain"} [options.format] Format to use for output. Defaults to "rich"
  */
 export default function run (test, options = {}) {
 	if (getType(test) == "string") {
@@ -51,10 +53,10 @@ export default function run (test, options = {}) {
 	}
 
 	if (!(test instanceof Test)) {
-		test = new Test(test);
+		test = new Test(test, null, options);
 	}
 
-	let ret = new TestResult(test);
+	let ret = new TestResult(test, null, options);
 
 	ret.addEventListener("done", e => {
 		let messages = ret.toString({ format: options.format ?? "rich" });
