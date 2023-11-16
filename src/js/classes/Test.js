@@ -36,7 +36,7 @@ export default class Test {
 		}
 
 		// Single args don't need to be wrapped in an array
-		if (this.arg !== undefined) {
+		if ("arg" in this) {
 			this.args = [this.arg];
 		}
 		else if (this.args !== undefined && !Array.isArray(this.args)) {
