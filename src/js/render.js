@@ -16,6 +16,8 @@ export default function render (test) {
 		inside: document.body,
 	});
 
+	document.title = root.name;
+
 	let testRows = new Map();
 
 	root.tests?.map?.(t => {
