@@ -13,6 +13,10 @@ export default class TestResult extends BubblingEventTarget {
 	 * @param {object} test
 	 * @param {object} [parent = null]
 	 * @param {object} [options]
+	 * @param {string | string[] | number | number[]} [options.only] Only run a subset of tests
+	 *        If one or more numbers, or a string that begins with a number, it is a path to a test/group
+	 *        If one or more identifiers, it will only run tests with that id, regardless of nesting
+	 *        If mixed, it will follow the numbers as a path, then will not consume any more numbers until it finds the id.
 	 * @param {boolean} [options.verbose] Show all tests, not just failed ones
 	 */
 	constructor(test, parent, options = {}) {
@@ -21,6 +25,10 @@ export default class TestResult extends BubblingEventTarget {
 		this.test = test;
 		this.parent = parent ?? null;
 		this.options = options;
+
+		if (this.options.only) {
+			this.options.only = Array.isArray(this.options.only) ? this.options.only : [this.options.only];
+		}
 
 		this.addEventListener("done", e => {
 			let originalTarget = e.detail?.target ?? e.target;
@@ -87,7 +95,31 @@ export default class TestResult extends BubblingEventTarget {
 		this.stats.pending = this.stats.total;
 		this.finished = new Promise(resolve => this.addEventListener("finish", resolve, {once: true}));
 
-		this.tests = this.test.tests?.map(t => new TestResult(t, this));
+		let tests = this.test.tests;
+
+		let childOptions = Object.assign({}, this.options);
+
+		if (this.options.only) {
+			childOptions.only = childOptions.only.slice();
+			let first = childOptions.only[0];
+			if (/^\d/.test(first)) { // Path
+				// TODO ranges (e.g. "0-5")
+				tests = [tests[first]];
+				childOptions.only.unshift();
+			}
+			else {
+				// Id
+				let test = tests.fimd(t => t.id === first);
+
+				if (test) {
+					tests = [test];
+					// We only remove the id if found, since otherwise it may be found in a descendant
+					childOptions.only.unshift();
+				}
+			}
+		}
+
+		this.tests = this.test.tests?.map(t => new TestResult(t, this, childOptions));
 
 		delay(1).then(() => {
 			if (this.test.isTest) {
