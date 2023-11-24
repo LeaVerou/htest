@@ -9,7 +9,7 @@ post-commit hooks, and other tools that run on the command line.
 For your tests to work with the Node.js runner, your JS code needs to be compatible with Node.js.
 You need at least Node.js 16.x, but it is recommended to use the latest LTS version.
 
-While to [run HTML tests](../define/html it may be enough to simply link to hTest’s JS and CSS files,
+While to [run HTML tests](../define/html) it may be enough to simply link to hTest’s JS and CSS files,
 to run JS tests in Node, you need to use npm to install hTest:
 
 ```sh
