@@ -2,7 +2,7 @@
 
 # ✅ **h**Test
 
-Boilerplate-free unit testing, for everyone.
+Declarative, boilerplate-free unit testing, for everyone.
 
 </header>
 
@@ -16,15 +16,16 @@ TDD is hard enough as it stands — the more friction in writing tests, the fewe
 htest aims to eliminate all boilerplate, so you can focus on the tests themselves.
 
 htest can be used in one of two ways: [HTML-first](docs/define/html/) or [JS-first](docs/define/js/):
+- In [**JS-first mode**](docs/define/js/) you write your tests in object literals, and you can [run them either in Node](docs/run/node) or [in the browser](docs/run/html).
+	* More suitable for pure JS code
+	* Tests are defined in a tree-like structure of object literals, with inheritance so you never have to repeat anything.
+	* Compatible with CI and other automated test running processes.
+	* Code must be compatible with Node to use the Node test runner.
 - In [**HTML-first mode**](docs/define/html/) you write your tests in HTML files and run them only in the browser.
 	* More suitable for UI-heavy code
 	* Pass-criteria extends beyond value matching or error catching, and could even be things like what CSS selectors match or what the DOM looks like.
 	* Reactive evaluation: if the HTML changes or the user interacts with the UI, relevant tests are re-evaluated.
 	* Mock interactions like click or focus with HTML attributes.
-- In [**JS-first mode**](docs/define/js/) you write your tests in object literals, and you can run them either in Node or in the browser.
-	* More suitable for pure JS code
-	* Tests are defined in a tree-like structure of object literals, with inheritance so you never have to repeat anything twice.
-	* Compatible with CI and other automated test running processes.
 
 You can even mix and match the two modes in the same testsuite!
 E.g. even a UI-heavy library has many JS-only functions that are better tested via JS-first tests.
@@ -41,7 +42,7 @@ E.g. even a UI-heavy library has many JS-only functions that are better tested v
 #### Testsuites
 
 * [Color.js old testsuite](https://colorjs.io/tests/)
-* [Mavo](https://test.mavo.io) (using a precursor of what became hTest)
+* [Mavo](https://test.mavo.io) (using a precursor of hTest)
 
 #### Single page tests
 
