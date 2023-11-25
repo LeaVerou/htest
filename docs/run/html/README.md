@@ -115,6 +115,7 @@ In fact, you could configure it to output an index of tests if no test is provid
 </details>
 
 You can see this in action at [Color.js](https://colorjs.io/test/).
+Note that this requires an `index.json` with test filenames to names. You can also hardcode the data in your index, or use a different format — you'd just need to tweak the code accordingly.
 
 <div class=note>
 

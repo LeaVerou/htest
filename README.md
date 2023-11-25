@@ -31,12 +31,19 @@ E.g. even a UI-heavy library has many JS-only functions that are better tested v
 
 ## hTest in the wild
 
-### Testsuites
+### JS-first testsuites
 
-* [Color.js](https://colorjs.io/tests/)
+* [Color.js](https://colorjs.io/test/) [\[source\]](https://github.com/color-js/color.js/tree/main/test)
+* [vᴀꜱᴛly](https://vastly.mavo.io/test/) [\[source\]](https://github.com/mavoweb/vastly/tree/main/test)
+
+### HTML-first testsuites
+
+#### Testsuites
+
+* [Color.js old testsuite](https://colorjs.io/tests/)
 * [Mavo](https://test.mavo.io) (using a precursor of what became hTest)
 
-### Single page tests
+#### Single page tests
 
 * [Parsel](https://projects.verou.me/parsel/test.html)
 * [Stretchy](https://stretchy.verou.me/test.html)
