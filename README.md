@@ -16,9 +16,9 @@ TDD is hard enough as it stands — the more friction in writing tests, the fewe
 htest aims to eliminate all boilerplate, so you can focus on the tests themselves.
 
 htest can be used in one of two ways: [HTML-first](docs/define/html/) or [JS-first](docs/define/js/):
-- In [**JS-first mode**](docs/define/js/) you write your tests in object literals, and you can [run them either in Node](docs/run/node) or [in the browser](docs/run/html).
+- In [**JS-first mode**](docs/define/js/) you write your tests in nested object literals, and you can [run them either in Node](docs/run/node) or [in the browser](docs/run/html).
+Tests inherit values they don’t specify from their parents, so you never have to repeat yourself.
 	* More suitable for pure JS code
-	* Tests are defined in a tree-like structure of object literals, with inheritance so you never have to repeat anything.
 	* Compatible with CI and other automated test running processes.
 	* Code must be compatible with Node to use the Node test runner.
 - In [**HTML-first mode**](docs/define/html/) you write your tests in HTML files and run them only in the browser.
