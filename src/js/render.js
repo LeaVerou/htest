@@ -27,6 +27,7 @@ export default function render (test) {
 		let section = create("section", {
 			contents: [
 				{tag: "h1", textContent: t.name},
+				t.description && {tag: "p", textContent: t.description},
 				table = create({tag: "table", class: "manual reftest",
 					contents: tests.map((t2, i) => {
 						let tr = t2.render?.() ?? create("tr", {
