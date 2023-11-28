@@ -4,6 +4,8 @@
 
 Declarative, boilerplate-free unit testing, for everyone.
 
+https://htest.dev
+
 </header>
 
 <main>
@@ -29,6 +31,14 @@ Tests inherit values they don’t specify from their parents, so you never have 
 
 You can even mix and match the two modes in the same testsuite!
 E.g. even a UI-heavy library has many JS-only functions that are better tested via JS-first tests.
+
+It is still a work in progress (soft launched), but stable enough to be used in production.
+The main things that still need to be done before launch are:
+* Fix CLI output glitches and improve usability (ideal would be an interactive tree that starts off collapsed)
+* Improve documentation
+* Ensure we're not missing essential things (setup/teardown?)
+
+![Sample terminal output](assets/images/terminal-output.png)
 
 ## hTest in the wild
 
