@@ -218,7 +218,7 @@ ${ this.error.stack }`);
 					}
 				}
 				else {
-					message += "which doesn’t pass the test provided";
+					message += " which doesn’t pass the test provided";
 				}
 
 				ret.details.push(message);
