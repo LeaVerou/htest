@@ -12,19 +12,19 @@ https://htest.dev
 
 ## What the hTest? Do we really need another unit testing framework?
 
-htest is a unit testing framework that focuses on making unit testing as quick and painless as possible.
+hTest is a unit testing framework that focuses on making unit testing as quick and painless as possible.
 Forget copy-pasting 10 lines of boilerplate to write a single test.
 TDD is hard enough as it stands — the more friction in writing tests, the fewer are written.
-htest aims to eliminate all boilerplate, so you can focus on the tests themselves.
+hTest aims to eliminate all boilerplate, so you can focus on the tests themselves.
 
-htest can be used in one of two ways: [HTML-first](docs/define/html/) or [JS-first](docs/define/js/):
+hTest can be used in one of two ways: [HTML-first](docs/define/html/) or [JS-first](docs/define/js/):
 - In [**JS-first mode**](docs/define/js/) you write your tests in nested object literals, and you can [run them either in Node](docs/run/node) or [in the browser](docs/run/html).
 Tests inherit values they don’t specify from their parents, so you never have to repeat yourself.
-	* More suitable for pure JS code
+	* More suitable for pure JS code.
 	* Compatible with CI and other automated test running processes.
 	* Code must be compatible with Node to use the Node test runner.
 - In [**HTML-first mode**](docs/define/html/) you write your tests in HTML files and run them only in the browser.
-	* More suitable for UI-heavy code
+	* More suitable for UI-heavy code.
 	* Pass-criteria extends beyond value matching or error catching, and could even be things like what CSS selectors match or what the DOM looks like.
 	* Reactive evaluation: if the HTML changes or the user interacts with the UI, relevant tests are re-evaluated.
 	* Mock interactions like click or focus with HTML attributes.

@@ -56,7 +56,7 @@ node my-test.js
 
 ## More hassle, total control
 
-With both previous methods you can still pass command line arguments as well and htest processes them:
+With both previous methods you can still pass command line arguments as well and hTest processes them:
 
 ```sh
 node my-test.js footests.js

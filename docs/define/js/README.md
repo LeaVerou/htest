@@ -19,7 +19,7 @@ This inherits down, so subtests only need it if different than the parent.
 - `args` is an array of arguments to pass to the running function.
 If you pass a single argument, it will be converted to an array.
 You can also use `arg` for this, which will *always* be assumed to be a single argument, even when it’s an array.
-- `data` is ab optional object with data that will be accessible to the running function as `this.data`.
+- `data` is an optional object with data that will be accessible to the running function as `this.data`.
 Data inherits down unless overridden.
 It is useful for differentiating the behavior of `run()` across groups of tests without having to redefine it or pass repetitive arguments.
 
@@ -33,7 +33,7 @@ For a test to run, it needs at least a `run` function (possibly inherited) and a
 It is optional, but recommended, as it makes it easier to identify the test in the results.
 If not provided, it defaults to the first argument passed to `run`, if any.
 
-`name` can also be a function, which accepts the same arguments as `run()` and returns the default name a string.
+`name` can also be a function, which accepts the same arguments as `run()` and returns the default name as a string.
 In that case, it will inherit down to descendants.
 
 `description` is an optional longer description of the test or group of tests.

@@ -2,7 +2,7 @@
 
 ## Installation
 
-Just include htest on HTML pages with the appropriate format (see below).
+Just include hTest on HTML pages with the appropriate format (see below).
 
 ```html
 <link rel="stylesheet" href="https://htest.dev/htest.css" crossorigin />
