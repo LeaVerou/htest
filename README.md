@@ -56,7 +56,7 @@ The main things that still need to be done before launch are:
 
 #### Single page tests
 
-* [Parsel](https://projects.verou.me/parsel/test.html)
+* [Parsel](https://parsel.verou.me/test.html)
 * [Stretchy](https://stretchy.verou.me/test.html)
 
 </main>
