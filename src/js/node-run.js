@@ -28,6 +28,8 @@ function getTree (msg, i) {
  * @param {"rich" | "plain"} [options.format] Format to use for output. Defaults to "rich"
  */
 export default function run (test, options = {}) {
+	process.env.NODE_ENV = "test";
+
 	if (getType(test) == "string") {
 		// Glob provided, resolve to test(s)
 		Promise.all(globSync(test).flatMap(paths => {
