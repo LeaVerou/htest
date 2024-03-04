@@ -34,7 +34,10 @@ export default class TestResult extends BubblingEventTarget {
 			let originalTarget = e.detail?.target ?? e.target;
 
 			if (originalTarget.test.isTest) {
-				if (originalTarget.pass) {
+				if (originalTarget.test.skip) {
+					this.stats.skipped++;
+				}
+				else if (originalTarget.pass) {
 					this.stats.pass++;
 				}
 				else {
@@ -90,6 +93,7 @@ export default class TestResult extends BubblingEventTarget {
 			total: this.test.testCount,
 			totalTime: 0,
 			totalTimeAsync: 0,
+			skipped: 0,
 		};
 
 		this.stats.pending = this.stats.total;
@@ -123,7 +127,12 @@ export default class TestResult extends BubblingEventTarget {
 
 		delay(1).then(() => {
 			if (this.test.isTest) {
-				this.run();
+				if (this.test.skip) {
+					this.skip();
+				}
+				else {
+					this.run();
+				}
 			}
 
 			this.tests?.forEach(t => t.runAll());
@@ -145,6 +154,10 @@ export default class TestResult extends BubblingEventTarget {
 			Object.assign(this, this.evaluateResult());
 		}
 
+		this.dispatchEvent(new Event("done", {bubbles: true}));
+	}
+
+	skip () {
 		this.dispatchEvent(new Event("done", {bubbles: true}));
 	}
 
@@ -282,6 +295,10 @@ ${ this.error.stack }`);
 
 		if (stats.pending > 0) {
 			ret.push(`<b>${ stats.pending }</b>/${ stats.total } remaining`);
+		}
+
+		if (stats.skipped > 0) {
+			ret.push(`<dim><b>${ stats.skipped }</b>/${ stats.total } skipped</dim>`);
 		}
 
 		let icon = stats.fail > 0? "❌" : stats.pending > 0? "⏳" : "✅";

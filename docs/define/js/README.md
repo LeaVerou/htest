@@ -118,6 +118,11 @@ export default {
 }
 ```
 
+### Skipping tests: `skip`
+
+You can set `skip: true` to skip a test.
+The number of skipped tests will be shown separately.
+
 ### Example
 
 
