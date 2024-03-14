@@ -26,6 +26,7 @@ function getTree (msg, i) {
  * @param {Test | object} test
  * @param {object} [options]
  * @param {"rich" | "plain"} [options.format] Format to use for output. Defaults to "rich"
+ * @param {function} [options.finished] Callback to run when all tests are finished
  */
 export default function run (test, options = {}) {
 	process.env.NODE_ENV = "test";
@@ -69,6 +70,10 @@ export default function run (test, options = {}) {
 		if (ret.stats.pending === 0) {
 			logUpdate.clear();
 			console.log(tree);
+
+			if (options.finished) {
+				options.finished(ret);
+			}
 		}
 	});
 
