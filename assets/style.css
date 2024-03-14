@@ -7,6 +7,7 @@
 
 	--color-gray: hsl(210 10% 50%);
 	--color-gray-95: color-mix(in oklch, var(--color-gray) 0%, oklch(95% none none));
+	--color-gray-80: color-mix(in oklch, var(--color-gray) 0%, oklch(80% none none));
 	--color-gray-60: color-mix(in oklch, var(--color-gray) 0%, oklch(60% none none));
 	--color-gray-50: color-mix(in oklch, var(--color-gray) 0%, oklch(50% none none));
 	--color-gray-45: color-mix(in oklch, var(--color-gray) 0%, oklch(45% none none));
@@ -24,7 +25,7 @@ body {
 	flex-flow: column;
 	min-height: 100vh;
 	margin: 0;
-	font: 100%/1.5 var(--font-body);
+	font: 100%/1.6 var(--font-body);
 	color: canvastext;
 }
 
@@ -201,4 +202,34 @@ body > footer {
 	grid-area: footer;
 	--padding-block: .6rem;
 	background: var(--color-gray-95);
+}
+
+table {
+	border-spacing: 0;
+	border-collapse: collapse;
+	margin-bottom: 1em;
+	background: white;
+
+	tr {
+
+	}
+
+	th, td {
+		border-bottom: 1px solid var(--color-gray-80);
+		padding-inline: .4rem;
+	}
+
+	th {
+		padding-block: 0;
+		text-align: left;
+		background: var(--color-accent);
+		color: white;
+		line-height: 1;
+	}
+
+	td {
+		vertical-align: top;
+		font-variant-numeric: tabular-nums;
+		padding-block: .2rem;
+	}
 }
