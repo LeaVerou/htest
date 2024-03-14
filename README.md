@@ -21,6 +21,108 @@ https://htest.dev
 - ✅ **HTML-first mode**: Working on UI-heavy code? Write your tests in HTML, with reactive evaluation and mock interactions!
 - ✅ **Friendly**: Never used a unit test framework before? No problem! hTest is designed to be as friendly as possible to newcomers.
 
+## Quick start
+
+Suppose you have written a utility function `sum()` that takes a variable number of arguments and adds them together.
+Testing it could be as simple as:
+
+```js
+import { sum } from "../src/util.js";
+
+export default {
+	run: sum,
+	tests: [
+		{
+			arg: 1,
+			expect: 1
+		},
+		{
+			args: [1, 2, 3],
+			expect: 6
+		},
+		{
+			args: [],
+			expect: undefined
+		}
+	]
+}
+```
+
+Yes, **that’s really it**!
+You can add `name`, `descrption` and other metadata if you want, but you don’t have to.
+
+But the real power of hTest is in its nested structure.
+Suppose we wanted to add more tests for `sum()`, e.g. for the case where you’re summing with `NaN`.
+We can abstract away the commonality between these tests, and write them as a nested object:
+
+```js
+import { sum } from "../src/util.js";
+
+export default {
+	run: sum,
+	tests: [
+		{
+			arg: 1,
+			expect: 1
+		},
+		{
+			args: [1, 2, 3],
+			expect: 6
+		},
+		{
+			args: [],
+			expect: undefined
+		},
+		{
+			name: "With NaN",
+			run (...args) {
+				return sum(NaN, ...args);
+			},
+			expect: NaN,
+			tests: [
+				{
+					args: [1, 2, 3],
+				},
+				{
+					args: [],
+				},
+				{
+					args: [NaN]
+				}
+			]
+		}
+	]
+}
+```
+
+Now let’s suppose these NaN tests grew too much to be maintained in a single file. You can just move them whenever you want, and import them:
+
+```js
+import { sum } from "../src/util.js";
+import NaNTests from "./sum-nan.js";
+
+export default {
+	run: sum,
+	tests: [
+		{
+			arg: 1,
+			expect: 1
+		},
+		{
+			args: [1, 2, 3],
+			expect: 6
+		},
+		{
+			args: [],
+			expect: undefined
+		},
+		NaNTests
+	]
+}
+```
+
+Of course this is a rather contrived example, but it showcases some of the essence of hTest.
+
 ## What the hTest? Do we really need another unit testing framework?
 
 Unit testing is hard enough as it stands — the more friction in writing tests, the fewer get written.
