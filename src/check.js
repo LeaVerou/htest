@@ -61,10 +61,11 @@ export function deep (check = (a, b) => a === b) {
 		}
 
 		let type = getType(expect);
+		let actualtype = getType(actual);
 
 		if (expect?.[Symbol.iterator]) {
 			// Iterable collection (Array, Set, Map, NodeList, etc.)
-			if (getType(actual) !== type) {
+			if (actualtype !== type) {
 				return false;
 			}
 
@@ -73,6 +74,10 @@ export function deep (check = (a, b) => a === b) {
 
 		// Compare objects recursively
 		if (type === "object") {
+			if (actualtype !== type) {
+				return false;
+			}
+
 			let propertyUnion = new Set([...Object.keys(expect), ...Object.keys(actual)]);
 			return [...propertyUnion].every(key => callee(actual[key], expect[key]));
 		}
