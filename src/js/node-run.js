@@ -6,7 +6,7 @@ import path from 'path';
 import Test from "./classes/Test.js";
 import TestResult from "./classes/TestResult.js";
 import format from "./format-console.js";
-import { getType } from '../util.js';
+import { getType, subsetTests } from '../util.js';
 
 // Set up environment for Node
 function getTree (msg, i) {
@@ -45,6 +45,10 @@ export default function run (test, options = {}) {
 		else {
 			return run ({tests: test}, options);
 		}
+	}
+
+	if (options.path) {
+		subsetTests(test, options.path);
 	}
 
 	if (!(test instanceof Test)) {

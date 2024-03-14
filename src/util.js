@@ -147,3 +147,37 @@ export function stringify (obj, options = {}) {
 		custom: overrides
 	});
 };
+
+export function subsetTests (test, path) {
+	if (!Array.isArray(path)) {
+		path = path.split("/");
+	}
+
+	let tests = test;
+
+	for (let segment of path) {
+		if (tests?.tests) {
+			tests = tests.tests;
+		}
+		else if (!Array.isArray(tests)) {
+			tests = null;
+		}
+
+		if (!tests) {
+			break;
+		}
+
+		let segmentIndex = segment < 0 ? tests.length + Number(segment) : segment;
+
+		for (let i=0; i<tests.length; i++) {
+			let t = tests[i];
+			if (i !== segmentIndex) {
+				t.skip = true;
+			}
+		}
+
+		tests = tests[segment];
+	}
+
+	return tests;
+}

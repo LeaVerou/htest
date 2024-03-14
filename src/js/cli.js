@@ -24,6 +24,9 @@ async function getTestsIn (dir) {
 export default async function cli (defaultTest, defaultOptions) {
 	let argv = process.argv.slice(2);
 	let location = argv[0] ?? (defaultTest ? undefined : process.cwd());
+	let options = Object.assign({}, defaultOptions);
+	options.path = argv[1] ?? options.path;
+
 
 	if (location) {
 		// Read filenames in CWD
@@ -31,15 +34,15 @@ export default async function cli (defaultTest, defaultOptions) {
 			run({
 				name: "All tests",
 				tests: await getTestsIn(location),
-			}, defaultOptions);
+			}, options);
 		}
 		else {
 			// 🤷🏽‍♀️ Let glob figure it out
-			run(location, defaultOptions);
+			run(location, options);
 		}
 	}
 	else {
-		run(defaultTest, defaultOptions);
+		run(defaultTest, options);
 	}
 }
 
