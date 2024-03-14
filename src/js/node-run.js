@@ -9,14 +9,6 @@ import format from "./format-console.js";
 import { getType } from '../util.js';
 
 // Set up environment for Node
-Test.warn = function (msg) {
-	console.warn(msg);
-};
-
-TestResult.warn = function (msg) {
-	console.warn(msg);
-}
-
 function getTree (msg, i) {
 	return new AsciiTree(`</dim>${ msg }<dim>`, ...(msg.children?.map(getTree) ?? []));
 }

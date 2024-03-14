@@ -331,4 +331,8 @@ ${ this.error.stack }`);
 
 		return ret;
 	}
+
+	static warn (...args) {
+		console.warn("[hTest result]", ...args);
+	}
 }

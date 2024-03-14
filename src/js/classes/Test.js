@@ -88,4 +88,8 @@ export default class Test {
 			this.constructor.warn(message);
 		}
 	}
+
+	static warn (...args) {
+		console.warn("[hTest test]", ...args);
+	}
 }
