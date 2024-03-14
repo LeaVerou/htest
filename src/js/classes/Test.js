@@ -18,8 +18,8 @@ export default class Test {
 		}
 
 		Object.assign(this, test);
-		Object.assign(this.data, this.parent?.data);
 
+		this.data = Object.assign({}, this.parent?.data, this.data);
 		this.originalName = this.name;
 
 		if (typeof this.name === "function") {
