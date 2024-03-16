@@ -1,48 +1,22 @@
 #!/usr/bin/env node
 
-import run from "./runners/node.js";
-import fs from "fs";
-import path from "path";
-
-async function getTestsIn (dir) {
-	let filenames = fs.readdirSync(dir).filter(name => !name.startsWith("index") && name.endsWith(".js"));
-	let cwd = process.cwd();
-	let paths = filenames.map(name => path.join(cwd, dir, name));
-
-	return Promise.all(paths.map(path => import(path).then(module => module.default, err => {
-		console.error(`Error importing ${path}:`, err);
-	})));
-}
+import env from "./env/node.js";
+import run from "./run.js";
 
 /**
- * Run tests:
- * - If command line arguments are provided, read those files and run them
- * - If no arguments are provided, but a defalt value is passed to the function, run that
- * - If neither are provided, try to find tests in the current directory
- * @param {object | object[]} defaultTest
+ * Run tests via a CLI command
+ * First argument is the location to look for tests (defaults to the current directory)
+ * Second argument is the test path (optional)
+ * @param {object} [options] Same as `run()` options, but command line arguments take precedence
  */
-export default async function cli (defaultTest, defaultOptions) {
+export default async function cli (options = {}) {
 	let argv = process.argv.slice(2);
-	let location = argv[0] ?? (defaultTest ? undefined : process.cwd());
-	let options = Object.assign({}, defaultOptions);
-	options.path = argv[1] ?? options.path;
 
-	if (location) {
-		// Read filenames in CWD
-		if (fs.statSync(location).isDirectory()) {
-			run({
-				name: "All tests",
-				tests: await getTestsIn(location),
-			}, options);
-		}
-		else {
-			// 🤷🏽‍♀️ Let glob figure it out
-			run(location, options);
-		}
+	let location = argv[0];
+
+	if (argv[1]) {
+		options.path = argv[1];
 	}
-	else {
-		run(defaultTest, options);
-	}
+
+	run(location, {env, ...options});
 }
-
-export { run };
