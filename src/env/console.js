@@ -1,5 +1,3 @@
-import genericRun from "../run.js";
-import { getType } from "../util.js";
 import format from "../format-console.js";
 
 /**
