@@ -22,8 +22,8 @@
     "./map": {
       "import": "./src/map.js"
     },
-    "./run": {
-      "import": "./src/runners/index.js"
+    "./env": {
+      "import": "./src/env/index.js"
     }
   },
   "bin": {
