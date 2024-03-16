@@ -19,6 +19,9 @@
     },
     "./map": {
       "import": "./src/map.js"
+    },
+    "./run": {
+      "import": "./src/runners/index.js"
     }
   },
   "bin": {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import run from "./node-run.js";
+import run from "./runners/node.js";
 import fs from "fs";
 import path from "path";
 

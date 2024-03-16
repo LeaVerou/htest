@@ -1,5 +1,8 @@
-import * as check from "../../check.js";
+import * as check from "../check.js";
 
+/**
+ * Represents a single test or a group of tests
+ */
 export default class Test {
 	data = {};
 

@@ -1,6 +1,11 @@
 import { getType } from "./util.js";
 
 /**
+ * This is hTest’s assertion library (but you can use any other)
+ * Most functions produce other functions that can be used to check values
+ */
+
+/**
  * Combine multiple checks, requiring a test to pass all of them to pass
  * @param  {...function} fns
  * @returns {function}

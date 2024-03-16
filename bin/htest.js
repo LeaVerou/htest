@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import cli from "../src/js/cli.js";
+import cli from "../src/cli.js";
 
 function finished (result) {
 	if (result.stats.fail) {

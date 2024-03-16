@@ -1,11 +1,6 @@
-import * as map from "./map.js";
-import * as check from "/check.js";
-import render from "./js/render.js";
-import run from "./js/node-run.js";
-
-export {
-	map,
-	check,
-	render,
-	run,
-}
+export { default as Test } from "./classes/Test.js";
+export { default as TestResult } from "./classes/TestResult.js";
+export * as map from "./map.js";
+export * as check from "./check.js";
+export {default as render} from "./render.js";
+export * from "./runners/index.js";

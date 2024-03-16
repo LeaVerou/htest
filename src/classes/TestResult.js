@@ -1,7 +1,10 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
 import format, { stripFormatting } from "../format-console.js";
-import { delay, formatDuration, stringify } from "../../util.js";
+import { delay, formatDuration, stringify } from "../util.js";
 
+/**
+ * Represents the result of a test or group of tests.
+ */
 export default class TestResult extends BubblingEventTarget {
 	pass;
 	details = [];

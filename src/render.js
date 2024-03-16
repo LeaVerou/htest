@@ -4,9 +4,9 @@
 
 import Test from "./classes/Test.js";
 import TestResult from "./classes/TestResult.js";
-import RefTest from "../html/reftest.js";
-import { create, output } from "../html/util.js";
-import { formatDuration } from "../util.js";
+import RefTest from "./html/reftest.js";
+import { create, output } from "./html/util.js";
+import { formatDuration } from "./util.js";
 
 export default function render (test) {
 	let root = new Test(test);
