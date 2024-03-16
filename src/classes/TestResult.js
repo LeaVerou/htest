@@ -71,6 +71,9 @@ export default class TestResult extends BubblingEventTarget {
 		return Test.prototype.warn.call(this, msg);
 	}
 
+	/**
+	 * Run the test(s)
+	 */
 	async run () {
 		let start = performance.now();
 
@@ -90,6 +93,10 @@ export default class TestResult extends BubblingEventTarget {
 		this.evaluate();
 	}
 
+	/**
+	 * Run all tests in the group
+	 * @returns {TestResult}
+	 */
 	runAll () {
 		this.stats = {
 			pass: 0, fail: 0, error: 0,
@@ -144,6 +151,9 @@ export default class TestResult extends BubblingEventTarget {
 		return this;
 	}
 
+	/**
+	 * Evaluate the result of the test
+	 */
 	evaluate () {
 		let test = this.test;
 
@@ -160,10 +170,17 @@ export default class TestResult extends BubblingEventTarget {
 		this.dispatchEvent(new Event("done", {bubbles: true}));
 	}
 
+	/**
+	 * Skip the test
+	 */
 	skip () {
 		this.dispatchEvent(new Event("done", {bubbles: true}));
 	}
 
+	/**
+	 * Evaluate whether a thrown error is as expected
+	 * @returns {{pass, details: string[]}
+	 */
 	evaluateThrown () {
 		let test = this.test;
 		let ret = {pass: !!this.error, details: []};
@@ -195,6 +212,10 @@ export default class TestResult extends BubblingEventTarget {
 		return ret;
 	}
 
+	/**
+	 * Evaluate whether the test passed or failed
+	 * @returns {{pass, details: string[]}}
+	 */
 	evaluateResult () {
 		let test = this.test;
 		let ret = {pass: true, details: []};
@@ -244,6 +265,10 @@ ${ this.error.stack }`);
 		return ret;
 	}
 
+	/**
+	 * Evaluate whether the test took too long (for tests with time constraints)
+	 * @returns {{pass, details: string[]}}
+	 */
 	evaluateTimeTaken () {
 		let test = this.test;
 		let ret = {pass: true, details: []};
@@ -269,6 +294,11 @@ ${ this.error.stack }`);
 		return this.parent.tests[this.parent.tests.length - 1] === this;
 	}
 
+	/**
+	 * Get a string representation of the test result
+	 * @param {object} [o]
+	 * @returns {string}
+	 */
 	getResult (o) {
 		let color = this.pass ? "green" : "red";
 		let ret = [
@@ -284,6 +314,11 @@ ${ this.error.stack }`);
 		return o?.format === "rich" ? ret : stripFormatting(ret);
 	}
 
+	/**
+	 * Get a summary of the current status of the test
+	 * @param {*} [o] Options
+	 * @returns {string}
+	 */
 	getSummary (o) {
 		let stats = this.stats;
 		let ret = [];
