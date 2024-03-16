@@ -27,7 +27,6 @@ export default async function cli (defaultTest, defaultOptions) {
 	let options = Object.assign({}, defaultOptions);
 	options.path = argv[1] ?? options.path;
 
-
 	if (location) {
 		// Read filenames in CWD
 		if (fs.statSync(location).isDirectory()) {
