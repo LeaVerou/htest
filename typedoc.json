@@ -1,0 +1,12 @@
+{
+	"out": "./api",
+	"json": "./api/docs.json",
+	"name": "hTest API Docs",
+	"entryPoints": [
+		"src/index.js",
+		"src/check.js"
+	],
+	"excludeExternals": true,
+	"externalPattern": ["**/node_modules/**"],
+	"includeVersion": true
+}

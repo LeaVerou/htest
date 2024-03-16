@@ -1,9 +1,9 @@
-import { getType } from "./util.js";
-
 /**
+ * @packageDocumentation
  * This is hTest’s assertion library (but you can use any other)
- * Most functions produce other functions that can be used to check values
+ * Most functions generate assertion functions based on the parameters you specify.
  */
+import { getType } from "./util.js";
 
 /**
  * Combine multiple checks, requiring a test to pass all of them to pass
@@ -43,7 +43,7 @@ export function is (type) {
 /**
  * Apply a checking function recursively to objects and collections
  * @param {function} [check] Function to apply to compare primitive values. Defaults to strict equality
- * @returns {function}
+ * @returns {function(actual, expect): boolean}
  */
 export function deep (check = (a, b) => a === b) {
 	let callee = function(actual, expect) {
@@ -93,7 +93,8 @@ export function deep (check = (a, b) => a === b) {
 };
 
 /**
- * Compare by equality, but also compare objects and arrays recursively
+ * Compare by equality. Slighly more permissive than `===`: it uses `===` first, but falls back to `==` plus a type check if that fails.
+ * Can either be used directly, for shallow comparisons, or passed to `deep` for deep comparisons.
  * @param {*} expect
  * @param {*} actual
  * @returns {boolean}
@@ -103,11 +104,12 @@ export const equals = deep(function (actual, expect) {
 });
 
 /**
- * Compare numbers or lists of numbers with an optional epsilon
- * @param {number} [ε=0]
+ * Compare numbers or lists of numbers with a margin of error
+ * @param {object} [options] Options object
+ * @param {number} [o.epsilon = 0] Epsilon for comparison
  * @returns {function(actual, expect): boolean}
  */
-export function proximity(o = {}) {
+export function proximity (options = {}) {
 	return function (actual, expect) {
 		if (Number.isNaN(expect)) {
 			return Number.isNaN(actual);
@@ -116,7 +118,7 @@ export function proximity(o = {}) {
 			return actual === null;
 		}
 		else {
-			let {epsilon = 0} = o;
+			let {epsilon = 0} = options;
 			return Math.abs(expect - actual) <= epsilon;
 		}
 	};
