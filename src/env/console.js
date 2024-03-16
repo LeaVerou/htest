@@ -7,10 +7,10 @@ import format from "../format-console.js";
  */
 export default {
 	name: "Console",
-	resolveLocation: test => {
+	resolveLocation (test) {
 		return import(test).then(m => m.default ?? m);
 	},
-	done: (result, options = {}) => {
+	done (result, options, event) {
 		let str = result.toString({ format: options.format ?? "rich" });
 		console.log(format(str));
 	}

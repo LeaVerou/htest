@@ -62,7 +62,7 @@ export default {
 	start () {
 		process.env.NODE_ENV = "test";
 	},
-	done: (result, options) => {
+	done (result, options) {
 		let messages = result.toString({ format: options.format ?? "rich" });
 		let tree = getTree(messages).toString();
 		tree = format(tree);
