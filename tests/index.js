@@ -1,5 +1,4 @@
 import fs from "fs";
-import run from "../src/js/cli.js";
 
 // Read filenames in this directory
 const __dirname = new URL(".", import.meta.url).pathname;
@@ -14,6 +13,3 @@ let root = {
 };
 
 export default root;
-
-let argv = process.argv.slice(2);
-run(argv[0] || root);

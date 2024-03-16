@@ -3,7 +3,7 @@
   "version": "0.0.12",
   "description": "",
   "scripts": {
-    "test": "node tests/index.js",
+    "test": "bin/htest.js tests/index.js",
     "build:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs",
     "build:docs": "npx typedoc",
     "build": "npm run build:docs && npm run build:html",

@@ -8,8 +8,6 @@ import { AsciiTree } from 'oo-ascii-tree';
 import { globSync } from 'glob';
 
 // Internal modules
-import genericRun from "../run.js";
-import Test from "../classes/Test.js";
 import format from "../format-console.js";
 import { getType } from '../util.js';
 
@@ -44,10 +42,7 @@ export default {
 	resolveLocation: async function (location) {
 		if (fs.statSync(location).isDirectory()) {
 			// Directory provided, fetch all files
-			run({
-				name: "All tests",
-				tests: await getTestsIn(location),
-			}, options);
+			return getTestsIn(location);
 		}
 		else { // Probably a glob
 			// Convert paths to imported modules
