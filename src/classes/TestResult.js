@@ -93,25 +93,22 @@ export default class TestResult extends BubblingEventTarget {
 		this.evaluate();
 	}
 
+	static STATS_AVAILABLE = ["pass", "fail", "error", "skipped", "total", "totalTime", "totalTimeAsync"];
+
 	/**
 	 * Run all tests in the group
 	 * @returns {TestResult}
 	 */
 	runAll () {
-		this.stats = {
-			pass: 0, fail: 0, error: 0,
-			total: this.test.testCount,
-			totalTime: 0,
-			totalTimeAsync: 0,
-			skipped: 0,
-		};
-
+		this.stats = Object.fromEntries(TestResult.STATS_AVAILABLE.map(k => [k, 0]));
+		this.stats.total = this.test.testCount;
 		this.stats.pending = this.stats.total;
 		this.finished = new Promise(resolve => this.addEventListener("finish", resolve, {once: true}));
 
 		let tests = this.test.tests;
-
 		let childOptions = Object.assign({}, this.options);
+
+		this.dispatchEvent(new Event("start", {bubbles: true}));
 
 		if (this.options.only) {
 			childOptions.only = childOptions.only.slice();
@@ -316,12 +313,15 @@ ${ this.error.stack }`);
 
 	/**
 	 * Get a summary of the current status of the test
-	 * @param {*} [o] Options
+	 * @param {object} [o] Options
+	 * @param {"rich" | "plain"} [o.format="rich"] Format to use for output. Defaults to "rich"
 	 * @returns {string}
 	 */
-	getSummary (o) {
+	getSummary (o = {}) {
 		let stats = this.stats;
-		let ret = [];
+		let ret = [
+			`${this.name ?? (this.test.level === 0? "<i>(All tests)</i>" : "")}`,
+		];
 
 		if (stats.pass > 0) {
 			ret.push(`<c green><b>${ stats.pass }</b>/${ stats.total } PASS</c>`);
@@ -340,12 +340,13 @@ ${ this.error.stack }`);
 		}
 
 		let icon = stats.fail > 0? "❌" : stats.pending > 0? "⏳" : "✅";
-		ret = [
-			`${this.name ?? (this.test.level === 0? "<i>(All tests)</i>" : "")}`,
-			icon,
-			`${ ret.join(", ") }`,
-			`<dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`
-		].join(" ");
+		ret.splice(1, 0, icon);
+
+		if (this.timeTaken) {
+			ret.push(`<dim>(${ formatDuration(this.timeTaken) })</dim>`);
+		}
+
+		ret = ret.join(" ");
 
 		return o?.format === "rich" ? ret : stripFormatting(ret);
 	}
