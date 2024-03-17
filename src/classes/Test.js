@@ -30,7 +30,7 @@ export default class Test {
 		}
 
 		// Inherit properties from parent
-		// This works recursively because the parent is ran before its children
+		// This works recursively because the parent constructor runs before its children
 		if (this.parent) {
 			for (let prop of ["run", "map", "check", "getName", "args", "skip"]) {
 				if (!(prop in this) && prop in this.parent) {
@@ -39,11 +39,12 @@ export default class Test {
 			}
 		}
 
-		// Single args don't need to be wrapped in an array
 		if ("arg" in this) {
+			// Single argument
 			this.args = [this.arg];
 		}
 		else if (this.args !== undefined && !Array.isArray(this.args)) {
+			// Single args don't need to be wrapped in an array
 			this.args = [this.args];
 		}
 
@@ -61,7 +62,7 @@ export default class Test {
 		}
 
 		if (this.isGroup) {
-			this.tests = this.tests.map(t => t instanceof Test ? t : new Test(t, this));
+			this.tests = this.tests.filter(Boolean).map(t => t instanceof Test ? t : new Test(t, this));
 		}
 	}
 
