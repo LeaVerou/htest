@@ -73,15 +73,26 @@ export default function run (test, options = {}) {
 		}
 	}
 
+	if (env.setup) {
+		env.setup();
+	}
+
 	if (!(test instanceof Test)) {
 		test = new Test(test, null, options);
 	}
 
 	let ret = new TestResult(test, null, options);
 
-	ret.addEventListener("done", evt => {
-		env.done(ret, options, evt);
-	});
+	let hooks = ["start", "done", "finish"];
+	for (let hook of hooks) {
+		let fn = options[hook] ?? env[hook];
+		if (fn) {
+			ret.addEventListener(hook, function(evt) {
+				let target = evt.detail?.target ?? evt.target ?? ret;
+				fn(target, options, evt, ret);
+			});
+		}
+	}
 
 	return ret.runAll();
 }

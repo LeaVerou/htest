@@ -39,7 +39,6 @@ export async function getConfig (glob = CONFIG_GLOB) {
 export default async function cli (options = {}) {
 	let config = await getConfig();
 	if (config) {
-		console.log("config", config);
 		options = {...config, ...options};
 	}
 

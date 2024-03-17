@@ -59,21 +59,21 @@ export default {
 		}
 
 	},
-	start () {
+	setup () {
 		process.env.NODE_ENV = "test";
 	},
-	done (result, options) {
-		let messages = result.toString({ format: options.format ?? "rich" });
+	done (result, options, event, root) {
+		let messages = root.toString({ format: options.format ?? "rich" });
 		let tree = getTree(messages).toString();
 		tree = format(tree);
 		logUpdate(tree);
 
-		if (result.stats.pending === 0) {
+		if (root.stats.pending === 0) {
 			logUpdate.clear();
 			console.log(tree);
 		}
 
-		if (result.stats.fail > 0) {
+		if (root.stats.fail > 0) {
 			process.exitCode = 1;
 		}
 	}
