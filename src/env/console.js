@@ -1,5 +1,18 @@
 import format from "../format-console.js";
 
+function printTree (str, parent) {
+	if (str.children?.length > 0) {
+		console["group" + (parent? "Collapsed" : "")](format(str));
+		for (let child of str.children) {
+			printTree(child, str);
+		}
+		console.groupEnd();
+	}
+	else {
+		console.log(format(str));
+	}
+}
+
 /**
  * Environment-agnostic env that prints results in the console (without depending on terminal-specific things)
  */
@@ -8,8 +21,8 @@ export default {
 	resolveLocation (test) {
 		return import(test).then(m => m.default ?? m);
 	},
-	done (result, options, event) {
+	finish (result, options, event) {
 		let str = result.toString({ format: options.format ?? "rich" });
-		console.log(format(str));
+		printTree(str);
 	}
 }
