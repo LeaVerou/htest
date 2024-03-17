@@ -46,7 +46,7 @@ export function is (type) {
  * @returns {function(actual, expect): boolean}
  */
 export function deep (check = (a, b) => a === b) {
-	let callee = function(actual, expect) {
+	let callee = function (actual, expect) {
 		if (check.call(this, actual, expect)) {
 			return true;
 		}
@@ -89,12 +89,15 @@ export function deep (check = (a, b) => a === b) {
 
 		return false;
 	}
+
+	callee.shallow = check;
+
 	return callee;
 };
 
 /**
  * Compare by equality. Slighly more permissive than `===`: it uses `===` first, but falls back to `==` plus a type check if that fails.
- * Can either be used directly, for shallow comparisons, or passed to `deep` for deep comparisons.
+ * Deep by default, use `equals.shallow` for shallow comparison.
  * @param {*} expect
  * @param {*} actual
  * @returns {boolean}
