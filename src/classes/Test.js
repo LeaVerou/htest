@@ -39,6 +39,10 @@ export default class Test {
 			}
 		}
 
+		if (!this.check) {
+			this.check = check.equals;
+		}
+
 		if ("arg" in this) {
 			// Single argument
 			this.args = [this.arg];
@@ -48,10 +52,6 @@ export default class Test {
 			if (!Array.isArray(this.args)) {
 				this.args = [this.args];
 			}
-		}
-		else {
-			Test.warn("No args provided for test", this.name);
-			this.args = [];
 		}
 
 		if (!this.name) {
@@ -63,12 +63,12 @@ export default class Test {
 			}
 		}
 
-		if (!this.check) {
-			this.check = check.equals;
-		}
-
 		if (this.isGroup) {
 			this.tests = this.tests.filter(Boolean).map(t => t instanceof Test ? t : new Test(t, this));
+		}
+		else if (!("args" in this)) {
+			Test.warn("No args provided for test", this.name);
+			this.args = [];
 		}
 	}
 
