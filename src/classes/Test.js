@@ -43,9 +43,15 @@ export default class Test {
 			// Single argument
 			this.args = [this.arg];
 		}
-		else if (this.args !== undefined && !Array.isArray(this.args)) {
+		else if ("args" in this) {
 			// Single args don't need to be wrapped in an array
-			this.args = [this.args];
+			if (!Array.isArray(this.args)) {
+				this.args = [this.args];
+			}
+		}
+		else {
+			Test.warn("No args provided for test", this.name);
+			this.args = [];
 		}
 
 		if (!this.name) {
