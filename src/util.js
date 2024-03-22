@@ -167,7 +167,8 @@ export function subsetTests (test, path) {
 			break;
 		}
 
-		let segmentIndex = segment < 0 ? tests.length + Number(segment) : segment;
+		segment = Number(segment);
+		let segmentIndex = (segment < 0 ? tests.length : 0) + segment;
 
 		for (let i=0; i<tests.length; i++) {
 			let t = tests[i];
