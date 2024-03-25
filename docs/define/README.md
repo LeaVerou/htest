@@ -28,9 +28,7 @@ and makes it easier to evolve the testsuite over time.
 | [`check`](#check) | Function | A custom function that takes the result and the expected value (if present) as argments and returns a boolean indicating whether the test passed. |
 | [`skip`](#skip) | Boolean | Whether to skip the test(s). |
 
-## Defining the test: `run`, `args`, `data`
-
-The minimum you need to define to be able to run a test is a `run` function (possibly inherited).
+## Defining the test
 
 ### Defining the code to be tested (`run`) { #run }
 
@@ -107,9 +105,9 @@ The time a test took is always measured and displayed anyway.
 If the test returns a promise, the time it took to resolve is also measured, separately.
 To test performance-sensitive functionality, you can set `maxTime` or `maxTimeAsync` to specify the maximum time (in ms) that the test should take to run.
 
-### Specifying how to evaluate the result
+## Customizing how the result is evaluated
 
-The properties in this section center around making it easier to specify result-based tests.
+The properties in this section center around making it easier to specify **result-based tests** (i.e. those with `expect` values).
 
 ### Defining the checking logic (`check`) { #check }
 
