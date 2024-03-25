@@ -1,4 +1,5 @@
-import * as check from "../check.js";
+import { equals } from "../check.js";
+import { stringify } from "../util.js";
 
 /**
  * Represents a single test or a group of tests
@@ -40,7 +41,7 @@ export default class Test {
 		}
 
 		if (!this.check) {
-			this.check = check.equals;
+			this.check = equals;
 		}
 
 		if ("arg" in this) {
@@ -59,7 +60,7 @@ export default class Test {
 				this.name = this.getName.apply(this, this.args);
 			}
 			else if (this.isTest) {
-				this.name = this.args.length > 0 ? this.args[0] : "(No args)";
+				this.name = this.args.length > 0 ? stringify(this.args[0]) : "(No args)";
 			}
 		}
 
