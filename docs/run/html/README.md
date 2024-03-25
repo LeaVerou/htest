@@ -1,4 +1,11 @@
-# Running tests in the browser
+---
+nav: Browser (HTML reftests)
+---
+
+# Running tests in the browser (as HTML reftests)
+
+These tests provide a UI very similar to [HTML-first reftests](../../define/html/), and can be useful
+for providing a unified front if your testsuite includes both.
 
 ## Running JS-first tests in the browser
 

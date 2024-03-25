@@ -1,4 +1,13 @@
-# HTML-first mode
+# HTML-first tests
+
+While you can run any hTests in the browser,
+you can also write tests directly in HTML,
+without any JS file being involved.
+
+These tests can *only* run in the browser, but can be useful for testing UI-heavy code.
+The pass-criteria extends beyond value matching or error catching, and could even be things like what CSS selectors match or what the DOM looks like.
+They are evaluated reactively, so if the HTML changes or the user interacts with the UI, relevant tests are re-evaluated.
+Last, they also support mocking basic interactions like click or focus, via HTML attributes.
 
 ## Installation
 
@@ -11,7 +20,7 @@ Just include hTest on HTML pages with the appropriate format (see below).
 
 ## Creating new tests
 
-Our primary test format is reftests, i.e. automatic comparison of two things, typically app output with expected (reference) output. When the two match, the test passes (green), otherwise it fails (red).
+The primary test format is reftests, i.e. automatic comparison of two things, typically app output with expected (reference) output. When the two match, the test passes (green), otherwise it fails (red).
 
 You can create reftests by using a table with `class="reftest"`. Each row is a new test. Typically these tables have two columns: output and expected. However, if your test requires initialization data, you can also have 3 columns, and the first one will be ignored in the matching.
 

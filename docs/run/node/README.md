@@ -1,4 +1,4 @@
-# Running tests in Node.js
+# CLI
 
 When [defining tests with JS](../../define/js/), most of the time you would want to run them in Node.
 This allows you to use CI (continuous integration) services like Travis CI and GitHub Actions,

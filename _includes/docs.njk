@@ -1,0 +1,54 @@
+---
+layout: page
+---
+
+<nav class="sidebar" id="section-contents">
+	<div class="toc">
+		{% set navPages = collections.all | eleventyNavigation("/docs/") %}
+
+		{% macro renderNavListItem(entry, level = 0) -%}
+			{% set isActive = entry.url == page.url %}
+			{% set link %}<a href="{{ page | relative}}{{ entry.url }}" class="toc-link{% if isActive %} active{% endif %}">{{ entry.title }}</a>{% endset %}
+			<li{% if isActive %} class="active"{% endif %}>
+				{%- if entry.children and entry.children.length -%}
+				<details{% if isActive or level < 2 %} open{% endif %}>
+					<summary>{{ link | safe }}</summary>
+					<ul>
+						{%- for child in entry.children %}{{ renderNavListItem(child, level + 1) }}{% endfor -%}
+					</ul>
+				</details>
+				{%- else -%}
+				{{ link | safe }}
+				{%- endif -%}
+			</li>
+		{%- endmacro %}
+
+		<ul>
+		{%- for entry in navPages %}{{ renderNavListItem(entry) }}{%- endfor -%}
+		</ul>
+		{# <ul>
+			<li><a href="{{ page | relative }}/docs/">Overview</a></li>
+		</ul>
+
+		<h2>Writing Tests</h2>
+		<ul>
+			<li>
+				<a href="{{ page | relative }}/docs/define/">Defining tests</a>
+			</li>
+			<li>
+				<a href="{{ page | relative }}/docs/define/html/">HTML-first tests</a>
+			</li>
+		</ul>
+
+		<h2>Running Tests</h2>
+		<ul>
+			<li><a href="{{ page | relative }}/docs/run/node">CLI</a></li>
+			<li><a href="{{ page | relative }}/docs/run/html">Browser</a></li>
+			<li><a href="{{ page | relative }}/docs/run/console">Browser console</a></li>
+		</ul> #}
+	</div>
+</nav>
+
+<main>
+	{{ content | safe }}
+</main>

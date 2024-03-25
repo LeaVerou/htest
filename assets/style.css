@@ -1,18 +1,26 @@
+@import url("defaults.css");
+
 :root {
 	--color-magenta: hsl(340 90% 50%);
 	--color-pink: hsl(340 90% 80%);
+	--color-aqua: oklch(65% 0.15 210);
+
 	--color-accent: var(--color-magenta);
 	--color-accent-95: color-mix(in oklch, var(--color-accent) 0%, oklch(95% none none));
 	--color-accent-98: color-mix(in oklch, color-mix(in oklch, var(--color-accent) 0%, oklch(98% none none)) 30%, oklch(none 0% none));
 
-	--color-gray: hsl(210 10% 50%);
-	--color-gray-95: color-mix(in oklch, var(--color-gray) 0%, oklch(95% none none));
-	--color-gray-80: color-mix(in oklch, var(--color-gray) 0%, oklch(80% none none));
-	--color-gray-60: color-mix(in oklch, var(--color-gray) 0%, oklch(60% none none));
-	--color-gray-50: color-mix(in oklch, var(--color-gray) 0%, oklch(50% none none));
-	--color-gray-45: color-mix(in oklch, var(--color-gray) 0%, oklch(45% none none));
-	--color-gray-40: color-mix(in oklch, var(--color-gray) 0%, oklch(40% none none));
-	--color-gray-30: color-mix(in oklch, var(--color-gray) 0%, oklch(30% none none));
+	--color-accent-2: var(--color-aqua);
+
+	--color-neutral: hsl(210 10% 50%);
+	--color-neutral-95: color-mix(in oklch, var(--color-neutral) 0%, oklch(95% none none));
+	--color-neutral-90: color-mix(in oklch, var(--color-neutral) 0%, oklch(90% none none));
+	--color-neutral-85: color-mix(in oklch, var(--color-neutral) 0%, oklch(85% none none));
+	--color-neutral-80: color-mix(in oklch, var(--color-neutral) 0%, oklch(80% none none));
+	--color-neutral-60: color-mix(in oklch, var(--color-neutral) 0%, oklch(60% none none));
+	--color-neutral-50: color-mix(in oklch, var(--color-neutral) 0%, oklch(50% none none));
+	--color-neutral-45: color-mix(in oklch, var(--color-neutral) 0%, oklch(45% none none));
+	--color-neutral-40: color-mix(in oklch, var(--color-neutral) 0%, oklch(40% none none));
+	--color-neutral-30: color-mix(in oklch, var(--color-neutral) 0%, oklch(30% none none));
 
 
 	--page-width: min(100rem, 100vw - 4rem);
@@ -29,36 +37,7 @@ body {
 	color: canvastext;
 }
 
-a {
-	color: inherit;
 
-	&:not(:hover) {
-		text-decoration: none;
-	}
-}
-
-h1, h2, h3, h4, h5, h6, p, ul, ol, dl {
-	margin-block: .5rem;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	line-height: 1.1;
-	margin-top: 1.5rem;
-}
-
-ul, ol {
-	& & {
-		padding-inline-start: 2em;
-	}
-	&:not(& *) {
-		padding-inline-start: 0;
-	}
-}
-
-pre {
-	--padding-block: .6rem;
-	border-radius: .25rem;
-}
 
 code .colored.colored * {
 	color: inherit;
@@ -72,7 +51,7 @@ body > .content > * {
 body > header {
 	grid-area: header;
 	--padding-block: 2rem;
-	background: var(--color-gray-30);
+	background: var(--color-neutral-30);
 	color-scheme: dark;
 	color: canvastext;
 
@@ -98,7 +77,7 @@ body > header {
 body > nav {
 	grid-area: nav;
 	display: flex;
-	background: var(--color-gray-60);
+	background: var(--color-neutral-60);
 	color-scheme: dark;
 	color: canvastext;
 	font-weight: bold;
@@ -134,7 +113,7 @@ body > .content {
 
 		& h1 {
 			margin-top: 1rem;
-			color: var(--color-gray);
+			color: var(--color-neutral);
 			font-size: 300%;
 			margin-bottom: 0;
 		}
@@ -153,6 +132,10 @@ body > .content {
 				padding-inline-end: 2rem;
 				max-width: 20rem;
 
+				~ .sidebar {
+					padding-inline-start: 3rem;
+				}
+
 				.toc {
 					position: sticky;
 					top: 0;
@@ -164,20 +147,51 @@ body > .content {
 			}
 		}
 	}
+
+	@media (width <= 1000px) {
+		#page-contents {
+			order: -1;
+		}
+
+		#section-contents {
+			order: 999;
+		}
+	}
 }
 
 .sidebar {
 	--padding-block: 1rem;
 	background: var(--color-accent-98);
 
-	& h2 {
+	~ .sidebar {
+		background: var(--color-neutral-95);
+	}
+
+	h2 {
 		text-transform: uppercase;
 		font-size: 90%;
 		color: var(--color-accent);
 	}
 
 	.toc {
-		& ol {
+		.active.toc-link {
+			font-weight: bold;
+		}
+
+		ul, ol {
+			margin: 0;
+
+			li {
+				margin-block: .2rem;
+			}
+		}
+
+		ul {
+			list-style-type: none;
+			padding-inline-start: 0;
+		}
+
+		ol {
 			counter-reset: index;
 			list-style-type: none;
 
@@ -187,49 +201,28 @@ body > .content {
 				&::marker {
 					content: counters(index, '.', decimal) '. ';
 					font-weight: bold;
-					color: var(--color-gray);
+					color: var(--color-neutral);
 				}
 			}
 		}
+
+		summary {
+			list-style-position: outside;
+
+			&::marker {
+				color: color-mix(in oklab, currentColor, transparent 50%);
+			}
+		}
+
+		details[open] > ul {
+			margin-inline-start: 1em;
+		}
 	}
-}
-
-body > .content {
-
 }
 
 body > footer {
 	grid-area: footer;
 	--padding-block: .6rem;
-	background: var(--color-gray-95);
+	background: var(--color-neutral-95);
 }
 
-table {
-	border-spacing: 0;
-	border-collapse: collapse;
-	margin-bottom: 1em;
-	background: white;
-
-	tr {
-
-	}
-
-	th, td {
-		border-bottom: 1px solid var(--color-gray-80);
-		padding-inline: .4rem;
-	}
-
-	th {
-		padding-block: 0;
-		text-align: left;
-		background: var(--color-accent);
-		color: white;
-		line-height: 1;
-	}
-
-	td {
-		vertical-align: top;
-		font-variant-numeric: tabular-nums;
-		padding-block: .2rem;
-	}
-}

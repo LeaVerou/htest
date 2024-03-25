@@ -34,14 +34,7 @@
 
 <div class="content">
 
-{% if toc %}
-<aside class="sidebar">
-	<div class="toc">
-		<h2>On this page</h2>
-		{{ content | toc | safe }}
-	</div>
-</aside>
-{% endif %}
+
 
 {% if not ('<main>' in content ) %}
 <main>
@@ -51,6 +44,15 @@
 
 {% if not ('</main>' in content ) %}
 </main>
+{% endif %}
+
+{% if toc %}
+<aside class="sidebar" id="page-contents">
+	<div class="toc">
+		<h2>On this page</h2>
+		{{ content | toc | safe }}
+	</div>
+</aside>
 {% endif %}
 
 </div>
