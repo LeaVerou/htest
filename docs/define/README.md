@@ -127,7 +127,8 @@ All of these take parameters and return a checking function:
 - `is(type)`: Check if the result is of a certain type.
 - `deep(shallowCheck)`: Check if the result passes a deep equality check with the expected value.
 - `proximity({epsilon})`: Check if the result is within a certain distance of the expected value.
-- `between({min, max})`: Check if the result is within a certain range.
+- `range({min, max, from, to, lt, lte, gt, gte})`: Check if the result is within a certain range.
+- `between()`: Alias of `range()`.
 
 There are also the following checking functions that can be used directly:
 - `equals()`: Check if the result is equal to the expected value.

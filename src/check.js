@@ -127,8 +127,36 @@ export function proximity (options = {}) {
 	};
 }
 
-export function between({min, max}) {
+/**
+ * Check that numbers (or lists of numbers) are within certain upper and/or lower bounds
+ * @param {object} [options]
+ * @param {number} options.gt
+ * @param {number} options.gte
+ * @param {number} options.lt
+ * @param {number} options.lte
+ * @param {number} options.from Alias of `options.lt`
+ * @param {number} options.max Alias of `options.lte`
+ * @param {number} options.to Alias of `options.gt`
+ * @param {number} options.min Alias of `options.gte`
+ * @returns {function(actual, expect): boolean}
+ */
+export function range (options = {}) {
+	options.lt ??= options.from;
+	options.lte ??= option.min;
+	options.gt ??= options.to;
+	options.gte ??= options.max;
+
 	return function (actual) {
-		return min <= actual && actual <= max;
+		return (
+			(options.lt  === undefined || actual <  options.lt)  &&
+			(options.lte === undefined || actual <= options.lte) &&
+			(options.gt  === undefined || actual >  options.gt)  &&
+			(options.gte === undefined || actual >= options.gte)
+		);
 	}
 }
+
+/**
+ * Alias of `range()`
+ */
+export const between = range
