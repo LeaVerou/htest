@@ -3,6 +3,7 @@ import { getType, regexEscape } from "./util.js";
 export function extract (patterns) {
 	// Convert patterns to one big regex
 	let flags = new Set("g");
+	patterns = Array.isArray(patterns) ? patterns : [patterns];
 	let regex = patterns.map(pattern => {
 		if (getType(pattern) === "string") {
 			return regexEscape(pattern);
