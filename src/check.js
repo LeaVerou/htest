@@ -103,7 +103,22 @@ export function deep (check = (a, b) => a === b) {
  * @returns {boolean}
  */
 export const equals = deep(function (actual, expect) {
-	return expect === actual || (getType(expect) === getType(actual) && expect == actual);
+	if (expect === actual) {
+		return true;
+	}
+
+	let expectType = getType(expect);
+	let actualType = getType(actual);
+
+	if (expectType === actualType) {
+		if (expectType === "number" && Number.isNaN(expect)) {
+			return Number.isNaN(actual);
+		}
+
+		return expect == actual;
+	}
+
+	return false;
 });
 
 /**
