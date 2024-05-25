@@ -29,7 +29,7 @@ export default function render (test) {
 				{tag: "h1", textContent: t.name},
 				t.description && {tag: "p", textContent: t.description},
 				table = create({tag: "table", class: "manual reftest",
-					contents: tests.map((t2, i) => {
+					contents: tests.flatMap(t2 => t2?.tests ?? t2).map((t2, i) => {
 						let tr = t2.render?.() ?? create("tr", {
 							title: t2.name,
 							contents: [
