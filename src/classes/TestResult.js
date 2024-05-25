@@ -78,7 +78,7 @@ export default class TestResult extends BubblingEventTarget {
 		let start = performance.now();
 
 		try {
-			this.actual = this.test.run.apply(this.test, this.test.args);
+			this.actual = this.test.run ? this.test.run.apply(this.test, this.test.args) : this.test.args[0];
 			this.timeTaken = performance.now() - start;
 
 			if (this.actual instanceof Promise) {
