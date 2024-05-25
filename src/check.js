@@ -58,7 +58,7 @@ export function deep (check = (a, b) => a === b) {
 		}
 
 		if (Array.isArray(expect)) {
-			if (!Array.isArray(actual) || actual.length !== expect.length) {
+			if (!Array.isArray(actual) || actual.length < expect.length) {
 				return false;
 			}
 
@@ -96,30 +96,68 @@ export function deep (check = (a, b) => a === b) {
 };
 
 /**
- * Compare by equality. Slighly more permissive than `===`: it uses `===` first, but falls back to `==` plus a type check if that fails.
+ * Shallow equals function at the core of many other comparison functions
+ * @param {object} options
+ * @param {boolean} [options.looseTypes = false] If true, skip type check (e.g. "5" can match 5)
+ * @param {boolean} [options.subset = false] If true, `undefined` is considered equal to anything
+ * @param {number} [options.epsilon = 0] Epsilon for number comparison
+ * @returns {function(actual, expect): boolean}
+ */
+export function shallowEquals ({
+	looseTypes = false,
+	subset = false,
+	epsilon = 0,
+} = {}) {
+	return function (actual, expect) {
+		if (expect === actual) {
+			return true;
+		}
+
+		if (expect === null) {
+			return actual === null;
+		}
+
+		if (expect === undefined && subset) {
+			return true;
+		}
+
+		let expectType = getType(expect);
+		let actualType = getType(actual);
+
+		if (expectType === actualType || looseTypes) {
+			if (expectType === "number") {
+				if (Number.isNaN(expect)) {
+					return Number.isNaN(actual);
+				}
+
+				if (epsilon > 0) {
+					return Math.abs(expect - actual) <= epsilon;
+				}
+			}
+
+			return expect == actual;
+		}
+
+		return false;
+	}
+}
+
+/**
+ * Compare by equality. Slighly more permissive than `===`.
  * Deep by default, use `equals.shallow` for shallow comparison.
  * @param {*} expect
  * @param {*} actual
  * @returns {boolean}
  */
-export const equals = deep(function (actual, expect) {
-	if (expect === actual) {
-		return true;
-	}
+export const equals = deep(shallowEquals());
 
-	let expectType = getType(expect);
-	let actualType = getType(actual);
-
-	if (expectType === actualType) {
-		if (expectType === "number" && Number.isNaN(expect)) {
-			return Number.isNaN(actual);
-		}
-
-		return expect == actual;
-	}
-
-	return false;
-});
+/**
+ * Compare by specifying subsets of properties to compare
+ * @param {*} expect
+ * @param {*} actual
+ * @returns {boolean}
+ */
+export const subset = deep(shallowEquals({subset: true}));
 
 /**
  * Compare numbers or lists of numbers with a margin of error
@@ -127,19 +165,8 @@ export const equals = deep(function (actual, expect) {
  * @param {number} [o.epsilon = 0] Epsilon for comparison
  * @returns {function(actual, expect): boolean}
  */
-export function proximity (options = {}) {
-	return function (actual, expect) {
-		if (Number.isNaN(expect)) {
-			return Number.isNaN(actual);
-		}
-		else if (expect === null) {
-			return actual === null;
-		}
-		else {
-			let {epsilon = 0} = options;
-			return Math.abs(expect - actual) <= epsilon;
-		}
-	};
+export function proximity ({epsilon = Number.EPSILON, ...options} = {}) {
+	return shallowEquals({epsilon, ...options});
 }
 
 /**
