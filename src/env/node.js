@@ -24,13 +24,13 @@ function makeCollapsible (node) {
 }
 
 // Recursively traverse a subtree starting from `node` and return all visible groups of tests
-function getVisibleGroups (node, groups = []) {
+function getVisibleGroups (node, options, groups = []) {
 	groups.push(node);
 
 	if (node.collapsed === false && node.tests?.length) {
-		let tests = node.tests.filter(test => test.collapsed !== undefined); // we are interested in groups only
+		let tests = node.tests.filter(test => test.toString(options).collapsed !== undefined); // we are interested in groups only
 		for (let test of tests) {
-			getVisibleGroups(test, groups);
+			getVisibleGroups(test, options, groups);
 		}
 	}
 
@@ -142,7 +142,7 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 				}
 				else if (name === "up") {
 					// Figure out what group of tests is active (and should be highlighted)
-					let groups = getVisibleGroups(root);
+					let groups = getVisibleGroups(root, options);
 					let index = groups.indexOf(active);
 					index = Math.max(0, index - 1); // choose the previous group, but don't go higher than the root
 					active = groups[index];
@@ -152,7 +152,7 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 					render(root, options);
 				}
 				else if (name === "down") {
-					let groups = getVisibleGroups(root);
+					let groups = getVisibleGroups(root, options);
 					let index = groups.indexOf(active);
 					index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
 					active = groups[index];
