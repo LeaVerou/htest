@@ -115,10 +115,6 @@ export const stringifyFlavors = {
 		let type = getType(obj, { preserveCase: true });
 
 		if (!(typeof obj === "object") || !obj || Array.isArray(obj)) {
-			if (type === "Number" && Number.isNaN(obj)) {
-				return "NaN";
-			}
-
 			return;
 		}
 

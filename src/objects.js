@@ -243,7 +243,7 @@ export function stringify (obj, options = {}) {
 			case "number":
 			case "string":
 			case "boolean":
-				return JSON.stringify(obj);
+				return Number.isNaN(obj) ? "NaN" : JSON.stringify(obj);
 		}
 
 		// Only objects from here on out
