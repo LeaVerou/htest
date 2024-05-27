@@ -15,7 +15,7 @@ import { getType } from '../util.js';
 // Recursively traverse a subtree starting from `node` and make (only) groups of tests collapsible
 function makeCollapsible (node) {
 	if (node.tests?.length) {
-		node.collapsed = node.test.level === 0 ? false : true; // the root is expanded by default
+		node.collapsed = true; // all groups are collapsed by default
 
 		for (let test of node.tests) {
 			makeCollapsible(test);
