@@ -117,7 +117,6 @@ export default {
 		if (root.stats.pending === 0) {
 
 			let hint = `
-<b>You are in interactive mode now.</b>
 Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
 Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit.
 `;
