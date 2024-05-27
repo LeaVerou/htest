@@ -140,7 +140,8 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit.
 					// Quit interactive mode
 					logUpdate.done();
 					process.exit();
-				} else if (name === "up") {
+				}
+				else if (name === "up") {
 					// Figure out what group of tests is active (and should be highlighted)
 					let groups = getVisibleGroups(root);
 					let index = groups.indexOf(active);
@@ -150,7 +151,8 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit.
 					groups = groups.map(group => group.highlighted = false);
 					active.highlighted = true;
 					render(root, options);
-				} else if (name === "down") {
+				}
+				else if (name === "down") {
 					let groups = getVisibleGroups(root);
 					let index = groups.indexOf(active);
 					index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
@@ -159,10 +161,12 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit.
 					groups = groups.map(group => group.highlighted = false);
 					active.highlighted = true;
 					render(root, options);
-				} else if (name === "left" && active.collapsed === false) {
+				}
+				else if (name === "left" && active.collapsed === false) {
 					active.collapsed = true;
 					render(root, options);
-				} else if (name === "right" && active.collapsed === true) {
+				}
+				else if (name === "right" && active.collapsed === true) {
 					active.collapsed = false;
 					render(root, options);
 				}
