@@ -118,7 +118,7 @@ export default {
 
 			let hint = `
 Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
-Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit.
+Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 `;
 			hint = format(hint);
 
