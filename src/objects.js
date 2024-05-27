@@ -244,6 +244,7 @@ export function stringify (obj, options = {}) {
 				if (Number.isNaN(obj)) {
 					return "NaN";
 				}
+				// pass-through
 			case "string":
 			case "boolean":
 				return JSON.stringify(obj);
