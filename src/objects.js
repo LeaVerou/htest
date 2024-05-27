@@ -241,9 +241,12 @@ export function stringify (obj, options = {}) {
 			case "symbol":
 				return undefined;
 			case "number":
+				if (Number.isNaN(obj)) {
+					return "NaN";
+				}
 			case "string":
 			case "boolean":
-				return Number.isNaN(obj) ? "NaN" : JSON.stringify(obj);
+				return JSON.stringify(obj);
 		}
 
 		// Only objects from here on out
