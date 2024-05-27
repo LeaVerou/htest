@@ -366,6 +366,8 @@ ${ this.error.stack }`);
 		if (this.tests) {
 			ret = new String(ret);
 			ret.children = this.tests.flatMap(t => t.toString(o)).filter(Boolean);
+			ret.collapsed = this.collapsed;
+			ret.highlighted = this.highlighted;
 		}
 
 		return ret;
