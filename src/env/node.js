@@ -118,17 +118,22 @@ export default {
 		render(root, options);
 
 		if (root.stats.pending === 0) {
+			logUpdate.clear();
+
+			let {messages, originalConsole} = interceptedConsole;
+			restoreConsole(originalConsole);
+
+			// Replay all the suppressed messages from the tests
+			for (let message of messages) {
+				let {args, method} = message;
+				console[method](...args);
+			}
 
 			let hint = `
 Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
 Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 `;
 			hint = format(hint);
-
-			let {messages, originalConsole} = interceptedConsole;
-			restoreConsole(originalConsole);
-
-			logUpdate.clear();
 			console.log(hint);
 
 			readline.emitKeypressEvents(process.stdin);
