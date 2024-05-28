@@ -120,7 +120,7 @@ export default class TestResult extends BubblingEventTarget {
 			}
 			else {
 				// Id
-				let test = tests.fimd(t => t.id === first);
+				let test = tests.find(t => t.id === first);
 
 				if (test) {
 					tests = [test];
@@ -300,7 +300,7 @@ ${ this.error.stack }`);
 		let color = this.pass ? "green" : "red";
 		let ret = [
 			`<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b>`,
-			`<c light${color}>${this.name ?? "(Anonymous"}</c>`,
+			`<c light${color}>${this.name ?? "(Anonymous)"}</c>`,
 			`<dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`,
 		].join(" ");
 
