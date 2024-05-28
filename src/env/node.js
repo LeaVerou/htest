@@ -10,7 +10,7 @@ import { globSync } from 'glob';
 
 // Internal modules
 import format from "../format-console.js";
-import { getType } from '../util.js';
+import { getType, interceptConsole, restoreConsole } from '../util.js';
 
 // Recursively traverse a subtree starting from `node` and make (only) groups of tests collapsible
 function makeCollapsible (node) {
@@ -79,6 +79,8 @@ async function getTestsIn (dir) {
 	})));
 }
 
+let interceptedConsole;
+
 export default {
 	name: "Node.js",
 	defaultOptions: {
@@ -109,6 +111,7 @@ export default {
 	},
 	setup () {
 		process.env.NODE_ENV = "test";
+		interceptedConsole = interceptConsole();
 	},
 	done (result, options, event, root) {
 		makeCollapsible(root)
@@ -121,6 +124,9 @@ Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b>
 Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 `;
 			hint = format(hint);
+
+			let {messages, originalConsole} = interceptedConsole;
+			restoreConsole(originalConsole);
 
 			logUpdate.clear();
 			console.log(hint);

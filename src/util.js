@@ -182,3 +182,27 @@ export function subsetTests (test, path) {
 
 	return tests;
 }
+
+export function interceptConsole () {
+	let messages = [];
+
+	function getOriginalConsole () {
+		const methods = ["log", "warn", "error", "info"];
+		let originalConsole = {};
+
+		for (let method of methods) {
+			originalConsole[method] = console[method];
+			console[method] = (...args) => messages.push({args, method});
+		}
+
+		return originalConsole;
+	}
+
+	return {messages, originalConsole: getOriginalConsole()};
+}
+
+export function restoreConsole (originalConsole) {
+	for (let method in originalConsole) {
+		console[method] = originalConsole[method];
+	}
+}
