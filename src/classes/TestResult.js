@@ -120,7 +120,7 @@ export default class TestResult extends BubblingEventTarget {
 			}
 			else {
 				// Id
-				let test = tests.fimd(t => t.id === first);
+				let test = tests.find(t => t.id === first);
 
 				if (test) {
 					tests = [test];
