@@ -12,13 +12,20 @@ import { globSync } from 'glob';
 import format from "../format-console.js";
 import { getType, interceptConsole, restoreConsole } from '../util.js';
 
-// Recursively traverse a subtree starting from `node` and make (only) groups of tests collapsible
-function makeCollapsible (node) {
+// Recursively traverse a subtree starting from `node` and make (only) groups of tests collapsible.
+// Consider the `expand` option, which specifies which groups should be expanded by default.
+// For example, `expand = "fail skipped"` will expand groups that contain failed or skipped tests.
+function makeCollapsible (node, o) {
 	if (node.tests?.length) {
-		node.collapsed = true; // all groups are collapsed by default
+		let expand = [...new Set((o?.expand ?? "").split(/\s+/))];
+
+		// All groups are collapsed by default or if the verbose option is specified.
+		// Otherwise, it will be expanded if a group contains tests, because of which
+		// the group should be expanded (e.g., failed tests).
+		node.collapsed = !o?.verbose && expand.some(o => node.stats[o] > 0) ? false : true;
 
 		for (let test of node.tests) {
-			makeCollapsible(test);
+			makeCollapsible(test, o);
 		}
 	}
 }
@@ -115,7 +122,7 @@ export default {
 		interceptedConsole = interceptConsole();
 	},
 	done (result, options, event, root) {
-		makeCollapsible(root)
+		makeCollapsible(root, options);
 		render(root, options);
 
 		if (root.stats.pending === 0) {
@@ -140,6 +147,7 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 			readline.emitKeypressEvents(process.stdin);
 			process.stdin.setRawMode(true); // handle keypress events instead of Node
 
+			makeCollapsible(root, {...options, expand: options?.expand ?? "fail"});
 			root.highlighted = true;
 			render(root, options);
 
