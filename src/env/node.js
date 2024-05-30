@@ -16,16 +16,17 @@ import { getType, interceptConsole, restoreConsole } from '../util.js';
 // Consider the `expand` option, which specifies which groups should be expanded by default.
 // For example, `expand = "fail skipped"` will expand groups that contain failed or skipped tests.
 function makeCollapsible (node, { expand = "fail", verbose } = {}) {
+function makeCollapsible (node, options = {}) {
 	if (node.tests?.length) {
-		let options = [...new Set((expand).split(/\s+/))];
+		let expand = [...new Set((options.expand ?? "fail").split(/\s+/))];
 
 		// All groups are collapsed by default or if the verbose option is specified.
 		// Otherwise, it will be expanded if a group contains tests, because of which
 		// the group should be expanded (e.g., failed tests).
-		node.collapsed = node.parent && !verbose && options.some(o => node.stats[o] > 0) ? false : true;
+		node.collapsed = node.parent && !options.verbose && expand.some(o => node.stats[o] > 0) ? false : true;
 
 		for (let test of node.tests) {
-			makeCollapsible(test, { expand, verbose });
+			makeCollapsible(test, options);
 		}
 	}
 }
