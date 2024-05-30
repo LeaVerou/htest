@@ -56,7 +56,7 @@ function getTree (msg, i) {
 
 // Render the tests stats
 function render (root, options) {
-	let messages = root.toString({ format: options.format ?? "rich" });
+	let messages = root.toString({ ...options, format: options.format ?? "rich" });
 	let tree = getTree(messages).toString();
 	tree = format(tree);
 
