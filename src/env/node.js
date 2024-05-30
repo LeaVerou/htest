@@ -12,14 +12,19 @@ import { globSync } from 'glob';
 import format from "../format-console.js";
 import { getType, interceptConsole, restoreConsole } from '../util.js';
 
-// Recursively traverse a subtree starting from `node` and make (only) groups of tests collapsible.
-// Consider the `expand` option, which specifies which groups should be expanded by default.
-// For example, `expand = "fail skipped"` will expand groups that contain failed or skipped tests.
-function makeCollapsible (node, { expand = "fail", verbose } = {}) {
+/**
+ * Recursively traverse a subtree starting from `node` and make (only) groups of tests collapsible.
+ * @param {object} node
+ * @param {string} [options.expand = "fail"] Space-separated list of possible test results: `pass`, `fail`, or `skipped`.
+ *        Nodes (groups of tests) that contain tests with either of the specified results will be expanded.
+ * @param {boolean} [options.verbose] Show all tests, not just failed ones.
+ * @example makeCollapsible(root, { expand: "fail skipped", verbose: true });
+ */
 function makeCollapsible (node, options = {}) {
 	if (node.tests?.length) {
 		let expand = [...new Set((options.expand ?? "fail").split(/\s+/))];
 
+		// Root is collapsed by default.
 		// All groups are collapsed by default or if the verbose option is specified.
 		// Otherwise, it will be expanded if a group contains tests, because of which
 		// the group should be expanded (e.g., failed tests).
