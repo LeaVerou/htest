@@ -52,11 +52,18 @@ function getVisibleGroups (node, options, groups = []) {
 
 function getTree (msg, i) {
 	if (msg.collapsed !== undefined) {
+		const icons = {
+			collapsed: "▷",
+			expanded: "▽",
+			highlightedCollapsed: "▶︎",
+			highlightedExpanded: "▼",
+		};
+
 		let {collapsed, highlighted, children} = msg;
 
-		let icon = collapsed ? "▷" : "▽";
+		let icon = collapsed ? icons.collapsed : icons.expanded;
 		if (highlighted) {
-			icon = `<c green><b>${ collapsed ? "▶︎" : "▼" }</b></c>`;
+			icon = `<c green><b>${ collapsed ? icons.highlightedCollapsed : icons.highlightedExpanded }</b></c>`;
 			msg = `<b>${ msg }</b>`;
 		}
 		msg = icon + " " + msg;
