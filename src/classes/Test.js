@@ -1,4 +1,4 @@
-import { equals } from "../check.js";
+import * as check from "../check.js";
 import { stringify } from "../util.js";
 
 /**
@@ -41,7 +41,12 @@ export default class Test {
 		}
 
 		if (!this.check) {
-			this.check = equals;
+			this.check = check.equals;
+		}
+		else if (typeof this.check === "object") {
+			let {deep, ...options} = this.check;
+			let shallowEquals = check.shallowEquals(options);
+			this.check = deep ? check.deep(shallowEquals) : shallowEquals;
 		}
 
 		if ("arg" in this) {
