@@ -42,15 +42,15 @@ function getTree (msg, i) {
 		const icons = {
 			collapsed: "▷",
 			expanded: "▽",
-			highlightedCollapsed: "▶︎",
-			highlightedExpanded: "▼",
+			collapsedHighlighted: "▶︎",
+			expandedHighlighted: "▼",
 		};
 
 		let {collapsed, highlighted, children} = msg;
 
 		let icon = collapsed ? icons.collapsed : icons.expanded;
 		if (highlighted) {
-			icon = `<c green><b>${ collapsed ? icons.highlightedCollapsed : icons.highlightedExpanded }</b></c>`;
+			icon = `<c green><b>${ collapsed ? icons.collapsedHighlighted : icons.expandedHighlighted }</b></c>`;
 			msg = `<b>${ msg }</b>`;
 		}
 		msg = icon + " " + msg;
