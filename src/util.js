@@ -183,26 +183,38 @@ export function subsetTests (test, path) {
 	return tests;
 }
 
-export function interceptConsole () {
+/**
+ * Intercept console output while running a function.
+ * @param {Function} fn Function to run.
+ * @returns {Array<{args: Array<string>, method: string}>} Array of intercepted messages containing the used console method and passed arguments.
+ */
+export function interceptConsole (fn) {
+	const methods = ["log", "warn", "error"];
+
+	let originalConsole = {};
 	let messages = [];
 
-	function getOriginalConsole () {
-		const methods = ["log", "warn", "error", "info"];
-		let originalConsole = {};
-
-		for (let method of methods) {
-			originalConsole[method] = console[method];
-			console[method] = (...args) => messages.push({args, method});
-		}
-
-		return originalConsole;
+	for (let method of methods) {
+		originalConsole[method] = console[method];
+		console[method] = (...args) => messages.push({args, method});
 	}
 
-	return {messages, originalConsole: getOriginalConsole()};
-}
+	fn();
 
-export function restoreConsole (originalConsole) {
 	for (let method in originalConsole) {
 		console[method] = originalConsole[method];
 	}
+
+	return messages;
+}
+
+/**
+ * Pluralize a word.
+ * @param {number} n Number to check.
+ * @param {string} singular Singular form of the word.
+ * @param {string} plural Plural form of the word.
+ * @returns {string}
+ */
+export function pluralize (n, singular, plural) {
+	return n === 1 ? singular : plural;
 }

@@ -1,6 +1,6 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
 import format, { stripFormatting } from "../format-console.js";
-import { delay, formatDuration, stringify } from "../util.js";
+import { delay, formatDuration, interceptConsole, pluralize, stringify } from "../util.js";
 
 /**
  * Represents the result of a test or group of tests.
@@ -47,6 +47,10 @@ export default class TestResult extends BubblingEventTarget {
 					this.stats.fail++;
 				}
 
+				if (originalTarget.messages?.length > 0) {
+					this.stats.messages += originalTarget.messages.length;
+				}
+
 				this.timeTaken += originalTarget.timeTaken;
 
 				if (originalTarget.timeTakenAsync) {
@@ -75,25 +79,27 @@ export default class TestResult extends BubblingEventTarget {
 	 * Run the test(s)
 	 */
 	async run () {
-		let start = performance.now();
+		this.messages = interceptConsole(async () => {
+			let start = performance.now();
 
-		try {
-			this.actual = this.test.run ? this.test.run.apply(this.test, this.test.args) : this.test.args[0];
-			this.timeTaken = performance.now() - start;
+			try {
+				this.actual = this.test.run ? this.test.run.apply(this.test, this.test.args) : this.test.args[0];
+				this.timeTaken = performance.now() - start;
 
-			if (this.actual instanceof Promise) {
-				this.actual = await this.actual;
-				this.timeTakenAsync = performance.now() - start;
+				if (this.actual instanceof Promise) {
+					this.actual = await this.actual;
+					this.timeTakenAsync = performance.now() - start;
+				}
 			}
-		}
-		catch (e) {
-			this.error = e;
-		}
+			catch (e) {
+				this.error = e;
+			}
+		});
 
 		this.evaluate();
 	}
 
-	static STATS_AVAILABLE = ["pass", "fail", "error", "skipped", "total", "totalTime", "totalTimeAsync"];
+	static STATS_AVAILABLE = ["pass", "fail", "error", "skipped", "total", "totalTime", "totalTimeAsync", "messages"];
 
 	/**
 	 * Run all tests in the group
@@ -304,6 +310,11 @@ ${ this.error.stack }`);
 			`<dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`,
 		].join(" ");
 
+		if (this.messages?.length > 0) {
+			let suffix = pluralize(this.messages.length, "message", "messages");
+			ret += ` <dim>(<b>${ this.messages.length }</b> console ${ suffix })</dim>`;
+		}
+
 		if (this.details?.length > 0) {
 			ret += ": " + this.details.join(", ");
 		}
@@ -339,6 +350,11 @@ ${ this.error.stack }`);
 			ret.push(`<dim><b>${ stats.skipped }</b>/${ stats.total } skipped</dim>`);
 		}
 
+		if (stats.messages > 0) {
+			let suffix = pluralize(stats.messages, "message", "messages");
+			ret.push(`<dim><b>${ stats.messages }</b> console ${suffix}</dim>`);
+		}
+
 		let icon = stats.fail > 0? "❌" : stats.pending > 0? "⏳" : "✅";
 		ret.splice(1, 0, icon);
 
@@ -351,24 +367,48 @@ ${ this.error.stack }`);
 		return o?.format === "rich" ? ret : stripFormatting(ret);
 	}
 
+	/**
+	 * Get a summary of console messages intercepted during the test run.
+	 * @param {object} [o] Options
+	 * @param {"rich" | "plain"} [o.format="rich"] Format to use for output. Defaults to "rich".
+	 * @returns {string}
+	 */
+	getMessages (o = {}) {
+		let ret = new String("<c yellow><b><i>(Console Messages)</i></b></c>");
+		ret.children = this.messages.map(m =>`<dim>(${ m.method })</dim> ${m.args.join(" ")}`);
+
+		return o?.format === "rich" ? ret : stripFormatting(ret);
+	}
+
 	toString (o) {
 		let ret = [];
 
 		if (this.test.isGroup) {
 			ret.push(this.getSummary(o));
 		}
-		else if (this.pass === false || o?.verbose) {
+		else if (this.pass === false || this.messages?.length > 0 || o?.verbose) {
 			ret.push(this.getResult(o));
 		}
 
 		ret = ret.join("\n");
 
-		if (this.tests) {
+		if (this.tests || this.messages) {
 			ret = new String(ret);
-			ret.children = this.tests.filter(t => t.stats.fail + t.stats.pending + t.stats.skipped > 0)
+
+			if (this.tests) {
+				ret.children = this.tests.filter(t => t.stats.fail + t.stats.pending + t.stats.skipped + t.stats.messages > 0)
 				                     .flatMap(t => t.toString(o)).filter(Boolean);
-			ret.collapsed = ret.children.length ? this.collapsed : undefined;
-			ret.highlighted = this.highlighted;
+			}
+
+			if (this.messages?.length > 0) {
+				ret.children ??= [];
+				ret.children.push(this.getMessages(o));
+			}
+
+			if (ret.children?.length > 0 || ret.messages?.length > 0) {
+				ret.collapsed = this.collapsed;
+				ret.highlighted = this.highlighted;
+			}
 		}
 
 		return ret;
