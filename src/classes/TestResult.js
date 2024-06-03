@@ -307,13 +307,14 @@ ${ this.error.stack }`);
 		let ret = [
 			`<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b>`,
 			`<c light${color}>${this.name ?? "(Anonymous)"}</c>`,
-			`<dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`,
 		].join(" ");
 
 		if (this.messages?.length > 0) {
 			let suffix = pluralize(this.messages.length, "message", "messages");
-			ret += ` <dim>(<b>${ this.messages.length }</b> console ${ suffix })</dim>`;
+			ret += ` <dim><b>${ this.messages.length }</b> console ${ suffix }</dim>`;
 		}
+
+		ret += ` <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
 
 		if (this.details?.length > 0) {
 			ret += ": " + this.details.join(", ");
