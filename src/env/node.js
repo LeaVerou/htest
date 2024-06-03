@@ -10,20 +10,25 @@ import { globSync } from 'glob';
 
 // Internal modules
 import format from "../format-console.js";
-import { getType, interceptConsole, restoreConsole } from '../util.js';
+import { getType } from '../util.js';
 
-// Recursively traverse a subtree starting from `node` and make (only) groups of tests collapsible
+/**
+ * Recursively traverse a subtree starting from `node` and make groups of tests and test with console messages collapsible.
+ */
 function makeCollapsible (node) {
-	if (node.tests?.length) {
-		node.collapsed = true; // all groups are collapsed by default
+	if (node.tests?.length || node.messages?.length) {
+		node.collapsed = true; // all groups and console messages are collapsed by default
 
-		for (let test of node.tests) {
-			makeCollapsible(test);
+		let nodes = [...(node.tests ?? []), ...(node.messages ?? [])];
+		for (let node of nodes) {
+			makeCollapsible(node);
 		}
 	}
 }
 
-// Recursively traverse a subtree starting from `node` and return all visible groups of tests
+/**
+ * Recursively traverse a subtree starting from `node` and return all visible groups of tests or tests with console messages.
+ */
 function getVisibleGroups (node, options, groups = []) {
 	groups.push(node);
 
@@ -119,23 +124,13 @@ export default {
 	},
 	setup () {
 		process.env.NODE_ENV = "test";
-		interceptedConsole = interceptConsole();
 	},
 	done (result, options, event, root) {
-		makeCollapsible(root)
+		makeCollapsible(root);
 		render(root, options);
 
 		if (root.stats.pending === 0) {
 			logUpdate.clear();
-
-			let {messages, originalConsole} = interceptedConsole;
-			restoreConsole(originalConsole);
-
-			// Replay all the suppressed messages from the tests
-			for (let message of messages) {
-				let {args, method} = message;
-				console[method](...args);
-			}
 
 			let hint = `
 Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
