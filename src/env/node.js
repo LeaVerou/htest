@@ -17,7 +17,7 @@ import { getType } from '../util.js';
  */
 function makeCollapsible (node) {
 	if (node.tests?.length || node.messages?.length) {
-		node.collapsed = true; // all groups and test with console messages are collapsed by default
+		node.collapsed = true; // all groups and console messages are collapsed by default
 
 		let nodes = [...(node.tests ?? []), ...(node.messages ?? [])];
 		for (let node of nodes) {
