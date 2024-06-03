@@ -401,8 +401,7 @@ ${ this.error.stack }`);
 			}
 
 			if (this.messages?.length > 0) {
-				ret.children ??= [];
-				ret.children.push(this.getMessages(o));
+				(ret.children ??= []).push(this.getMessages(o));
 			}
 
 			if (ret.children?.length > 0 || ret.messages?.length > 0) {
