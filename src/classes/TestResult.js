@@ -311,7 +311,7 @@ ${ this.error.stack }`);
 
 		if (this.messages?.length > 0) {
 			let suffix = pluralize(this.messages.length, "message", "messages");
-			ret += ` <dim><b>${ this.messages.length }</b> console ${ suffix }</dim>`;
+			ret += ` <dim><b>${ this.messages.length }</b> ${ suffix }</dim>`;
 		}
 
 		ret += ` <dim>(${ formatDuration(this.timeTaken ?? 0) })</dim>`;
@@ -353,7 +353,7 @@ ${ this.error.stack }`);
 
 		if (stats.messages > 0) {
 			let suffix = pluralize(stats.messages, "message", "messages");
-			ret.push(`<dim><b>${ stats.messages }</b> console ${suffix}</dim>`);
+			ret.push(`<dim><b>${ stats.messages }</b> ${suffix}</dim>`);
 		}
 
 		let icon = stats.fail > 0? "❌" : stats.pending > 0? "⏳" : "✅";
@@ -375,7 +375,7 @@ ${ this.error.stack }`);
 	 * @returns {string}
 	 */
 	getMessages (o = {}) {
-		let ret = new String("<c yellow><b><i>(Console Messages)</i></b></c>");
+		let ret = new String("<c yellow><b><i>(Messages)</i></b></c>");
 		ret.children = this.messages.map(m =>`<dim>(${ m.method })</dim> ${m.args.join(" ")}`);
 
 		return o?.format === "rich" ? ret : stripFormatting(ret);
