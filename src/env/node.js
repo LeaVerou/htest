@@ -134,6 +134,7 @@ export default {
 
 			let hint = `
 Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
+Press <b>Ctrl+Shift+←</b> to collapse all groups.
 Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 `;
 			hint = format(hint);
@@ -176,7 +177,18 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 					render(root, options);
 				}
 				else if (name === "left") {
-					if (active.collapsed === false) {
+					if (key.ctrl && key.shift) {
+						// Collapse all groups on Ctrl+Shift+←
+						let groups = getVisibleGroups(root, options);
+						for (let group of groups) {
+							group.collapsed = true;
+							group.highlighted = false;
+						}
+						active = root;
+						active.highlighted = true;
+						render(root, options);
+					}
+					else if (active.collapsed === false) {
 						active.collapsed = true;
 						render(root, options);
 					}
