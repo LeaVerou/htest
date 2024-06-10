@@ -209,9 +209,10 @@ Use <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 						// Collapse all groups on Ctrl+Shift+←
 						let groups = getVisibleGroups(root, options);
 						for (let group of groups) {
-							group.collapsed = true;
 							group.highlighted = false;
 						}
+
+						setCollapsed(root);
 						active = root;
 						active.highlighted = true;
 						render(root, options);
