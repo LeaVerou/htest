@@ -134,6 +134,7 @@ export default {
 
 			let hint = `
 Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
+Use <b>Ctrl+↑</b> and <b>Ctrl+↓</b> to go to the first or last child group of the current group, respectively.
 Press <b>Ctrl+Shift+←</b> to collapse all groups.
 Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 `;
@@ -158,21 +159,43 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 				else if (name === "up") {
 					// Figure out what group of tests is active (and should be highlighted)
 					let groups = getVisibleGroups(root, options);
-					let index = groups.indexOf(active);
-					index = Math.max(0, index - 1); // choose the previous group, but don't go higher than the root
-					active = groups[index];
 
-					groups = groups.map(group => group.highlighted = false);
+					if (key.ctrl) {
+						let parent = active.parent;
+						if (parent) {
+							active = groups.filter(group => group.parent === parent)[0]; // the first one from all groups with the same parent
+						}
+					}
+					else {
+						let index = groups.indexOf(active);
+						index = Math.max(0, index - 1); // choose the previous group, but don't go higher than the root
+						active = groups[index];
+					}
+
+					for (let group of groups) {
+						group.highlighted = false;
+					}
 					active.highlighted = true;
 					render(root, options);
 				}
 				else if (name === "down") {
 					let groups = getVisibleGroups(root, options);
-					let index = groups.indexOf(active);
-					index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
-					active = groups[index];
 
-					groups = groups.map(group => group.highlighted = false);
+					if (key.ctrl) {
+						let parent = active.parent;
+						if (parent) {
+							active = groups.filter(group => group.parent === parent).at(-1); // the last one from all groups with the same parent
+						}
+					}
+					else {
+						let index = groups.indexOf(active);
+						index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
+						active = groups[index];
+					}
+
+					for (let group of groups) {
+						group.highlighted = false;
+					}
 					active.highlighted = true;
 					render(root, options);
 				}
