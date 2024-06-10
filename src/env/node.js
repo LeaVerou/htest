@@ -13,15 +13,19 @@ import format from "../format-console.js";
 import { getType } from '../util.js';
 
 /**
- * Recursively traverse a subtree starting from `node` and make groups of tests and test with console messages collapsible.
+ * Recursively traverse a subtree starting from `node`
+ * and make groups of tests and test with console messages
+ * either collapsed or expanded by setting its `collapsed` property.
+ * @param {object} node - The root node of the subtree.
+ * @param {boolean} collapsed - Whether to collapse or expand the subtree.
  */
-function makeCollapsible (node) {
+function setCollapsed (node, collapsed = true) {
 	if (node.tests?.length || node.messages?.length) {
-		node.collapsed = true; // all groups and console messages are collapsed by default
+		node.collapsed = collapsed;
 
 		let nodes = [...(node.tests ?? []), ...(node.messages ?? [])];
 		for (let node of nodes) {
-			makeCollapsible(node);
+			setCollapsed(node, collapsed);
 		}
 	}
 }
@@ -126,15 +130,18 @@ export default {
 		process.env.NODE_ENV = "test";
 	},
 	done (result, options, event, root) {
-		makeCollapsible(root);
+		setCollapsed(root); // all groups and console messages are collapsed by default
 		render(root, options);
 
 		if (root.stats.pending === 0) {
 			logUpdate.clear();
 
 			let hint = `
-Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
-Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
+Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them, respectively.
+Use <b>Ctrl+↑</b> and <b>Ctrl+↓</b> to go to the first or last child group of the current group.
+To expand or collapse the current group and all its subgroups, use <b>Ctrl+→</b> and <b>Ctrl+←</b>.
+Press <b>Ctrl+Shift+→</b> and <b>Ctrl+Shift+←</b> to expand or collapse all groups, regardless of the current group.
+Use <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 `;
 			hint = format(hint);
 			console.log(hint);
@@ -157,31 +164,95 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 				else if (name === "up") {
 					// Figure out what group of tests is active (and should be highlighted)
 					let groups = getVisibleGroups(root, options);
-					let index = groups.indexOf(active);
-					index = Math.max(0, index - 1); // choose the previous group, but don't go higher than the root
-					active = groups[index];
 
-					groups = groups.map(group => group.highlighted = false);
+					if (key.ctrl) {
+						let parent = active.parent;
+						if (parent) {
+							active = groups.filter(group => group.parent === parent)[0]; // the first one from all groups with the same parent
+						}
+					}
+					else {
+						let index = groups.indexOf(active);
+						index = Math.max(0, index - 1); // choose the previous group, but don't go higher than the root
+						active = groups[index];
+					}
+
+					for (let group of groups) {
+						group.highlighted = false;
+					}
 					active.highlighted = true;
 					render(root, options);
 				}
 				else if (name === "down") {
 					let groups = getVisibleGroups(root, options);
-					let index = groups.indexOf(active);
-					index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
-					active = groups[index];
 
-					groups = groups.map(group => group.highlighted = false);
+					if (key.ctrl) {
+						let parent = active.parent;
+						if (parent) {
+							active = groups.filter(group => group.parent === parent).at(-1); // the last one from all groups with the same parent
+						}
+					}
+					else {
+						let index = groups.indexOf(active);
+						index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
+						active = groups[index];
+					}
+
+					for (let group of groups) {
+						group.highlighted = false;
+					}
 					active.highlighted = true;
 					render(root, options);
 				}
-				else if (name === "left" && active.collapsed === false) {
-					active.collapsed = true;
-					render(root, options);
+				else if (name === "left") {
+					if (key.ctrl && key.shift) {
+						// Collapse all groups on Ctrl+Shift+←
+						let groups = getVisibleGroups(root, options);
+						for (let group of groups) {
+							group.highlighted = false;
+						}
+
+						setCollapsed(root);
+						active = root;
+						active.highlighted = true;
+						render(root, options);
+					}
+					else if (key.ctrl) {
+						// Collapse the current group and all its subgroups on Ctrl+←
+						setCollapsed(active);
+						render(root, options);
+					}
+					else if (active.collapsed === false) {
+						active.collapsed = true;
+						render(root, options);
+					}
+					else if (active.parent) {
+						// If the current group is collapsed, collapse its parent group
+						let groups = getVisibleGroups(root, options);
+						let index = groups.indexOf(active.parent);
+						active = groups[index];
+						active.collapsed = true;
+
+						groups = groups.map(group => group.highlighted = false);
+						active.highlighted = true;
+						render(root, options);
+					}
 				}
-				else if (name === "right" && active.collapsed === true) {
-					active.collapsed = false;
-					render(root, options);
+				else if (name === "right") {
+					if (key.ctrl && key.shift) {
+						// Expand all groups on Ctrl+Shift+→
+						setCollapsed(root, false);
+						render(root, options);
+					}
+					else if (key.ctrl) {
+						// Expand the current group and all its subgroups on Ctrl+→
+						setCollapsed(active, false);
+						render(root, options);
+					}
+					else if (active.collapsed === true) {
+						active.collapsed = false;
+						render(root, options);
+					}
 				}
 			});
 		}
