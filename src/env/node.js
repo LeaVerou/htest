@@ -175,9 +175,22 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 					active.highlighted = true;
 					render(root, options);
 				}
-				else if (name === "left" && active.collapsed === false) {
-					active.collapsed = true;
-					render(root, options);
+				else if (name === "left") {
+					if (active.collapsed === false) {
+						active.collapsed = true;
+						render(root, options);
+					}
+					else if (active.parent) {
+						// If the current group is collapsed, collapse its parent group
+						let groups = getVisibleGroups(root, options);
+						let index = groups.indexOf(active.parent);
+						active = groups[index];
+						active.collapsed = true;
+
+						groups = groups.map(group => group.highlighted = false);
+						active.highlighted = true;
+						render(root, options);
+					}
 				}
 				else if (name === "right" && active.collapsed === true) {
 					active.collapsed = false;
