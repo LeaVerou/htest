@@ -13,20 +13,6 @@ import format from "../format-console.js";
 import { getType } from '../util.js';
 
 /**
- * Recursively traverse a subtree starting from `node` and make groups of tests and test with console messages collapsible.
- */
-function makeCollapsible (node) {
-	if (node.tests?.length || node.messages?.length) {
-		node.collapsed = true; // all groups and console messages are collapsed by default
-
-		let nodes = [...(node.tests ?? []), ...(node.messages ?? [])];
-		for (let node of nodes) {
-			makeCollapsible(node);
-		}
-	}
-}
-
-/**
  * Recursively traverse a subtree starting from `node`
  * and make groups of tests and test with console messages
  * either collapsed or expanded by setting its `collapsed` property.
@@ -144,7 +130,7 @@ export default {
 		process.env.NODE_ENV = "test";
 	},
 	done (result, options, event, root) {
-		makeCollapsible(root);
+		setCollapsed(root); // all groups and console messages are collapsed by default
 		render(root, options);
 
 		if (root.stats.pending === 0) {
