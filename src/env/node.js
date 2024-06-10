@@ -27,6 +27,24 @@ function makeCollapsible (node) {
 }
 
 /**
+ * Recursively traverse a subtree starting from `node`
+ * and make groups of tests and test with console messages
+ * either collapsed or expanded by setting its `collapsed` property.
+ * @param {object} node - The root node of the subtree.
+ * @param {boolean} collapsed - Whether to collapse or expand the subtree.
+ */
+function setCollapsed (node, collapsed = true) {
+	if (node.tests?.length || node.messages?.length) {
+		node.collapsed = collapsed;
+
+		let nodes = [...(node.tests ?? []), ...(node.messages ?? [])];
+		for (let node of nodes) {
+			setCollapsed(node, collapsed);
+		}
+	}
+}
+
+/**
  * Recursively traverse a subtree starting from `node` and return all visible groups of tests or tests with console messages.
  */
 function getVisibleGroups (node, options, groups = []) {
@@ -211,6 +229,11 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 						active.highlighted = true;
 						render(root, options);
 					}
+					else if (key.ctrl) {
+						// Collapse the current group and all its subgroups on Ctrl+←
+						setCollapsed(active);
+						render(root, options);
+					}
 					else if (active.collapsed === false) {
 						active.collapsed = true;
 						render(root, options);
@@ -227,9 +250,16 @@ Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 						render(root, options);
 					}
 				}
-				else if (name === "right" && active.collapsed === true) {
-					active.collapsed = false;
-					render(root, options);
+				else if (name === "right") {
+					if (key.ctrl) {
+						// Expand the current group and all its subgroups on Ctrl+→
+						setCollapsed(active, false);
+						render(root, options);
+					}
+					else if (active.collapsed === true) {
+						active.collapsed = false;
+						render(root, options);
+					}
 				}
 			});
 		}
