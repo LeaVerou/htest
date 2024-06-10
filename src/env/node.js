@@ -151,10 +151,11 @@ export default {
 			logUpdate.clear();
 
 			let hint = `
-Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them respectively.
-Use <b>Ctrl+↑</b> and <b>Ctrl+↓</b> to go to the first or last child group of the current group, respectively.
-Press <b>Ctrl+Shift+←</b> to collapse all groups.
-Press <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
+Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them, respectively.
+Use <b>Ctrl+↑</b> and <b>Ctrl+↓</b> to go to the first or last child group of the current group.
+To expand or collapse the current group and all its subgroups, use <b>Ctrl+→</b> and <b>Ctrl+←</b>.
+Press <b>Ctrl+Shift+←</b> to collapse all groups, regardless of the current group.
+Use <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 `;
 			hint = format(hint);
 			console.log(hint);
