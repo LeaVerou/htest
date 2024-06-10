@@ -96,8 +96,6 @@ async function getTestsIn (dir) {
 	})));
 }
 
-let interceptedConsole;
-
 export default {
 	name: "Node.js",
 	defaultOptions: {
