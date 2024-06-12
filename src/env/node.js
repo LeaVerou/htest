@@ -139,7 +139,7 @@ Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b>
 Use <b>Ctrl+↑</b> and <b>Ctrl+↓</b> to go to the first or last child group of the current group.
 To expand or collapse the current group and all its subgroups, use <b>Ctrl+→</b> and <b>Ctrl+←</b>.
 Press <b>Ctrl+Shift+→</b> and <b>Ctrl+Shift+←</b> to expand or collapse all groups, regardless of the current group.
-Use <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
+Use <b>any other key</b> to quit interactive mode.
 `;
 			hint = format(hint);
 			console.log(hint);
@@ -154,12 +154,7 @@ Use <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 			process.stdin.on("keypress", (character, key) => {
 				let name = key.name;
 
-				if ((name === "c" && key.ctrl) || name === "q") {
-					// Quit interactive mode
-					logUpdate.done();
-					process.exit();
-				}
-				else if (name === "up") {
+				if (name === "up") {
 					// Figure out what group of tests is active (and should be highlighted)
 					let groups = getVisibleGroups(root, options);
 
@@ -251,6 +246,11 @@ Use <b>^C</b> (<b>Ctrl+C</b>) or <b>q</b> to quit interactive mode.
 						active.collapsed = false;
 						render(root, options);
 					}
+				}
+				else {
+					// Quit interactive mode on any other key
+					logUpdate.done();
+					process.exit();
 				}
 			});
 		}
