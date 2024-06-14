@@ -131,7 +131,12 @@ All of these take parameters and return a checking function:
 There are also the following checking functions that can be used directly:
 - `equals()`: Check if the result is equal to the expected value.
 
-Instead of providing a custom checking function, you can also tweak the default one. Simply pass an object literal with desired options as the value of `check`, and hTest will produce the right checking function for you.
+Instead of providing a custom checking function, you can also tweak the default one — the `equals()` function. Simply pass an object literal with desired options as the value of `check`, and hTest will produce the proper checking function for you.
+The supported options are:
+- `deep`: Use a deep equality check between the result and the expected value. Defaults to `false`.
+- `looseTypes`: Skip the check that the result and the expected value are of the same type. If skipped, e.g. `"5"` can match `5`. Defaults to `false`.
+- `subset`: Consider `undefined` equals to anything. The test will always pass if the expected value is `undefined`. Defaults to `false`.
+- `epsilon`: Allowed distance between the result and the expected value. Defaults to `0`.
 
 #### Examples
 
