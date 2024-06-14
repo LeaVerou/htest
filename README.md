@@ -1,5 +1,5 @@
 ---
-title: Declarative unit testing framework
+title: Declarative unit testing
 ---
 
 <header>
