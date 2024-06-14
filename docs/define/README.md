@@ -187,14 +187,10 @@ export default {
 hTest can build the right checking function behind the scenes:
 
 ```js
-import Color from "../src/index.js";
-
 export default {
-	run () {
-		return new Color("srgb", [1, 0, 0]).coords;
-	},
-	check: {deep: true, epsilon: .005}
-	expect: [1, 0, 0],
+	arg: [1.01, 2, 3.042],
+	expect: [1, 2, 3],
+	check: {deep: true, epsilon: .1}
 }
 ```
 
