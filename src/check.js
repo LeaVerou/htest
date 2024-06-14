@@ -184,7 +184,7 @@ export function proximity ({epsilon = Number.EPSILON, ...options} = {}) {
  */
 export function range (options = {}) {
 	options.lt ??= options.from;
-	options.lte ??= option.min;
+	options.lte ??= options.min;
 	options.gt ??= options.to;
 	options.gte ??= options.max;
 
