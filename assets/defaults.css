@@ -59,3 +59,7 @@ table {
 		padding-block: .2rem;
 	}
 }
+
+video {
+	max-width: 100%;
+}
