@@ -192,16 +192,16 @@ The CLI output with test results is built as an _interactive tree_ that starts c
 
 ### Supported keys and keyboard shortcuts
 
-- `↑` — “Go Level Up”
-- `↓` — “Go Level Down”
-- `→` — “Expand Group”
-- `←` — “Collapse Group.” Consecutively press `←` to collapse the current group first, then the parent group, then the grandparent group, and so on.
-- `Ctrl+↑` — “Go to the First Child of a Group”
-- `Ctrl+↓` — “Go to the Last Child of a Group”
-- `Ctrl+→` — “Expand Subtree” (starting from the current group)
-- `Ctrl+←` — “Collapse Subtree” (including the current group)
-- `Ctrl+Shift+→` — “Expand All”
-- `Ctrl+Shift+←` — “Collapse All”
+- <kbd>↑</kbd> — “Go Level Up”
+- <kbd>↓</kbd> — “Go Level Down”
+- <kbd>→</kbd> — “Expand Group”
+- <kbd>←</kbd> — “Collapse Group.” Consecutively press <kbd>←</kbd> to collapse the current group first, then the parent group, then the grandparent group, and so on.
+- <kbd>Ctrl+↑</kbd> — “Go to the First Child of a Group”
+- <kbd>Ctrl+↓</kbd> — “Go to the Last Child of a Group”
+- <kbd>Ctrl+→</kbd> — “Expand Subtree” (starting from the current group)
+- <kbd>Ctrl+←</kbd> — “Collapse Subtree” (including the current group)
+- <kbd>Ctrl+Shift+→</kbd> — “Expand All”
+- <kbd>Ctrl+Shift+←</kbd> — “Collapse All”
 
 ## Roadmap
 
