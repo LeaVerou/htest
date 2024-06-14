@@ -184,7 +184,28 @@ Write your tests in HTML files and run them only in the browser.</td>
 You can even mix and match the two modes in the same testsuite!
 E.g. even a UI-heavy library has many JS-only functions that are better tested via JS-first tests.
 
+## Interactive CLI output
+
 ![Sample terminal output](assets/images/terminal-output.png)
+
+The CLI output with test results is built as an _interactive tree_ that starts collapsed but can be navigated and expanded with the keyboard. Messages written to the console while the test suite runs are preserved and part of the corresponding test results.
+
+<video controls>
+	<source src="assets/videos/interactive-cli.mp4" type="video/mp4" />
+</video>
+
+### Supported keys and keyboard shortcuts
+
+- <kbd>↑</kbd> — “Go Level Up”
+- <kbd>↓</kbd> — “Go Level Down”
+- <kbd>→</kbd> — “Expand Group”
+- <kbd>←</kbd> — “Collapse Group.” Consecutively press <kbd>←</kbd> to collapse the current group first, then the parent group, then the grandparent group, and so on.
+- <kbd>Ctrl+↑</kbd> — “Go to the First Child of a Group”
+- <kbd>Ctrl+↓</kbd> — “Go to the Last Child of a Group”
+- <kbd>Ctrl+→</kbd> — “Expand Subtree” (starting from the current group)
+- <kbd>Ctrl+←</kbd> — “Collapse Subtree” (including the current group)
+- <kbd>Ctrl+Shift+→</kbd> — “Expand All”
+- <kbd>Ctrl+Shift+←</kbd> — “Collapse All”
 
 ## Roadmap
 
@@ -194,7 +215,6 @@ It was soft launched in Q4 2023, but has been in use since 2022 (2017 if you cou
 The main things that still need to be done before launch are:
 * Improve documentation — this is top priority, people keep asking for things that are already possible because they’re not documented well!
 * Fix CLI output glitches
-* Improve usability of nested output, especially for deeply nested tests. Ideal would be an interactive tree that starts off collapsed but can be navigated and expanded with the keyboard.
 * Implement watch functionality
 * Ensure we're not missing essential use cases
 
