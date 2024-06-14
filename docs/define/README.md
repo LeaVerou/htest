@@ -131,7 +131,7 @@ All of these take parameters and return a checking function:
 There are also the following checking functions that can be used directly:
 - `equals()`: Check if the result is equal to the expected value.
 
-Instead of providing a custom checking function, you can also tweak the one used by hTest. Simply pass an object literal with desired options as the value of `check`, and hTest will produce the right checking function for you.
+Instead of providing a custom checking function, you can also tweak the default one. Simply pass an object literal with desired options as the value of `check`, and hTest will produce the right checking function for you.
 
 #### Examples
 
@@ -188,8 +188,8 @@ export default {
 	run () {
 		return new Color("srgb", [1, 0, 0]).coords;
 	},
-	expect: [1, 0, 0],
 	check: {deep: true, epsilon: .005}
+	expect: [1, 0, 0],
 }
 ```
 
