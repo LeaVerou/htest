@@ -5,6 +5,7 @@ Each of these objects can either be a test, or contain child tests.
 All properties work across both: if a property doesn’t directly apply to a group, it inherits down to the tests it contains.
 This allows you to only specify what is different in each test,
 and makes it easier to evolve the testsuite over time.
+You can access the inherited property via `this.parent` when re-defining either of these properties on a child or descendant test; for example, `this.parent.run(...args)`.
 
 ## Property index
 
