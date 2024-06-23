@@ -91,7 +91,8 @@ async function getTestsIn (dir) {
 	let cwd = process.cwd();
 	let paths = filenames.map(name => path.join(cwd, dir, name));
 
-	return Promise.all(paths.map(path => import(path).then(module => module.default, err => {
+	// FIXME: Causes a memory leak. Any other workaround?
+	return Promise.all(paths.map(path => import(`${path}?${Date.now()}`).then(module => module.default, err => {
 		console.error(`Error importing tests from ${path}:`, err);
 	})));
 }
@@ -116,7 +117,7 @@ export default {
 				paths = getType(paths) === "string" ? [paths] : paths;
 				return paths.map(p => {
 					p = path.join(process.cwd(), p);
-					return import(p).then(m => m.default ?? m);
+					return import(`${p}?${Date.now()}`).then(m => m.default ?? m); // FIXME: Causes a memory leak. Any other workaround?
 				});
 			});
 
