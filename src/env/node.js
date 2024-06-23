@@ -1,16 +1,16 @@
 // Native Node packages
 import fs from "fs";
 import path from "path";
-import * as readline from 'node:readline';
+import * as readline from "node:readline";
 
 // Dependencies
-import logUpdate from 'log-update';
-import { AsciiTree } from 'oo-ascii-tree';
-import { globSync } from 'glob';
+import logUpdate from "log-update";
+import { AsciiTree } from "oo-ascii-tree";
+import { globSync } from "glob";
 
 // Internal modules
 import format from "../format-console.js";
-import { getType } from '../util.js';
+import { getType } from "../util.js";
 
 /**
  * Recursively traverse a subtree starting from `node`
@@ -102,7 +102,7 @@ export default {
 		format: "rich",
 		get location () {
 			return process.cwd();
-		}
+		},
 	},
 	resolveLocation: async function (location) {
 		if (fs.statSync(location).isDirectory()) {
@@ -258,5 +258,5 @@ Use <b>any other key</b> to quit interactive mode.
 		if (root.stats.fail > 0) {
 			process.exitCode = 1;
 		}
-	}
-}
+	},
+};
