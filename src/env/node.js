@@ -1,6 +1,7 @@
 // Native Node packages
 import fs from "fs";
 import path from "path";
+import process from "node:process";
 import * as readline from "node:readline";
 
 // Dependencies
