@@ -4,6 +4,9 @@ import { globSync } from "glob";
 import env from "./env/node.js";
 import run from "./run.js";
 
+// Dependencies
+import * as chokidar from "chokidar";
+
 const CONFIG_GLOB = "{,_,.}htest.{json,config.json,config.js}";
 let config;
 
@@ -50,5 +53,17 @@ export default async function cli (options = {}) {
 		options.path = argv[1];
 	}
 
-	run(location, {env, ...options});
+	if (options.watch) {
+		const watcher = chokidar.watch(location, {
+			persistent: true,
+		});
+
+		watcher.on("all", path => {
+			// TODO: Re-run the tests that *actually* changed
+			run(location, {env, ...options});
+		});
+	}
+	else {
+		run(location, {env, ...options});
+	}
 }

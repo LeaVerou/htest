@@ -56,6 +56,7 @@
     "typedoc": "^0.25.12"
   },
   "dependencies": {
+    "chokidar": "^3.6.0",
     "glob": "^10.3.10",
     "log-update": "^6.0.0",
     "oo-ascii-tree": "^1.91.0"
