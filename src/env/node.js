@@ -1,16 +1,18 @@
 // Native Node packages
 import fs from "fs";
 import path from "path";
-import * as readline from 'node:readline';
+import process from "node:process";
+import * as readline from "node:readline";
 
 // Dependencies
-import logUpdate from 'log-update';
-import { AsciiTree } from 'oo-ascii-tree';
-import { globSync } from 'glob';
+import logUpdate from "log-update";
+import { AsciiTree } from "oo-ascii-tree";
+import { globSync } from "glob";
 
 // Internal modules
 import format from "../format-console.js";
-import { getType } from '../util.js';
+import { getType } from "../util.js";
+import run from "../run.js";
 
 /**
  * Recursively traverse a subtree starting from `node`
@@ -91,10 +93,21 @@ async function getTestsIn (dir) {
 	let cwd = process.cwd();
 	let paths = filenames.map(name => path.join(cwd, dir, name));
 
-	return Promise.all(paths.map(path => import(path).then(module => module.default, err => {
+	// FIXME: Causes a memory leak. Any other workaround?
+	return Promise.all(paths.map(path => import(`${path}?${Date.now()}`).then(module => module.default, err => {
 		console.error(`Error importing tests from ${path}:`, err);
 	})));
 }
+
+/**
+ * Options shared between runs of the tests.
+ */
+let shared = {
+	firstRun: true,
+	location: undefined, // location of the tests
+	root: undefined,
+	active: undefined, // active (highlighted) group of tests that can be expanded/collapsed; root by default
+};
 
 export default {
 	name: "Node.js",
@@ -102,9 +115,11 @@ export default {
 		format: "rich",
 		get location () {
 			return process.cwd();
-		}
+		},
 	},
 	resolveLocation: async function (location) {
+		shared.location = location;
+
 		if (fs.statSync(location).isDirectory()) {
 			// Directory provided, fetch all files
 			return getTestsIn(location);
@@ -116,7 +131,7 @@ export default {
 				paths = getType(paths) === "string" ? [paths] : paths;
 				return paths.map(p => {
 					p = path.join(process.cwd(), p);
-					return import(p).then(m => m.default ?? m);
+					return import(`${p}?${Date.now()}`).then(m => m.default ?? m); // FIXME: Causes a memory leak. Any other workaround?
 				});
 			});
 
@@ -134,129 +149,142 @@ export default {
 		if (root.stats.pending === 0) {
 			logUpdate.clear();
 
-			let hint = `
+			root.highlighted = true;
+			shared.root = root;
+			shared.active = root;
+
+			if (!shared.firstRun) {
+				render(root, options);
+			}
+			else {
+				shared.firstRun = false;
+
+				let hint = `
 Use <b>↑</b> and <b>↓</b> arrow keys to navigate groups of tests, <b>→</b> and <b>←</b> to expand and collapse them, respectively.
 Use <b>Ctrl+↑</b> and <b>Ctrl+↓</b> to go to the first or last child group of the current group.
 To expand or collapse the current group and all its subgroups, use <b>Ctrl+→</b> and <b>Ctrl+←</b>.
 Press <b>Ctrl+Shift+→</b> and <b>Ctrl+Shift+←</b> to expand or collapse all groups, regardless of the current group.
-Use <b>any other key</b> to quit interactive mode.
+Press <b>R</b> to re-run the tests. Use <b>any other key</b> to quit interactive mode.
 `;
-			hint = format(hint);
-			console.log(hint);
+				hint = format(hint);
+				console.log(hint);
 
-			readline.emitKeypressEvents(process.stdin);
-			process.stdin.setRawMode(true); // handle keypress events instead of Node
+				readline.emitKeypressEvents(process.stdin);
+				process.stdin.setRawMode(true); // handle keypress events instead of Node
 
-			root.highlighted = true;
-			render(root, options);
+				render(root, options);
 
-			let active = root; // active (highlighted) group of tests that can be expanded/collapsed; root by default
-			process.stdin.on("keypress", (character, key) => {
-				let name = key.name;
+				process.stdin.on("keypress", (character, key) => {
+					let name = key.name;
+					let root = shared.root;
 
-				if (name === "up") {
-					// Figure out what group of tests is active (and should be highlighted)
-					let groups = getVisibleGroups(root, options);
-
-					if (key.ctrl) {
-						let parent = active.parent;
-						if (parent) {
-							active = groups.filter(group => group.parent === parent)[0]; // the first one from all groups with the same parent
-						}
-					}
-					else {
-						let index = groups.indexOf(active);
-						index = Math.max(0, index - 1); // choose the previous group, but don't go higher than the root
-						active = groups[index];
-					}
-
-					for (let group of groups) {
-						group.highlighted = false;
-					}
-					active.highlighted = true;
-					render(root, options);
-				}
-				else if (name === "down") {
-					let groups = getVisibleGroups(root, options);
-
-					if (key.ctrl) {
-						let parent = active.parent;
-						if (parent) {
-							active = groups.filter(group => group.parent === parent).at(-1); // the last one from all groups with the same parent
-						}
-					}
-					else {
-						let index = groups.indexOf(active);
-						index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
-						active = groups[index];
-					}
-
-					for (let group of groups) {
-						group.highlighted = false;
-					}
-					active.highlighted = true;
-					render(root, options);
-				}
-				else if (name === "left") {
-					if (key.ctrl && key.shift) {
-						// Collapse all groups on Ctrl+Shift+←
+					if (name === "up") {
+						// Figure out what group of tests is active (and should be highlighted)
 						let groups = getVisibleGroups(root, options);
+
+						if (key.ctrl) {
+							let parent = shared.active.parent;
+							if (parent) {
+								shared.active = groups.filter(group => group.parent === parent)[0]; // the first one from all groups with the same parent
+							}
+						}
+						else {
+							let index = groups.indexOf(shared.active);
+							index = Math.max(0, index - 1); // choose the previous group, but don't go higher than the root
+							shared.active = groups[index];
+						}
+
 						for (let group of groups) {
 							group.highlighted = false;
 						}
-
-						setCollapsed(root);
-						active = root;
-						active.highlighted = true;
+						shared.active.highlighted = true;
 						render(root, options);
 					}
-					else if (key.ctrl) {
-						// Collapse the current group and all its subgroups on Ctrl+←
-						setCollapsed(active);
-						render(root, options);
-					}
-					else if (active.collapsed === false) {
-						active.collapsed = true;
-						render(root, options);
-					}
-					else if (active.parent) {
-						// If the current group is collapsed, collapse its parent group
+					else if (name === "down") {
 						let groups = getVisibleGroups(root, options);
-						let index = groups.indexOf(active.parent);
-						active = groups[index];
-						active.collapsed = true;
 
-						groups = groups.map(group => group.highlighted = false);
-						active.highlighted = true;
+						if (key.ctrl) {
+							let parent = shared.active.parent;
+							if (parent) {
+								shared.active = groups.filter(group => group.parent === parent).at(-1); // the last one from all groups with the same parent
+							}
+						}
+						else {
+							let index = groups.indexOf(shared.active);
+							index = Math.min(groups.length - 1, index + 1); // choose the next group, but don't go lower than the last one
+							shared.active = groups[index];
+						}
+
+						for (let group of groups) {
+							group.highlighted = false;
+						}
+						shared.active.highlighted = true;
 						render(root, options);
 					}
-				}
-				else if (name === "right") {
-					if (key.ctrl && key.shift) {
-						// Expand all groups on Ctrl+Shift+→
-						setCollapsed(root, false);
-						render(root, options);
+					else if (name === "left") {
+						if (key.ctrl && key.shift) {
+							// Collapse all groups on Ctrl+Shift+←
+							let groups = getVisibleGroups(root, options);
+							for (let group of groups) {
+								group.highlighted = false;
+							}
+
+							setCollapsed(root);
+							shared.active = root;
+							shared.active.highlighted = true;
+							render(root, options);
+						}
+						else if (key.ctrl) {
+							// Collapse the current group and all its subgroups on Ctrl+←
+							setCollapsed(shared.active);
+							render(root, options);
+						}
+						else if (shared.active.collapsed === false) {
+							shared.active.collapsed = true;
+							render(root, options);
+						}
+						else if (shared.active.parent) {
+							// If the current group is collapsed, collapse its parent group
+							let groups = getVisibleGroups(root, options);
+							let index = groups.indexOf(shared.active.parent);
+							shared.active = groups[index];
+							shared.active.collapsed = true;
+
+							groups = groups.map(group => group.highlighted = false);
+							shared.active.highlighted = true;
+							render(root, options);
+						}
 					}
-					else if (key.ctrl) {
-						// Expand the current group and all its subgroups on Ctrl+→
-						setCollapsed(active, false);
-						render(root, options);
+					else if (name === "right") {
+						if (key.ctrl && key.shift) {
+							// Expand all groups on Ctrl+Shift+→
+							setCollapsed(root, false);
+							render(root, options);
+						}
+						else if (key.ctrl) {
+							// Expand the current group and all its subgroups on Ctrl+→
+							setCollapsed(shared.active, false);
+							render(root, options);
+						}
+						else if (shared.active.collapsed === true) {
+							shared.active.collapsed = false;
+							render(root, options);
+						}
 					}
-					else if (active.collapsed === true) {
-						active.collapsed = false;
-						render(root, options);
+					else if (name === "r") {
+						run(shared.location, {...options});
 					}
-				}
-				else {
-					// Quit interactive mode on any other key
-					logUpdate.done();
-					process.exit();
-				}
-			});
+					else {
+						// Quit interactive mode on any other key
+						logUpdate.done();
+						process.exit();
+					}
+				});
+			}
 		}
 
 		if (root.stats.fail > 0) {
 			process.exitCode = 1;
 		}
-	}
-}
+	},
+};
