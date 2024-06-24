@@ -58,12 +58,11 @@ export default async function cli (options = {}) {
 			persistent: true,
 		});
 
-		watcher.on("all", path => {
-			// TODO: Re-run the tests that *actually* changed
+		// TODO: Re-run the tests that *actually* changed
+		watcher.on("change", path => {
 			run(location, {env, ...options});
 		});
 	}
-	else {
-		run(location, {env, ...options});
-	}
+
+	run(location, {env, ...options});
 }
