@@ -1,6 +1,7 @@
 // Native Node packages
 import fs from "fs";
 import path from "path";
+import { pathToFileURL } from "url";
 import * as readline from "node:readline";
 
 // Dependencies
@@ -91,7 +92,7 @@ async function getTestsIn (dir) {
 	let cwd = process.cwd();
 	let paths = filenames.map(name => path.join(cwd, dir, name));
 
-	return Promise.all(paths.map(path => import(path).then(module => module.default, err => {
+	return Promise.all(paths.map(path => import(pathToFileURL(path)).then(module => module.default, err => {
 		console.error(`Error importing tests from ${path}:`, err);
 	})));
 }
@@ -116,7 +117,7 @@ export default {
 				paths = getType(paths) === "string" ? [paths] : paths;
 				return paths.map(p => {
 					p = path.join(process.cwd(), p);
-					return import(p).then(m => m.default ?? m);
+					return import(pathToFileURL(p)).then(m => m.default ?? m);
 				});
 			});
 
