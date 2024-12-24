@@ -88,7 +88,7 @@ export default class Test {
 	}
 
 	get testCount () {
-		let count = this.isTest? 1 : 0;
+		let count = this.isTest ? 1 : 0;
 
 		if (this.tests) {
 			count += this.tests.reduce((prev, current) => prev + current.testCount, 0);

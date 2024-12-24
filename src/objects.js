@@ -37,7 +37,7 @@ export function children (obj) {
 	if (obj?.[Symbol.iterator]) {
 		// Iterables (Array, Set, Map, NodeList, etc.)
 		let isDictionary = dictionaryTypes.includes(type);
-		return isDictionary? new Map(obj) : Array.from(obj);
+		return isDictionary ? new Map(obj) : Array.from(obj);
 	}
 
 	if (type === "Object") {
@@ -168,7 +168,7 @@ export function join (obj, {
 	indent = "\t",
 	map = _ => _,
 	mapKey = _ => _,
-	maxLineLength = 80
+	maxLineLength = 80,
 } = {}) {
 	let kids = children(obj);
 
@@ -184,9 +184,9 @@ export function join (obj, {
 		let childrenSingleLine = stringKids.join(separator + " ");
 		return childrenSingleLine.length > indent.length + maxLineLength ?
 				 [
-					`${open}`,
-					`${indent}\t${stringKids.join(`,\n${indent}\t`)}`,
-					`${indent}${close}`
+				`${open}`,
+				`${indent}\t${stringKids.join(`,\n${indent}\t`)}`,
+				`${indent}${close}`,
 				 ].join(`${separator}\n`) :
 				 `${open}${ childrenSingleLine }${close}`;
 	}
@@ -220,7 +220,7 @@ export function stringify (obj, options = {}) {
 		}
 
 		if (options.custom) {
-			let fns = Array.isArray(options.custom)? options.custom : [options.custom];
+			let fns = Array.isArray(options.custom) ? options.custom : [options.custom];
 			for (let fn of fns) {
 				let ret = fn(obj, level);
 				if (ret !== undefined) {
@@ -269,7 +269,7 @@ export function stringify (obj, options = {}) {
 			case "RegExp":
 			case "Set":
 			case "Map":
-				return "{}"
+				return "{}";
 			case "Array":
 				return join(obj, {
 					open: "[", close: "]",
@@ -282,7 +282,7 @@ export function stringify (obj, options = {}) {
 			open: "{", close: "}",
 			indent,
 			map: o => callee(o, level + 1),
-			mapKey: o => callee(o, level + 1)
+			mapKey: o => callee(o, level + 1),
 		 });
 	}
 }

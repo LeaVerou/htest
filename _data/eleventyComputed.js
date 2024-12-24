@@ -38,4 +38,4 @@ export default {
 	allData (data) {
 		return data;
 	},
-}
+};

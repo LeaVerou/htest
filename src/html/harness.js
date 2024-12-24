@@ -18,12 +18,12 @@ function runSelected (names) {
 					evt.target.contentWindow.document.addEventListener("testresultsupdate", evt => {
 						updateTotals();
 					});
-				}
-			}
+				},
+			},
 		});
 	});
 
-	function updateTotals() {
+	function updateTotals () {
 		let totals = {pass: 0, fail: 0};
 
 		tests.forEach(iframe => {
@@ -39,7 +39,7 @@ function runSelected (names) {
 
 		let totalsEl = document.querySelector("h1 + .totals") || create({className: "totals", after: document.querySelector("h1")});
 
-		totalsEl.innerHTML = `<strong>${totals.pass}</strong> passing, <strong>${totals.fail}</strong> failing of ${totals.pass + totals.fail} total`
+		totalsEl.innerHTML = `<strong>${totals.pass}</strong> passing, <strong>${totals.fail}</strong> failing of ${totals.pass + totals.fail} total`;
 	}
 }
 
@@ -73,7 +73,7 @@ tests.insertAdjacentHTML("afterbegin", `<li>
 	<input type="checkbox" id="select_all" checked>
 	Select/unselect all
 </label>
-</li>`)
+</li>`);
 tests.insertAdjacentHTML("afterend", `<button id="run_button">Run selected</button>`);
 
 select_all.addEventListener("click", evt => {

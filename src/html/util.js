@@ -44,16 +44,16 @@ export async function doClick (click) {
 		await delay(click.delay);
 	}
 
-	let targets = click.selector? $$(click.selector, target) : [target];
+	let targets = click.selector ? $$(click.selector, target) : [target];
 
 	for (target of targets) {
-		for (let i=0; i<click.times; i++) {
+		for (let i = 0; i < click.times; i++) {
 			target.click();
 		}
 	}
 }
 
-export function $$(selector, context = document) {
+export function $$ (selector, context = document) {
 	return [...context.querySelectorAll(selector)];
 }
 
@@ -68,7 +68,7 @@ export function ready (doc = document) {
 	});
 }
 
-export function output(obj) {
+export function output (obj) {
 	return stringify(obj, {
 		custom: (obj) => {
 			if (Array.isArray(obj)) {
@@ -78,6 +78,6 @@ export function output(obj) {
 			if (typeof obj === "string") {
 				return obj;
 			}
-		}
+		},
 	});
 }

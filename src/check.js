@@ -13,7 +13,7 @@ import { getType } from "./util.js";
 export function and (...fns) {
 	return function (...args) {
 		return fns.every(fn => fn(...args));
-	}
+	};
 }
 
 /**
@@ -24,7 +24,7 @@ export function and (...fns) {
 export function or (...fns) {
 	return function (...args) {
 		return fns.some(fn => fn(...args));
-	}
+	};
 }
 
 /**
@@ -37,7 +37,7 @@ export function is (type) {
 
 	return function (actual) {
 		return getType(actual) === type;
-	}
+	};
 }
 
 /**
@@ -88,12 +88,12 @@ export function deep (check = (a, b) => a === b) {
 		}
 
 		return false;
-	}
+	};
 
 	callee.shallow = check;
 
 	return callee;
-};
+}
 
 /**
  * Shallow equals function at the core of many other comparison functions
@@ -139,7 +139,7 @@ export function shallowEquals ({
 		}
 
 		return false;
-	}
+	};
 }
 
 /**
@@ -195,10 +195,10 @@ export function range (options = {}) {
 			(options.gt  === undefined || actual >  options.gt)  &&
 			(options.gte === undefined || actual >= options.gte)
 		);
-	}
+	};
 }
 
 /**
  * Alias of `range()`
  */
-export const between = range
+export const between = range;

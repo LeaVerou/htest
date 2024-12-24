@@ -9,7 +9,7 @@ let tests = await Promise.all(filenames.map(name => import(`./${name}`).then(mod
 
 let root = {
 	name: "All tests",
-	tests
+	tests,
 };
 
 export default root;

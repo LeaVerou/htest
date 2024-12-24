@@ -7,7 +7,7 @@ let modifiers = {
 	b:     "\x1b[1m",
 	dim:   "\x1b[2m",
 	i:     "\x1b[3m",
-}
+};
 
 let hues = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"];
 
@@ -29,10 +29,10 @@ function getColorCode (hue, {light, bg} = {}) {
 	}
 
 	if (light) {
-		return `\x1b[${ bg ? 10 : 9 }${i}m`
+		return `\x1b[${ bg ? 10 : 9 }${i}m`;
 	}
 
-	return `\x1b[${ light ? "1;" : ""}${ bg ? 4 : 3 }${i}m`
+	return `\x1b[${ light ? "1;" : ""}${ bg ? 4 : 3 }${i}m`;
 }
 
 let tags = [

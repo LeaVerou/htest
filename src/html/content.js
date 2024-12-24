@@ -8,17 +8,17 @@ const formContent = {
 	"input, textarea": e => e.value,
 	"select": e => {
 		return [...e.selectedOptions].map(o => o.textContent).join(",\n");
-	}
-}
+	},
+};
 
 export function domContent ({
 	hidden = false,
 	pseudos = true,
 	collapseWhitespace = true,
 	ignore = DEFAULT_CONTENT_IGNORE,
-	smartForms = true
+	smartForms = true,
 } = {}) {
-	let callee = function(node) {
+	let callee = function (node) {
 		var ret = "";
 
 		if (node.nodeType == 1) {
@@ -53,7 +53,7 @@ export function domContent ({
 		}
 
 		return collapseWhitespace ? ret.replace(/\s+/g, " ") : ret;
-	}
+	};
 	return callee;
 }
 

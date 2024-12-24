@@ -41,7 +41,7 @@ export function extractNumbers (value) {
 	let type = getType(value);
 
 	if (type === "number") {
-		return [value]
+		return [value];
 	}
 	else {
 		let patterns = [rNumber, "NaN", "null", "Infinity", "-Infinity"];

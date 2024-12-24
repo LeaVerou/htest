@@ -15,42 +15,42 @@ for (let h1 of $$("body > section > h1")) {
 
 	create("a", {
 		href: "#" + section.id,
-		around: h1.firstChild
+		around: h1.firstChild,
 	});
 }
 
 Promise.all([
 	include(self.Prism, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/prism.min.js"),
-	include(self.tippy, "https://unpkg.com/tippy.js@1/dist/tippy.js")
+	include(self.tippy, "https://unpkg.com/tippy.js@1/dist/tippy.js"),
 ])
-.then(() => include(Prism.plugins.NormalizeWhitespace, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"))
-.then(() => {
-	var t = tippy(cells, {
-		html: td => {
-			var pre = create("pre")
-			var code = create("code", {
-				textContent: cellHTML.get(td),
-				className: "language-markup",
-				inside: pre
+	.then(() => include(Prism.plugins.NormalizeWhitespace, "https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"))
+	.then(() => {
+		var t = tippy(cells, {
+			html: td => {
+				var pre = create("pre");
+				var code = create("code", {
+					textContent: cellHTML.get(td),
+					className: "language-markup",
+					inside: pre,
+				});
+				Prism.highlightElement(code);
+
+				return pre;
+			},
+			arrow: true,
+			theme: "light",
+			maxWidth: "50em",
+		});
+
+		t.store.forEach(instance => {
+			bind(instance.el, "mouseover mouseenter", function (evt) {
+				if (evt.target != this) {
+					var popper = t.getPopperElement(this);
+					t.hide(popper);
+				}
 			});
-			Prism.highlightElement(code);
-
-			return pre;
-		},
-		arrow: true,
-		theme: "light",
-		maxWidth: "50em"
-	});
-
-	t.store.forEach(instance => {
-		bind(instance.el, "mouseover mouseenter", function(evt) {
-			if (evt.target != this) {
-				var popper = t.getPopperElement(this);
-				t.hide(popper);
-			}
 		});
 	});
-});
 
 loadCSS("https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.1/themes/prism.css");
 loadCSS("https://unpkg.com/tippy.js@1.3.0/dist/tippy.css");
@@ -113,10 +113,10 @@ let hashchanged = evt => {
 							location.hash = "#";
 							location.reload();
 						},
-						textContent: "Show all tests"
-					}
+						textContent: "Show all tests",
+					},
 				],
-				start: document.body
+				start: document.body,
 			});
 		}
 	}
@@ -130,54 +130,54 @@ let nav = create({
 	tag: "nav",
 	inside: document.body,
 	contents: [
-		window === parent? {
+		window === parent ? {
 			tag: "a",
 			className: "home",
 			title: "Home",
 			textContent: "🏠",
 			href: "index.html",
-			target: "_top"
+			target: "_top",
 		} : undefined,
 		...["fail", "pass"].map(type => {
 			return {
-					className: "count-" + type,
-					contents: [
-						{className: "count"},
-						{
-							className: "nav",
-							hidden: true,
-							contents: [
-								{
-									tag: "button", type: "button",
-									className: "previous", textContent: "◂",
-									onclick: evt => {
-										RefTest.previous(type);
-										evt.stopPropagation();
-									}
+				className: "count-" + type,
+				contents: [
+					{className: "count"},
+					{
+						className: "nav",
+						hidden: true,
+						contents: [
+							{
+								tag: "button", type: "button",
+								className: "previous", textContent: "◂",
+								onclick: evt => {
+									RefTest.previous(type);
+									evt.stopPropagation();
 								},
-								{className: "current"},
-								{
-									tag: "button", type: "button",
-									className: "next", textContent: "▸",
-									onclick: evt => {
-										RefTest.next(type);
-										evt.stopPropagation();
-									}
-								}
-							]
-						}
-					],
-					onclick: RefTest.next.bind(RefTest, type)
-				};
-		})
-	]
+							},
+							{className: "current"},
+							{
+								tag: "button", type: "button",
+								className: "next", textContent: "▸",
+								onclick: evt => {
+									RefTest.next(type);
+									evt.stopPropagation();
+								},
+							},
+						],
+					},
+				],
+				onclick: RefTest.next.bind(RefTest, type),
+			};
+		}),
+	],
 });
 
 // HTML tooltips
 var cellHTML = new WeakMap();
 var cells = $$("table.reftest td");
 cells.forEach(td => {
-	cellHTML.set(td, td.attributes.length > 0? td.outerHTML : td.innerHTML);
+	cellHTML.set(td, td.attributes.length > 0 ? td.outerHTML : td.innerHTML);
 });
 
 $$("table.reftest").forEach(table => {
@@ -186,7 +186,7 @@ $$("table.reftest").forEach(table => {
 	}
 });
 
-function loadCSS(url) {
+function loadCSS (url) {
 	document.head.insertAdjacentHTML("beforeend", `<link rel="stylesheet" href="${url}">`);
 }
 
@@ -203,7 +203,7 @@ document.addEventListener("dblclick", evt => {
 
 
 Object.assign(globalThis, {
-	Test
+	Test,
 });
 
 for (let key in Test) {

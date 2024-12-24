@@ -22,7 +22,7 @@ export default class TestResult extends BubblingEventTarget {
 	 *        If mixed, it will follow the numbers as a path, then will not consume any more numbers until it finds the id.
 	 * @param {boolean} [options.verbose] Show all tests, not just failed ones
 	 */
-	constructor(test, parent, options = {}) {
+	constructor (test, parent, options = {}) {
 		super();
 
 		this.test = test;
@@ -207,7 +207,7 @@ export default class TestResult extends BubblingEventTarget {
 			}
 			else {
 				if (!ret.pass) {
-					ret.details.push(`Expected error but ${ this.actual !== undefined? ` got ${ stringify(this.actual) }` : "none was thrown" }`);
+					ret.details.push(`Expected error but ${ this.actual !== undefined ? ` got ${ stringify(this.actual) }` : "none was thrown" }`);
 				}
 			}
 		}
@@ -305,7 +305,7 @@ ${ this.error.stack }`);
 	getResult (o) {
 		let color = this.pass ? "green" : "red";
 		let ret = [
-			`<b><bg ${color}><c white> ${ this.pass? "PASS" : "FAIL" } </c></bg></b>`,
+			`<b><bg ${color}><c white> ${ this.pass ? "PASS" : "FAIL" } </c></bg></b>`,
 			`<c light${color}>${this.name ?? "(Anonymous)"}</c>`,
 		].join(" ");
 
@@ -332,7 +332,7 @@ ${ this.error.stack }`);
 	getSummary (o = {}) {
 		let stats = this.stats;
 		let ret = [
-			`${this.name ?? (this.test.level === 0? "<i>(All tests)</i>" : "")}`,
+			`${this.name ?? (this.test.level === 0 ? "<i>(All tests)</i>" : "")}`,
 		];
 
 		if (stats.pass > 0) {
@@ -356,7 +356,7 @@ ${ this.error.stack }`);
 			ret.push(`<dim><b>${ stats.messages }</b> ${ suffix }</dim>`);
 		}
 
-		let icon = stats.fail > 0? "❌" : stats.pending > 0? "⏳" : "✅";
+		let icon = stats.fail > 0 ? "❌" : stats.pending > 0 ? "⏳" : "✅";
 		ret.splice(1, 0, icon);
 
 		if (this.timeTaken) {

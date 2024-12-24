@@ -4,7 +4,7 @@
 
 import Test from "./classes/Test.js";
 import TestResult from "./classes/TestResult.js";
-import { getType, subsetTests } from './util.js';
+import { getType, subsetTests } from "./util.js";
 
 /**
  * Run a test or group of tests
@@ -60,7 +60,7 @@ export default function run (test, options = {}) {
 	}
 
 	if (!test || test.tests?.length === 0) {
-		Test.warn("No tests found" + (options.location? " in " + options.location : ""));
+		Test.warn("No tests found" + (options.location ? " in " + options.location : ""));
 		return;
 	}
 
@@ -87,7 +87,7 @@ export default function run (test, options = {}) {
 	for (let hook of hooks) {
 		let fn = options[hook] ?? env[hook];
 		if (fn) {
-			ret.addEventListener(hook, function(evt) {
+			ret.addEventListener(hook, function (evt) {
 				let target = evt.detail?.target ?? evt.target ?? ret;
 				fn(target, options, evt, ret);
 			});

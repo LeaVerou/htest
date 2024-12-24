@@ -1,7 +1,7 @@
 export default class BubblingEventTarget extends EventTarget {
 	parent = null;
 
-	constructor() {
+	constructor () {
 		super();
 	}
 
@@ -12,7 +12,7 @@ export default class BubblingEventTarget extends EventTarget {
 				let target = event.detail?.target ?? event.target ?? this;
 				let newEvent = new CustomEvent(event.type, {
 					...event,
-					detail: { target }
+					detail: { target },
 				});
 				parent.dispatchEvent(newEvent);
 			}

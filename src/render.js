@@ -35,8 +35,8 @@ export default function render (test) {
 							contents: [
 								{tag: "td", textContent: t2.args?.map(a => output(a)).join(", ") },
 								{tag: "td"},
-								{tag: "td", textContent: output(t2.expect) }
-							]
+								{tag: "td", textContent: output(t2.expect) },
+							],
 						});
 
 						if (t2.throws) {
@@ -45,8 +45,8 @@ export default function render (test) {
 
 						testRows.set(t2, tr);
 						return tr;
-					})
-				})
+					}),
+				}),
 			],
 			inside: document.body,
 		});
@@ -55,7 +55,7 @@ export default function render (test) {
 			if (!table.reftest) {
 				new RefTest(table);
 			}
-		})
+		});
 
 		return section;
 	});

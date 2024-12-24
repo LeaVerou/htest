@@ -9,5 +9,5 @@ export default {
 		{ arg: [1, 2, 3], expect: "[1, 2, 3]" },
 		{ arg: { foo: "bar" }, expect: '{"foo": "bar"}' },
 		{ arg: new Set([1, 2, 3]), expect: "Set(3) {1, 2, 3}" },
-	]
-}
+	],
+};

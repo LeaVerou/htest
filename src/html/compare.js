@@ -7,7 +7,7 @@ import { content } from "./content.js";
 import * as check from "../check.js";
 import * as map from "../map.js";
 
-function compare(cells, map, comparator = (a, b) => a == b) {
+function compare (cells, map, comparator = (a, b) => a == b) {
 	let [test, ref] = cells.slice(-2).map(map);
 	return comparator(test, ref);
 }
@@ -29,7 +29,7 @@ export function numbers (...cells) {
 export function attribute (attribute, td, ref) {
 	return compare([td, ref],
 		td => $$("*", td).map(el => el[attribute]),
-		check.equals
+		check.equals,
 	);
 }
 
@@ -47,7 +47,7 @@ export function selector (td, ref) {
 	else {
 		var negative = ref.classList.contains("not");
 		var has = !!$(ref.textContent, td);
-		return negative? !has : has;
+		return negative ? !has : has;
 	}
 }
 

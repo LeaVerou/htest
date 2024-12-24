@@ -1,4 +1,4 @@
-import { doClick, create, $$, bind, ready, } from "./util.js";
+import { doClick, create, $$, bind, ready } from "./util.js";
 import { formatDuration } from "../util.js";
 import hooks from "../hooks.js";
 import * as compare from "./compare.js";
@@ -38,10 +38,10 @@ export default class RefTest {
 						tag: "tr",
 						contents: header.map(text => {
 							return {tag: "th", textContent: text};
-						})
-					}
+						}),
+					},
 				],
-				start: this.table
+				start: this.table,
 			});
 		}
 
@@ -57,7 +57,7 @@ export default class RefTest {
 		this.resultObserver.observe(this.table, {
 			subtree: true,
 			attributes: true,
-			attributeFilter: ["class"]
+			attributeFilter: ["class"],
 		});
 
 		if (!this.manual) {
@@ -73,7 +73,7 @@ export default class RefTest {
 			this.table.closest("[mv-app]")?.addEventListener("mv-load", test);
 
 			$$("[data-click]", this.table)
-				.concat(this.table.matches("[data-click]")? [this.table] : [])
+				.concat(this.table.matches("[data-click]") ? [this.table] : [])
 				.forEach(target => {
 					target.getAttribute("data-click").trim().split(/\s*,\s*/).forEach(doClick);
 				});
@@ -91,7 +91,7 @@ export default class RefTest {
 			attributes: true,
 			characterData: true,
 			// TODO move this somewhere else, it's Mavo specific
-			attributeFilter: ["mv-mode"]
+			attributeFilter: ["mv-mode"],
 		});
 	}
 
@@ -171,14 +171,14 @@ export default class RefTest {
 
 			var error = ret instanceof Error;
 
-			var previousClass = tr.classList.contains("pass")? "pass" : "fail";
+			var previousClass = tr.classList.contains("pass") ? "pass" : "fail";
 			tr.classList.remove("pass", "fail");
 			let pass = ret;
 			if (error) {
 				pass = tr.hasAttribute("data-error");
 			}
 
-			var className = pass? "pass" : "fail";
+			var className = pass ? "pass" : "fail";
 			tr.classList.add(className);
 
 			if (className == "pass" && className != previousClass && !tr.classList.contains("interactive")) {
@@ -189,7 +189,7 @@ export default class RefTest {
 		}
 	}
 
-	static hooks = hooks
+	static hooks = hooks;
 
 	// Retrieve the comparator function based on a data-test string
 	static async getTest (test, fallback) {
@@ -214,7 +214,7 @@ export default class RefTest {
 	}
 
 	// Default comparison functions
-	static compare = compare
+	static compare = compare;
 
 	// Prettify code for presentation
 	// TODO just use Prism whitespace plugin
@@ -237,14 +237,14 @@ export default class RefTest {
 			fail: $$("table.reftest:not(.ignore) tr.fail:not(.ignore)"),
 			current: {
 				pass: -1,
-				fail: -1
-			}
+				fail: -1,
+			},
 			// interactive: $$("table.reftest tr.interactive")
 		};
 
 		let detail = {
 			pass: this.results.pass.length,
-			fail: this.results.fail.length
+			fail: this.results.fail.length,
 		};
 
 		document.body.style.setProperty("--pass", detail.pass);

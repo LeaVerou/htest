@@ -22,7 +22,7 @@ export function idify (readable) {
 		.replace(/\s+/g, "-") // Convert whitespace to hyphens
 		.replace(/[^\w-]/g, "") // Remove weird characters
 		.toLowerCase();
-};
+}
 
 export function delay (ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
@@ -105,7 +105,7 @@ export function regexEscape (str) {
  */
 export const stringifyFlavors = {
 	console: (obj, level) => {
-		switch(typeof obj) {
+		switch (typeof obj) {
 			case "symbol":
 				return `Symbol(${obj.description})`;
 			case "function":
@@ -137,16 +137,16 @@ export const stringifyFlavors = {
 			return toString;
 		}
 	},
-}
+};
 export function stringify (obj, options = {}) {
 	let overrides = options.custom ? [].concat(options.custom) : [];
 
 	overrides.push(stringifyFlavors.console);
 
 	return objects.stringify(obj, {
-		custom: overrides
+		custom: overrides,
 	});
-};
+}
 
 export function subsetTests (test, path) {
 	if (!Array.isArray(path)) {
@@ -170,7 +170,7 @@ export function subsetTests (test, path) {
 		segment = Number(segment);
 		let segmentIndex = (segment < 0 ? tests.length : 0) + segment;
 
-		for (let i=0; i<tests.length; i++) {
+		for (let i = 0; i < tests.length; i++) {
 			let t = tests[i];
 			if (i !== segmentIndex) {
 				t.skip = true;
