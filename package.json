@@ -11,7 +11,8 @@
     "watch:docs": "npx typedoc --watch",
     "watch": "npm run watch:html",
     "eslint": "npx eslint .",
-    "eslint:fix": "npx eslint . --fix"
+    "eslint:fix": "npx eslint . --fix",
+    "release": "release-it"
   },
   "type": "module",
   "exports": {
