@@ -186,9 +186,9 @@ export function subsetTests (test, path) {
 /**
  * Intercept console output while running a function.
  * @param {Function} fn Function to run.
- * @returns {Array<{args: Array<string>, method: string}>} Array of intercepted messages containing the used console method and passed arguments.
+ * @returns {Promise<Array<{args: Array<string>, method: string}>>} A promise that resolves with an array of intercepted messages containing the used console method and passed arguments.
  */
-export function interceptConsole (fn) {
+export async function interceptConsole (fn) {
 	const methods = ["log", "warn", "error"];
 
 	let originalConsole = {};
@@ -199,7 +199,10 @@ export function interceptConsole (fn) {
 		console[method] = (...args) => messages.push({args, method});
 	}
 
-	fn();
+	fn = fn();
+	if (fn instanceof Promise) {
+		await fn;
+	}
 
 	for (let method in originalConsole) {
 		console[method] = originalConsole[method];
