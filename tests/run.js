@@ -8,16 +8,12 @@ export default {
 			run: () => "foo",
 		},
 		{
-			tests:[
-				{
-					name: "Asynchronous run()",
-					run: async () => await Promise.resolve("foo"),
-				},
-				{
-					name: "run() returning a promise",
-					run: () => new Promise(resolve => setInterval(() => resolve("foo"), 100)),
-				},
-			],
+			name: "Asynchronous run()",
+			run: async () => await Promise.resolve("foo"),
+		},
+		{
+			name: "run() returning a promise",
+			run: () => new Promise(resolve => setInterval(() => resolve("foo"), 100)),
 		},
 	],
 };
