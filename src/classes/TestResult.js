@@ -79,7 +79,7 @@ export default class TestResult extends BubblingEventTarget {
 	 * Run the test(s)
 	 */
 	async run () {
-		this.messages = interceptConsole(async () => {
+		this.messages = await interceptConsole(async () => {
 			let start = performance.now();
 
 			try {
