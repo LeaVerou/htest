@@ -16,14 +16,20 @@ https://htest.dev
 
 ## Features at a glance
 
+- ✅ **Friendly**: Never used a unit test framework before? No problem! hTest is designed to be as friendly as possible to newcomers.
 - ✅ **Declarative**: Write your tests as nested object literals, with nice, readable syntax.
 - ✅ **Flexible**: You decide where your tests live, across how many files, and how they’re grouped. Anything you can `import`, you can test.
 - ✅ **Boilerplate-free**: Any commonalities between tests only specified once on the parent, and inherited. Anything that can be optional, is.
 - ✅ **Quick to write**: Most tests only need two properties: `args` and `expect`. No more excuses for not testing your utility functions!
 - ✅ **ESM-first**: Written in ESM from the get-go.
 - ✅ **CLI and browser**: Run your tests in the command line, in the browser, or both.
-- ✅ **HTML-first mode**: Working on UI-heavy code? Write your tests in HTML, with reactive evaluation and mock interactions!
-- ✅ **Friendly**: Never used a unit test framework before? No problem! hTest is designed to be as friendly as possible to newcomers.
+- ✅ **Optional HTML-first mode**: Working on UI-heavy code? Write tests in HTML, with reactive evaluation and mock interactions!
+
+## Installation
+
+```sh
+npm install htest.dev
+```
 
 ## Quick start
 
