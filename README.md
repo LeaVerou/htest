@@ -1,7 +1,3 @@
----
-title: Declarative unit testing
----
-
 <header>
 
 # ✅ **h**Test
