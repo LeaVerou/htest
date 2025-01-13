@@ -143,7 +143,10 @@ Press <b>Ctrl+Shift+→</b> and <b>Ctrl+Shift+←</b> to expand or collapse all 
 Use <b>any other key</b> to quit interactive mode.
 `;
 			hint = format(hint);
-			console.log(hint);
+			// Why not console.log(hint)? Because we don't want to mess up other console messages produced by tests,
+			// especially the async ones.
+			logUpdate(hint);
+			logUpdate.done();
 
 			readline.emitKeypressEvents(process.stdin);
 			process.stdin.setRawMode(true); // handle keypress events instead of Node
