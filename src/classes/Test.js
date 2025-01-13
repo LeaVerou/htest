@@ -59,6 +59,10 @@ export default class Test {
 				this.args = [this.args];
 			}
 		}
+		else {
+			// No args
+			this.args = [];
+		}
 
 		if (!this.name) {
 			if (this.getName) {
