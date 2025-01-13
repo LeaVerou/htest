@@ -66,6 +66,10 @@ body > header {
 		& > a {
 			color: inherit;
 			text-decoration: none;
+
+			& img {
+				block-size: .75em;
+			}
 		}
 
 		& strong {

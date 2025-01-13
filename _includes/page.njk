@@ -10,7 +10,7 @@
 	{%- else -%}
 	<title>hTest: Declarative unit testing, for everyone</title>
 	{%- endif %}
-	<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">✅</text></svg>'>
+	<link rel="icon" href="{{ page | relative }}/assets/images/favicon.ico" />
 	<link rel="stylesheet" href="{{ page | relative }}/assets/prism.css">
 	<link rel="stylesheet" href="{{ page | relative }}/assets/style.css">
 	<script src="{{ page | relative }}/assets/prism.js"></script>
@@ -20,7 +20,7 @@
 <header>
 
 <h1>
-	<a href="{{ page | relative }}/">✅ <strong>h</strong>Test</a>
+	<a href="{{ page | relative }}/"><img src="{{ page | relative }}/assets/images/logo.svg" height="1em" alt="Logo showing a white checkmark on a green background" /> <strong>h</strong>Test</a>
 </h1>
 
 <p>Declarative unit testing, for everyone</p>
