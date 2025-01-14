@@ -244,32 +244,55 @@ ${ this.error.stack }`);
 			else {
 				let actual = this.mapped?.actual ?? this.actual;
 				let actualString = stringify(actual);
-				let message = "Got ";
 
+				let message;
 				if ("expect" in test) {
 					let expect = this.mapped?.expect ?? test.expect;
 					let expectString = stringify(expect);
+
 					let changes = diffChars(actualString, expectString);
 
-					// Format actual value diff
-					message += formatDiff(changes);
+					// Calculate output lengths to determine formatting style
+					let actualLength = actualString.length;
 					if (this.mapped && actual !== this.actual) {
-						message += ` (${ stringify(this.actual) } unmapped)`;
+						actualLength += stringify(this.actual).length;
 					}
 
-					message += ", expected ";
-
-					// Format expected value diff
-					message += formatDiff(changes, { expected: true });
-
+					let expectedLength = expectString.length;
 					if (this.mapped && expect !== test.expect) {
-						message += ` (${ stringify(test.expect) } unmapped)`;
+						expectedLength += stringify(test.expect).length;
+					}
+
+					// TODO: Use global (?) option instead of the magic number 40
+					let inline = Math.max(actualLength, expectedLength) <= 40;
+					if (inline) {
+						message = `Got ${ formatDiff(changes) }`;
+						if (this.mapped && actual !== this.actual) {
+							message += ` <dim>(${ stringify(this.actual) } unmapped)</dim>`;
+						}
+
+						message += `, expected ${ formatDiff(changes, { expected: true }) }`;
+						if (this.mapped && expect !== test.expect) {
+							message += ` <dim>(${ stringify(test.expect) } unmapped)</dim>`;
+						}
+					}
+					else {
+						// Vertical format for long values
+						message = "\n Actual:   " + formatDiff(changes);
+						if (this.mapped && actual !== this.actual) {
+							message += `\n\t\t  <dim>${ stringify(this.actual) } unmapped</dim>`;
+						}
+
+						message += "\n Expected: " + formatDiff(changes, { expected: true });
+						if (this.mapped && expect !== test.expect) {
+							message += `\n\t\t  <dim>${ stringify(test.expect) } unmapped</dim>`;
+						}
 					}
 				}
 				else {
-					message += actualString;
+					message = `Got ${ actualString }`;
 					if (this.mapped && actual !== this.actual) {
-						message += ` (${ stringify(this.actual) } unmapped)`;
+						message += ` <dim>(${ stringify(this.actual) } unmapped)</dim>`;
 					}
 					message += " which doesn't pass the test provided";
 				}
