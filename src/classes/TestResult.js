@@ -1,6 +1,7 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
 import format, { stripFormatting } from "../format-console.js";
-import { delay, formatDuration, interceptConsole, pluralize, stringify } from "../util.js";
+import { delay, formatDuration, interceptConsole, pluralize, stringify, formatDiff } from "../util.js";
+import { diffChars } from "diff";
 
 /**
  * Represents the result of a test or group of tests.
@@ -242,23 +243,35 @@ ${ this.error.stack }`);
 			}
 			else {
 				let actual = this.mapped?.actual ?? this.actual;
-
-				let message = `Got ${ stringify(actual) }`;
-
-				if (this.mapped && actual !== this.actual) {
-					message += ` (${ stringify(this.actual) } unmapped)`;
-				}
+				let actualString = stringify(actual);
+				let message = "Got ";
 
 				if ("expect" in test) {
 					let expect = this.mapped?.expect ?? test.expect;
-					message += `, expected ${ stringify(expect) }`;
+					let expectString = stringify(expect);
+					let changes = diffChars(actualString, expectString);
+
+					// Format actual value diff
+					message += formatDiff(changes);
+					if (this.mapped && actual !== this.actual) {
+						message += ` (${ stringify(this.actual) } unmapped)`;
+					}
+
+					message += ", expected ";
+
+					// Format expected value diff
+					message += formatDiff(changes, { expected: true });
 
 					if (this.mapped && expect !== test.expect) {
 						message += ` (${ stringify(test.expect) } unmapped)`;
 					}
 				}
 				else {
-					message += " which doesn’t pass the test provided";
+					message += actualString;
+					if (this.mapped && actual !== this.actual) {
+						message += ` (${ stringify(this.actual) } unmapped)`;
+					}
+					message += " which doesn't pass the test provided";
 				}
 
 				ret.details.push(message);
