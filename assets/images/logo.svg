@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
-	<!-- Colors courtesy of Tailwind: https://tailwindcss.com/	 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="48" height="48">
+	<!-- Colors courtesy of Tailwind: https://tailwindcss.com/ -->
 	<rect width="100%" height="100%" rx="80" ry="80" fill="#65a30d" />
 	<polyline points="250,550 450,750 750,250" stroke="white" stroke-width="150" fill="none" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
