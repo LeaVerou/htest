@@ -1,6 +1,7 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
 import format, { stripFormatting } from "../format-console.js";
-import { delay, formatDuration, interceptConsole, pluralize, stringify } from "../util.js";
+import { delay, formatDuration, interceptConsole, pluralize, stringify, formatDiff } from "../util.js";
+import { diffChars } from "diff";
 
 /**
  * Represents the result of a test or group of tests.
@@ -242,23 +243,58 @@ ${ this.error.stack }`);
 			}
 			else {
 				let actual = this.mapped?.actual ?? this.actual;
+				let actualString = stringify(actual);
 
-				let message = `Got ${ stringify(actual) }`;
-
-				if (this.mapped && actual !== this.actual) {
-					message += ` (${ stringify(this.actual) } unmapped)`;
-				}
-
+				let message;
 				if ("expect" in test) {
 					let expect = this.mapped?.expect ?? test.expect;
-					message += `, expected ${ stringify(expect) }`;
+					let expectString = stringify(expect);
 
+					let changes = diffChars(actualString, expectString);
+
+					// Calculate output lengths to determine formatting style
+					let actualLength = actualString.length;
+					if (this.mapped && actual !== this.actual) {
+						actualLength += stringify(this.actual).length;
+					}
+
+					let expectedLength = expectString.length;
 					if (this.mapped && expect !== test.expect) {
-						message += ` (${ stringify(test.expect) } unmapped)`;
+						expectedLength += stringify(test.expect).length;
+					}
+
+					// TODO: Use global (?) option instead of the magic number 40
+					let inline = Math.max(actualLength, expectedLength) <= 40;
+					if (inline) {
+						message = `Got ${ formatDiff(changes) }`;
+						if (this.mapped && actual !== this.actual) {
+							message += ` <dim>(${ stringify(this.actual) } unmapped)</dim>`;
+						}
+
+						message += `, expected ${ formatDiff(changes, { expected: true }) }`;
+						if (this.mapped && expect !== test.expect) {
+							message += ` <dim>(${ stringify(test.expect) } unmapped)</dim>`;
+						}
+					}
+					else {
+						// Vertical format for long values
+						message = "\n Actual:   " + formatDiff(changes);
+						if (this.mapped && actual !== this.actual) {
+							message += `\n\t\t  <dim>${ stringify(this.actual) } unmapped</dim>`;
+						}
+
+						message += "\n Expected: " + formatDiff(changes, { expected: true });
+						if (this.mapped && expect !== test.expect) {
+							message += `\n\t\t  <dim>${ stringify(test.expect) } unmapped</dim>`;
+						}
 					}
 				}
 				else {
-					message += " which doesn’t pass the test provided";
+					message = `Got ${ actualString }`;
+					if (this.mapped && actual !== this.actual) {
+						message += ` <dim>(${ stringify(this.actual) } unmapped)</dim>`;
+					}
+					message += " which doesn't pass the test provided";
 				}
 
 				ret.details.push(message);
