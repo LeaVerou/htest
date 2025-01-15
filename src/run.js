@@ -19,6 +19,11 @@ export default function run (test, options = {}) {
 		options.env = "auto";
 	}
 
+	if (options.ci) {
+		// Disable rich output (in case of failed tests) in CI mode
+		options.format = "plain";
+	}
+
 	if (typeof options.env === "string") {
 		import(`./env/${ options.env }.js`)
 			.then(m => run(test, {...options, env: m.default}))

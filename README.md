@@ -19,6 +19,7 @@ https://htest.dev
 - ✅ **Quick to write**: Most tests only need two properties: `args` and `expect`. No more excuses for not testing your utility functions!
 - ✅ **ESM-first**: Written in ESM from the get-go.
 - ✅ **CLI and browser**: Run your tests in the command line, in the browser, or both.
+- ✅ **CI-ready**: Fully compatible with continuous integration and automated test running processes.
 - ✅ **Optional HTML-first mode**: Working on UI-heavy code? Write tests in HTML, with reactive evaluation and mock interactions!
 
 ## Installation
