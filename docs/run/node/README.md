@@ -123,7 +123,7 @@ npx htest tests --ci
 ```
 
 This mode:
-- Disables colors and interactive elements
+- Disables interactive elements
 - Outputs in a format optimized for CI logging
 - Exits with code `1` if any tests fail
 
