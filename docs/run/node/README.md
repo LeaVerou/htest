@@ -113,3 +113,41 @@ import run from "../node_modules/htest.dev/src/js/run.js";
 
 run("tests/*.js");
 ```
+
+## Running in CI environments
+
+For continuous integration environments, you can use the `--ci` flag to optimize output for CI systems:
+
+```sh
+npx htest tests --ci
+```
+
+This mode:
+- Disables interactive elements
+- Outputs in a format optimized for CI logging
+- Exits with code `1` if any tests fail
+
+You can use it in your `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "test": "npx htest tests --ci"
+  }
+}
+```
+
+Example GitHub Actions workflow:
+
+```yaml
+name: Tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm install
+      - run: npm test
+```
