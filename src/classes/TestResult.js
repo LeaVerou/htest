@@ -225,15 +225,35 @@ export default class TestResult extends BubblingEventTarget {
 		let ret = {pass: true, details: []};
 
 		if (test.map) {
-			this.mapped = {
-				actual: Array.isArray(this.actual) ? this.actual.map(test.map) : test.map(this.actual),
-				expect: Array.isArray(test.expect) ? test.expect.map(test.map) : test.map(test.expect),
-			};
+			try {
+				this.mapped = {
+					actual: Array.isArray(this.actual) ? this.actual.map(test.map) : test.map(this.actual),
+					expect: Array.isArray(test.expect) ? test.expect.map(test.map) : test.map(test.expect),
+				};
 
-			ret.pass = test.check(this.mapped.actual, this.mapped.expect);
+				try {
+					ret.pass = test.check(this.mapped.actual, this.mapped.expect);
+				}
+				catch (e) {
+					this.error = new Error(`check() failed (working with mapped values). ${ e.message }`);
+				}
+			}
+			catch (e) {
+				this.error = new Error(`map() failed. ${ e.message }`);
+			}
 		}
 		else {
-			ret.pass = test.check(this.actual, test.expect);
+			try {
+				ret.pass = test.check(this.actual, test.expect);
+			}
+			catch (e) {
+				this.error = new Error(`check() failed. ${ e.message }`);
+			}
+		}
+
+		// If `map()` or `check()` errors, consider the test failed
+		if (this.error) {
+			ret.pass = false;
 		}
 
 		if (!ret.pass) {
