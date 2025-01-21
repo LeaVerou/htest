@@ -10,5 +10,12 @@ export default {
 			name: "check() fails",
 			check: (actual, expected) => actual.length < expected.length,
 		},
+		{
+			name: "map() → check() fails",
+			map: arg => undefined,
+			check: (actual, expected) => actual.length < expected.length,
+			arg: 42,
+			expect: 42,
+		},
 	],
 };
