@@ -80,6 +80,18 @@ export default class TestResult extends BubblingEventTarget {
 	}
 
 	/**
+	 * Run some code before running the test(s)
+	 */
+	async setup () {
+		if (this.test.setup) {
+			let ret = this.test.setup.apply(this.test);
+			if (ret instanceof Promise) {
+				await ret;
+			}
+		}
+	}
+
+	/**
 	 * Run the test(s)
 	 */
 	async run () {
@@ -101,6 +113,18 @@ export default class TestResult extends BubblingEventTarget {
 		});
 
 		this.evaluate();
+	}
+
+	/**
+	 * Run some code after running the test(s)
+	 */
+	async teardown () {
+		if (this.test.teardown) {
+			let ret = this.test.teardown.apply(this.test);
+			if (ret instanceof Promise) {
+				await ret;
+			}
+		}
 	}
 
 	static STATS_AVAILABLE = ["pass", "fail", "error", "skipped", "total", "totalTime", "totalTimeAsync", "messages"];
@@ -148,7 +172,9 @@ export default class TestResult extends BubblingEventTarget {
 					this.skip();
 				}
 				else {
-					this.run();
+					this.setup()
+						.then(() => this.run())
+						.then(() => this.teardown());
 				}
 			}
 
