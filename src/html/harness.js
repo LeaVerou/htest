@@ -33,8 +33,8 @@ function runSelected (names) {
 				return;
 			}
 
-			totals.pass += +doc.querySelector("body > nav .count-pass .count").textContent;
-			totals.fail += +doc.querySelector("body > nav .count-fail .count").textContent;
+			totals.pass += +doc.body.style.getPropertyValue("--pass");
+			totals.fail += +doc.body.style.getPropertyValue("--fail");
 		});
 
 		let totalsEl = document.querySelector("h1 + .totals") || create({className: "totals", after: document.querySelector("h1")});
