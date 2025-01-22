@@ -174,7 +174,7 @@ export default class TestResult extends BubblingEventTarget {
 				else {
 					this.setup()
 						.then(() => this.run())
-						.then(() => this.teardown());
+						.finally(() => this.teardown());
 				}
 			}
 
