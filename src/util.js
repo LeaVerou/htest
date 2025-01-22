@@ -1,6 +1,11 @@
 import * as objects from "./objects.js";
 
 /**
+ * Whether we are in Node.js
+ */
+export const IS_NODEJS = typeof process === "object" && process?.versions?.node;
+
+/**
  * Determine the internal JavaScript [[Class]] of an object.
  * @param {*} value - Value to check
  * @returns {string}

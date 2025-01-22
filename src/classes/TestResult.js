@@ -1,7 +1,10 @@
 import BubblingEventTarget from "./BubblingEventTarget.js";
 import format, { stripFormatting } from "../format-console.js";
 import { delay, formatDuration, interceptConsole, pluralize, stringify, formatDiff } from "../util.js";
-import { diffChars } from "diff";
+import { IS_NODEJS } from "../util.js";
+
+// Make the diff package available both in Node.js and the browser
+const { diffChars } = await import(IS_NODEJS ? "diff" : "https://cdn.jsdelivr.net/npm/diff@7.0.0/lib/index.es6.js");
 
 /**
  * Represents the result of a test or group of tests.
