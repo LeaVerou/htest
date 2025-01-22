@@ -25,7 +25,7 @@ For a test file named `test.js`, the HTML file would look like this:
 <body>
 	<script type="module">
 		import "https://htest.dev/htest.js";
-		import render from "https://htest.dev/src/js/render.js";
+		import render from "https://htest.dev/src/render.js";
 		import test from './test.js';
 		render(test);
 	</script>
@@ -46,7 +46,7 @@ You could even use a URL param to specify the test file, so you can use one HTML
 <body>
 	<script type="module">
 		import "https://htest.dev/htest.js";
-		import render from "https://htest.dev/src/js/render.js";
+		import render from "https://htest.dev/src/render.js";
 		let params = new URLSearchParams(location.search);
 		let test = await import(params.get('test'));
 		render(test);
@@ -86,7 +86,7 @@ In fact, you could configure it to output an index of tests if no test is provid
 			}
 
 			Promise.all([
-				import("https://htest.dev/src/js/render.js").then(m => m.default),
+				import("https://htest.dev/src/render.js").then(m => m.default),
 				import(test_url).then(m => m.default),
 			]).then(([render, test]) => render(test));
 		}

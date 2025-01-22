@@ -36,7 +36,7 @@ npx htest tests/*.js,!tests/util.js
 You can create your own CLI script to run your tests, by importing the same code the `htest` command line tool uses:
 
 ```js
-import htest from "../node_modules/htest.dev/src/js/cli.js";
+import htest from "../node_modules/htest.dev/src/cli.js";
 
 let test = {
 	name: "Addtion",
@@ -67,7 +67,7 @@ If you pass a directory, hTest will look for all JS files in that directory exce
 If that's not desirable, you can use the lower level `run()` function:
 
 ```js
-import run from "../node_modules/htest.dev/src/js/run.js";
+import run from "../node_modules/htest.dev/src/run.js";
 import fooTests from "./foo.js";
 import barTests from "./bar.js";
 
@@ -100,7 +100,7 @@ export default {
 `tests/index.js:`
 
 ```js
-import run from "../node_modules/htest.dev/src/js/cli.js";
+import run from "../node_modules/htest.dev/src/cli.js";
 import tests from "./index-fn.js";
 
 run(tests);
@@ -109,7 +109,7 @@ run(tests);
 Just like `htest()`, any string arguments in the `run()` function are interpreted as globs (relative to the current working directory):
 
 ```js
-import run from "../node_modules/htest.dev/src/js/run.js";
+import run from "../node_modules/htest.dev/src/run.js";
 
 run("tests/*.js");
 ```
