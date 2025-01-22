@@ -33,12 +33,15 @@ export default class Test {
 		// Inherit properties from parent
 		// This works recursively because the parent constructor runs before its children
 		if (this.parent) {
-			for (let prop of ["run", "map", "check", "getName", "args", "expect", "skip"]) {
+			for (let prop of ["setup", "run", "teardown", "map", "check", "getName", "args", "expect", "skip"]) {
 				if (!(prop in this) && prop in this.parent) {
 					this[prop] = this.parent[prop];
 				}
 			}
 		}
+
+		this.setup ??= () => {};
+		this.teardown ??= () => {};
 
 		if (!this.check) {
 			this.check = check.equals;
