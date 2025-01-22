@@ -41,7 +41,6 @@ export default class Test {
 		}
 
 		this.setup ??= () => {};
-
 		this.teardown ??= () => {};
 
 		if (!this.check) {
