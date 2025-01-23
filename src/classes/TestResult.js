@@ -150,9 +150,9 @@ export default class TestResult extends BubblingEventTarget {
 						this.skip();
 					}
 					else {
-						Promise.resolve(this.test.before?.())
+						Promise.resolve(this.test.beforeEach?.())
 							.then(() => this.run())
-							.finally(() => this.test.after?.());
+							.finally(() => this.test.afterEach?.());
 					}
 				}
 
