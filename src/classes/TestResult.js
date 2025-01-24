@@ -142,20 +142,24 @@ export default class TestResult extends BubblingEventTarget {
 
 		this.tests = this.test.tests?.map(t => new TestResult(t, this, childOptions));
 
-		delay(1).then(() => {
-			if (this.test.isTest) {
-				if (this.test.skip) {
-					this.skip();
+		delay(1)
+			.then(() => this.test.beforeAll?.())
+			.then(() => {
+				if (this.test.isTest) {
+					if (this.test.skip) {
+						this.skip();
+					}
+					else {
+						Promise.resolve(this.test.beforeEach?.())
+							.then(() => this.run())
+							.finally(() => this.test.afterEach?.());
+					}
 				}
-				else {
-					Promise.resolve(this.test.setup())
-						.then(() => this.run())
-						.finally(() => this.test.teardown());
-				}
-			}
 
-			this.tests?.forEach(t => t.runAll());
-		});
+				this.tests?.forEach(t => t.runAll());
+
+				this.finished.then(() => this.test.afterAll?.());
+			});
 
 		return this;
 	}
