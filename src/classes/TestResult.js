@@ -142,24 +142,42 @@ export default class TestResult extends BubblingEventTarget {
 
 		this.tests = this.test.tests?.map(t => new TestResult(t, this, childOptions));
 
-		delay(1)
+		// Promise resolved when all tests (including nested) are finished
+		this.allFinished = delay(1)
 			.then(() => this.test.beforeAll?.())
 			.then(() => {
 				if (this.test.isTest) {
 					if (this.test.skip) {
-						this.skip();
+						return this.skip();
 					}
-					else {
-						Promise.resolve(this.test.beforeEach?.())
+
+					// If we have hooks, run sequentially
+					if (this.test.beforeEach || this.test.afterEach) {
+						return Promise.resolve()
+							.then(() => this.test.beforeEach?.())
 							.then(() => this.run())
 							.finally(() => this.test.afterEach?.());
 					}
+
+					// No hooks, just run the test
+					return this.run();
 				}
 
-				this.tests?.forEach(t => t.runAll());
+				// For test groups, check if we need sequential execution
+				if (this.test.beforeEach || this.test.afterEach) {
+					// Execute child tests sequentially when hooks exist
+					let promise = Promise.resolve();
+					for (let test of (this.tests ?? [])) {
+						promise = promise.then(() => test.runAll().allFinished);
+					}
+					return promise;
+				}
 
-				this.finished.then(() => this.test.afterAll?.());
-			});
+				// No hooks, run tests in parallel
+				return Promise.all((this.tests ?? []).map(t => t.runAll().allFinished));
+			})
+			.then(() => this.finished)
+			.finally(() => this.test.afterAll?.());
 
 		return this;
 	}
@@ -204,7 +222,7 @@ export default class TestResult extends BubblingEventTarget {
 				ret.pass &&= test.throws(this.error);
 
 				if (!ret.pass) {
-					ret.details.push(`Got error ${ this.error }, but didn’t pass test ${ test.throws }`);
+					ret.details.push(`Got error ${ this.error }, but didn't pass test ${ test.throws }`);
 				}
 			}
 			else if (test.throws instanceof Error) {
