@@ -151,30 +151,16 @@ export default class TestResult extends BubblingEventTarget {
 						return this.skip();
 					}
 
-					// If we have hooks, run sequentially
-					if (this.test.beforeEach || this.test.afterEach) {
-						return Promise.resolve()
-							.then(() => this.test.beforeEach?.())
-							.then(() => this.run())
-							.finally(() => this.test.afterEach?.());
-					}
-
-					// No hooks, just run the test
-					return this.run();
+					// Execute single test with its hooks
+					return Promise.resolve()
+						.then(() => this.test.beforeEach?.())
+						.then(() => this.run())
+						.finally(() => this.test.afterEach?.());
 				}
 
-				// For test groups, check if we need sequential execution
-				if (this.test.beforeEach || this.test.afterEach) {
-					// Execute child tests sequentially when hooks exist
-					let promise = Promise.resolve();
-					for (let test of (this.tests ?? [])) {
-						promise = promise.then(() => test.runAll().allFinished);
-					}
-					return promise;
-				}
-
-				// No hooks, run tests in parallel
-				return Promise.all((this.tests ?? []).map(t => t.runAll().allFinished));
+				// For test groups, run all tests in parallel but ensure hooks execute in sequence for each test.
+				// For each test, create a promise chain: beforeEach → run → afterEach
+				return Promise.all((this.tests ?? []).map(test => test.runAll().allFinished));
 			})
 			.then(() => this.finished)
 			.finally(() => this.test.afterAll?.());
@@ -222,7 +208,7 @@ export default class TestResult extends BubblingEventTarget {
 				ret.pass &&= test.throws(this.error);
 
 				if (!ret.pass) {
-					ret.details.push(`Got error ${ this.error }, but didn't pass test ${ test.throws }`);
+					ret.details.push(`Got error ${ this.error }, but didn’t pass test ${ test.throws }`);
 				}
 			}
 			else if (test.throws instanceof Error) {
