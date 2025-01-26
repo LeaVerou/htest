@@ -78,6 +78,14 @@ export function output (obj) {
 			if (typeof obj === "string") {
 				return obj;
 			}
+
+			// Handle nested objects
+			if (obj && typeof obj === "object") {
+				let entries = Object.entries(obj).map(([key, value]) =>
+					`${ key }: ${ output(value) }`,
+				);
+				return "{ " + entries.join(", ") + " }";
+			}
 		},
 	});
 }
