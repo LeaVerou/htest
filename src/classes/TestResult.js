@@ -84,6 +84,8 @@ export default class TestResult extends BubblingEventTarget {
 	 */
 	async run () {
 		this.messages = await interceptConsole(async () => {
+			await this.test.beforeEach?.();
+
 			let start = performance.now();
 
 			try {
@@ -97,6 +99,9 @@ export default class TestResult extends BubblingEventTarget {
 			}
 			catch (e) {
 				this.error = e;
+			}
+			finally {
+				await this.test.afterEach?.();
 			}
 		});
 
@@ -142,25 +147,19 @@ export default class TestResult extends BubblingEventTarget {
 
 		this.tests = this.test.tests?.map(t => new TestResult(t, this, childOptions));
 
-		// Promise resolved when all tests (including nested) are finished
-		this.allFinished = delay(1)
+		delay(1)
 			.then(() => this.test.beforeAll?.())
 			.then(() => {
 				if (this.test.isTest) {
 					if (this.test.skip) {
-						return this.skip();
+						this.skip();
 					}
-
-					// Execute single test with its hooks
-					return Promise.resolve()
-						.then(() => this.test.beforeEach?.())
-						.then(() => this.run())
-						.finally(() => this.test.afterEach?.());
+					else {
+						this.run();
+					}
 				}
 
-				// For test groups, run all tests in parallel but ensure hooks execute in sequence for each test.
-				// For each test, create a promise chain: beforeEach → run → afterEach
-				return Promise.all((this.tests ?? []).map(test => test.runAll().allFinished));
+				return Promise.allSettled((this.tests ?? []).map(test => test.runAll()));
 			})
 			.then(() => this.finished)
 			.finally(() => this.test.afterAll?.());
