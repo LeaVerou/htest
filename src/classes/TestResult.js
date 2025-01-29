@@ -84,6 +84,11 @@ export default class TestResult extends BubblingEventTarget {
 	 */
 	async run () {
 		this.messages = await interceptConsole(async () => {
+			if (!this.parent) {
+				// We are running the test in isolation, so we need to run beforeAll (if it exists)
+				await this.test.beforeAll?.();
+			}
+
 			await this.test.beforeEach?.();
 
 			let start = performance.now();
@@ -102,6 +107,11 @@ export default class TestResult extends BubblingEventTarget {
 			}
 			finally {
 				await this.test.afterEach?.();
+
+				if (!this.parent) {
+					// We are running the test in isolation, so we need to run afterAll
+					await this.test.afterAll?.();
+				}
 			}
 		});
 
