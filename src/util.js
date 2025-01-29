@@ -199,9 +199,11 @@ export async function interceptConsole (fn) {
 	let originalConsole = {};
 	let messages = [];
 
-	for (let method of methods) {
-		originalConsole[method] = console[method];
-		console[method] = (...args) => messages.push({args, method});
+	if (IS_NODEJS) {
+		for (let method of methods) {
+			originalConsole[method] = console[method];
+			console[method] = (...args) => messages.push({args, method});
+		}
 	}
 
 	fn = fn();
