@@ -61,7 +61,8 @@ await ready();
 // Add ids to all tests
 $$(`.reftest > tbody > tr, .reftest > tr`).forEach((test, i) => {
 	if (!test.id) {
-		test.id = idify(test.title) || "test-" + (i + 1);
+		let id = idify(test.title);
+		test.id = id + (id ? "-" : "") + "test-" + (i + 1);
 	}
 });
 
