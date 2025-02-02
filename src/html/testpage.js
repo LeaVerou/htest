@@ -59,7 +59,7 @@ loadCSS("https://unpkg.com/tippy.js@1.3.0/dist/tippy.css");
 await ready();
 
 // Add ids to all tests
-$$(`.reftest > tbody > tr`).forEach((test, i) => {
+$$(`.reftest > tbody > tr, .reftest > tr`).forEach((test, i) => {
 	if (!test.id) {
 		test.id = idify(test.title) || "test-" + (i + 1);
 	}
@@ -75,7 +75,7 @@ let hashchanged = evt => {
 		}
 
 		let isSection = target.matches("body > section");
-		let isTest = target.matches(".reftest > tbody > tr");
+		let isTest = target.matches(".reftest > tbody > tr, .reftest > tr");
 
 		if (isSection || isTest) {
 			if (evt) {
@@ -95,7 +95,7 @@ let hashchanged = evt => {
 			}
 
 			if (isTest) {
-				for (let test of $$(`.reftest > tbody > tr`)) {
+				for (let test of $$(`.reftest > tbody > tr, .reftest > tr`)) {
 					if (test.id !== target.id) {
 						test.remove();
 					}
@@ -193,7 +193,7 @@ function loadCSS (url) {
 // Isolate specific test
 document.addEventListener("dblclick", evt => {
 	if (evt.altKey) {
-		let test = evt.target.closest(".reftest > tbody > tr");
+		let test = evt.target.closest(".reftest > tbody > tr, .reftest > tr");
 
 		if (test) {
 			location.hash = test.id;

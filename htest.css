@@ -292,7 +292,8 @@ table.reftest {
 		display: flex;
 	}
 
-	& tbody > tr {
+	& tbody > tr,
+	& > tr {
 		border: 1px solid hsla(0, 0%, 0%, .1);
 
 		&:not([class]) {
