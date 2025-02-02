@@ -126,7 +126,7 @@ hashchanged();
 window.addEventListener("hashchange", hashchanged);
 
 // Add div for counter at the end of body
-let nav = create({
+RefTest.nav = create({
 	tag: "nav",
 	inside: document.body,
 	contents: [

@@ -323,6 +323,7 @@ table.reftest {
 		position: relative;
 		margin: .4em 0;
 		background: var(--color);
+		scroll-margin-top: 2.5rem;
 
 		&[data-time]::after {
 			content: attr(data-time);
