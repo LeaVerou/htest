@@ -67,7 +67,7 @@ export default function render (test) {
 
 		if (target.test.isTest) {
 			let tr = testRows.get(target.test);
-			tr.cells[1].textContent = output(target.actual);
+			tr.cells[1].textContent = output(target.error ? target.details : target.actual);
 			tr.classList.add(target.pass ? "pass" : "fail");
 			if (target.test.skip) {
 				tr.classList.add("skipped");
