@@ -178,7 +178,11 @@ RefTest.nav = create({
 var cellHTML = new WeakMap();
 var cells = $$("table.reftest td");
 cells.forEach(td => {
-	cellHTML.set(td, td.attributes.length > 0 ? td.outerHTML : td.innerHTML);
+	let html = td.attributes.length > 0 ? td.outerHTML : td.innerHTML;
+	if (td.dataset.errorStack) {
+		html = td.dataset.errorStack;
+	}
+	cellHTML.set(td, html);
 });
 
 $$("table.reftest").forEach(table => {
