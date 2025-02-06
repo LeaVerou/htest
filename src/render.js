@@ -67,7 +67,16 @@ export default function render (test) {
 
 		if (target.test.isTest) {
 			let tr = testRows.get(target.test);
-			tr.cells[1].textContent = output(target.actual);
+			let error = target.error;
+			let cell = tr.cells[1];
+			if (error) {
+				cell.dataset.errorStack = error.stack;
+				cell.onclick = () => console.log(error.stack);
+				cell.textContent = error;
+			}
+			else {
+				cell.textContent = output(target.actual);
+			}
 			tr.classList.add(target.pass ? "pass" : "fail");
 			if (target.test.skip) {
 				tr.classList.add("skipped");
