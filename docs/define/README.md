@@ -115,6 +115,8 @@ If you are testing that an error is thrown, you can use `throws`.
 - If the value is an `Error` subclass, the error thrown *also* needs to be an instance of that class.
 - If the value is a function, the function *also* needs to return a truthy value when called with the error thrown as its only argument.
 
+You can use `throws: false` to ensure the test passes as long as it doesn't throw an error, regardless of what value it returns.
+
 ### Time-based criteria (`maxTime`, `maxTimeAsync`)
 
 The time a test took is always measured and displayed anyway.
