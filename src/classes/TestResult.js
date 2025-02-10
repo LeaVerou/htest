@@ -183,7 +183,7 @@ export default class TestResult extends BubblingEventTarget {
 	evaluate () {
 		let test = this.test;
 
-		if (test.throws) {
+		if (test.throws !== undefined) {
 			Object.assign(this, this.evaluateThrown());
 		}
 		else if (test.maxTime || test.maxTimeAsync) {
@@ -213,7 +213,12 @@ export default class TestResult extends BubblingEventTarget {
 
 		// We may have more picky criteria for the error
 		if (ret.pass) {
-			if (typeof test.throws === "function") {
+			if (test.throws === false) {
+				// We expect no error, but got one
+				ret.pass = false;
+				ret.details.push(`Expected no error, but got ${ this.error }`);
+			}
+			else if (typeof test.throws === "function") {
 				ret.pass &&= test.throws(this.error);
 
 				if (!ret.pass) {
@@ -228,11 +233,13 @@ export default class TestResult extends BubblingEventTarget {
 					ret.details.push(`Got error ${ this.error }, but was not a subclass of ${ test.throws }`);
 				}
 			}
-			else {
-				if (!ret.pass) {
-					ret.details.push(`Expected error but ${ this.actual !== undefined ? ` got ${ stringify(this.actual) }` : "none was thrown" }`);
-				}
-			}
+		}
+		else if (test.throws === false) {
+			// We expect no error and got none, so this is good
+			ret.pass = true;
+		}
+		else {
+			ret.details.push(`Expected error but ${ this.actual !== undefined ? `got ${ stringify(this.actual) }` : "none was thrown" }`);
 		}
 
 		return ret;
