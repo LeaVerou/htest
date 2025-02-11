@@ -376,6 +376,8 @@ ${ this.error.stack }`);
 				ret.details.push(`Exceeded max async time of ${ test.maxTimeAsync }ms (took ${ this.timeTakenAsync }ms)`);
 			}
 		}
+
+		return ret;
 	}
 
 	get isLast () {
