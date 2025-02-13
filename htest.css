@@ -320,7 +320,7 @@ table.reftest {
 		border-right: 1px solid hsla(0, 0%, 0%, .1);
 	}
 
-	& td[data-error-stack] {
+	& td.details {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

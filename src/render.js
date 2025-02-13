@@ -71,7 +71,6 @@ export default function render (test) {
 			let cell = tr.cells[1];
 			if (error) {
 				cell.dataset.errorStack = error.stack;
-				cell.onclick = () => console.log(error.stack);
 				cell.textContent = error;
 			}
 			else {
@@ -81,10 +80,13 @@ export default function render (test) {
 			if (target.test.skip) {
 				tr.classList.add("skipped");
 			}
+			else if (!target.pass) {
+				cell.classList.add("details");
+				cell.onclick = () => console.log(target.details.join("\n"));
+			}
 			tr.dataset.time = formatDuration(target.timeTaken);
 		}
 	});
 
 	result.runAll();
 }
-
