@@ -218,19 +218,19 @@ export default class TestResult extends BubblingEventTarget {
 				ret.pass = false;
 				ret.details.push(`Expected no error, but got ${ this.error }`);
 			}
+			else if (test.throws.prototype instanceof Error) {
+				// We want a specific subclass, e.g. TypeError
+				ret.pass &&= this.error instanceof test.throws;
+
+				if (!ret.pass) {
+					ret.details.push(`Got error ${ this.error }, but was not a subclass of ${ test.throws.name }`);
+				}
+			}
 			else if (typeof test.throws === "function") {
 				ret.pass &&= test.throws(this.error);
 
 				if (!ret.pass) {
 					ret.details.push(`Got error ${ this.error }, but didn’t pass test ${ test.throws }`);
-				}
-			}
-			else if (test.throws instanceof Error) {
-				// We want a specific subclass, e.g. TypeError
-				ret.pass &&= this.error instanceof test.throws;
-
-				if (!ret.pass) {
-					ret.details.push(`Got error ${ this.error }, but was not a subclass of ${ test.throws }`);
 				}
 			}
 		}

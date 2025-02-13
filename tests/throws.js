@@ -44,12 +44,11 @@ export default {
 					throws: false,
 				},
 				{
-					name: "Subclass (?)",
+					name: "Subclass",
 					run: () => {
 						throw new SyntaxError();
 					},
 					throws: TypeError,
-					skip: true,
 				},
 			],
 		},
