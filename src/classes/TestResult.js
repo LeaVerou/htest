@@ -85,18 +85,19 @@ export default class TestResult extends BubblingEventTarget {
 	async run () {
 		let test = this.test;
 
-		let timeoutId;
-		if (test.maxTime || test.maxTimeAsync) {
-			// Add a buffer to account for the time it takes to evaluate the test
-			let timeout = Math.max(test.maxTime ?? 0, test.maxTimeAsync ?? 0) + 50;
-
-			timeoutId = setTimeout(() => {
-				this.error = new Error("Timed out");
-				this.timeTaken = timeout;
-
-				this.evaluate();
-			}, timeout);
+		// By default, give the test 10 seconds to run
+		let timeout = 10000;
+		if (test.maxTime && (test.expect !== undefined || test.throws !== undefined)) {
+			// For result-based and error-based tests, maxTime is the timeout
+			timeout = test.maxTime;
 		}
+
+		let timeoutId = setTimeout(() => {
+			this.error = new Error("Timeout");
+			this.timeTaken = timeout;
+
+			this.evaluate();
+		}, timeout);
 
 		this.messages = await interceptConsole(async () => {
 			if (!this.parent) {
@@ -379,13 +380,6 @@ ${ this.error.stack }`);
 	evaluateTimeTaken () {
 		let test = this.test;
 		let ret = {pass: true, details: []};
-
-		if (this.error && this.error.message.includes("Timed out")) {
-			ret.pass = false;
-			ret.details.push(`Test timed out after ${ this.timeTaken }ms`);
-
-			return ret;
-		}
 
 		if (test.maxTime) {
 			ret.pass &&= this.timeTaken <= test.maxTime;
