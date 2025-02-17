@@ -130,11 +130,9 @@ export default class TestResult extends BubblingEventTarget {
 			}
 		});
 
-		if (timeoutId) {
-			// If we are here, the test didn't timeout
-			// Clean up
-			clearTimeout(timeoutId);
-		}
+		// If we are here, the test didn't timeout
+		// Clean up
+		clearTimeout(timeoutId);
 
 		this.evaluate();
 	}
