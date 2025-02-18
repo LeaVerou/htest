@@ -16,5 +16,10 @@ export default {
 			name: "Time-based test",
 			maxTimeAsync: 100,
 		},
+		{
+			name: "Default timeout",
+			run: () => new Promise(resolve => setTimeout(resolve, 10200)),
+			skip: true, // Comment this line out to see the test fail after 10 seconds
+		},
 	],
 };
