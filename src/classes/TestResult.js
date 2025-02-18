@@ -87,7 +87,7 @@ export default class TestResult extends BubblingEventTarget {
 
 		// By default, give the test 10 seconds to run
 		let timeout = 10000;
-		if (test.maxTime && (!("expect" in test) || test.throws !== undefined)) {
+		if (test.maxTime && ("expect" in test || test.throws !== undefined)) {
 			// For result-based and error-based tests, maxTime is the timeout
 			timeout = test.maxTime;
 		}
