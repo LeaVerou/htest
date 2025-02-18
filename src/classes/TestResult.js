@@ -203,13 +203,14 @@ export default class TestResult extends BubblingEventTarget {
 	evaluate () {
 		let test = this.test;
 
+		if (test.maxTime || test.maxTimeAsync) {
+			Object.assign(this, this.evaluateTimeTaken());
+		}
+
 		if (test.throws !== undefined) {
 			Object.assign(this, this.evaluateThrown());
 		}
-		else if (!("expect" in test) && (test.maxTime || test.maxTimeAsync)) {
-			Object.assign(this, this.evaluateTimeTaken());
-		}
-		else {
+		else if ("expect" in test) {
 			Object.assign(this, this.evaluateResult());
 		}
 
@@ -229,7 +230,7 @@ export default class TestResult extends BubblingEventTarget {
 	 */
 	evaluateThrown () {
 		let test = this.test;
-		let ret = {pass: !!this.error, details: []};
+		let ret = {pass: (this.pass ?? true) && !!this.error, details: this.details ?? []};
 
 		// We may have more picky criteria for the error
 		if (ret.pass) {
@@ -271,38 +272,42 @@ export default class TestResult extends BubblingEventTarget {
 	 */
 	evaluateResult () {
 		let test = this.test;
-		let ret = {pass: true, details: []};
 
-		if (test.map) {
-			try {
-				this.mapped = {
-					actual: Array.isArray(this.actual) ? this.actual.map(test.map) : test.map(this.actual),
-					expect: Array.isArray(test.expect) ? test.expect.map(test.map) : test.map(test.expect),
-				};
+		// If we are here and there is an error (e.g., the test timed out), we consider the test failed
+		let ret = {pass: (this.pass ?? true) && !this.error, details: this.details ?? []};
 
+		if (ret.pass) {
+			if (test.map) {
 				try {
-					ret.pass = test.check(this.mapped.actual, this.mapped.expect);
+					this.mapped = {
+						actual: Array.isArray(this.actual) ? this.actual.map(test.map) : test.map(this.actual),
+						expect: Array.isArray(test.expect) ? test.expect.map(test.map) : test.map(test.expect),
+					};
+
+					try {
+						ret.pass = test.check(this.mapped.actual, this.mapped.expect);
+					}
+					catch (e) {
+						this.error = new Error(`check() failed (working with mapped values). ${ e.message }`);
+					}
 				}
 				catch (e) {
-					this.error = new Error(`check() failed (working with mapped values). ${ e.message }`);
+					this.error = new Error(`map() failed. ${ e.message }`);
 				}
 			}
-			catch (e) {
-				this.error = new Error(`map() failed. ${ e.message }`);
+			else {
+				try {
+					ret.pass = test.check(this.actual, test.expect);
+				}
+				catch (e) {
+					this.error = new Error(`check() failed. ${ e.message }`);
+				}
 			}
-		}
-		else {
-			try {
-				ret.pass = test.check(this.actual, test.expect);
-			}
-			catch (e) {
-				this.error = new Error(`check() failed. ${ e.message }`);
-			}
-		}
 
-		// If `map()` or `check()` errors, consider the test failed
-		if (this.error) {
-			ret.pass = false;
+			// If `map()` or `check()` errors, consider the test failed
+			if (this.error) {
+				ret.pass = false;
+			}
 		}
 
 		if (!ret.pass) {
