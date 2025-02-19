@@ -188,34 +188,51 @@ export function subsetTests (test, path) {
 	return tests;
 }
 
+// Used in `interceptConsole()` to maintain isolated contexts for each function call.
+let asyncLocalStorage;
+if (IS_NODEJS) {
+	const { AsyncLocalStorage } = await import("node:async_hooks");
+	asyncLocalStorage = new AsyncLocalStorage();
+}
+
 /**
  * Intercept console output while running a function.
  * @param {Function} fn Function to run.
  * @returns {Promise<Array<{args: Array<string>, method: string}>>} A promise that resolves with an array of intercepted messages containing the used console method and passed arguments.
  */
 export async function interceptConsole (fn) {
-	const methods = ["log", "warn", "error"];
+	if (!IS_NODEJS) {
+		await fn();
+		return [];
+	}
 
-	let originalConsole = {};
 	let messages = [];
 
-	if (IS_NODEJS) {
-		for (let method of methods) {
-			originalConsole[method] = console[method];
-			console[method] = (...args) => messages.push({args, method});
+	// We don't want to mix up the console messages intercepted during the function's parallel calls,
+	// so we use `AsyncLocalStorage` to maintain isolated contexts for each function call.
+	return asyncLocalStorage.run(messages, async () => {
+		for (let method of ["log", "warn", "error"]) {
+			if (console[method].original) {
+				continue;
+			}
+
+			let original = console[method];
+			console[method] = (...args) => {
+				let context = asyncLocalStorage.getStore();
+				if (context) {
+					// context === messages
+					context.push({ args, method });
+				}
+				else {
+					original(...args);
+				}
+			};
+			console[method].original = original;
 		}
-	}
 
-	fn = fn();
-	if (fn instanceof Promise) {
-		await fn;
-	}
-
-	for (let method in originalConsole) {
-		console[method] = originalConsole[method];
-	}
-
-	return messages;
+		await fn();
+		return messages;
+	});
 }
 
 /**
