@@ -188,6 +188,7 @@ export function subsetTests (test, path) {
 	return tests;
 }
 
+// Used in `interceptConsole()` to maintain isolated contexts for each function call.
 let asyncLocalStorage;
 if (IS_NODEJS) {
 	const { AsyncLocalStorage } = await import("node:async_hooks");
@@ -205,9 +206,10 @@ export async function interceptConsole (fn) {
 		return [];
 	}
 
-	// We don't want to mix up the console messages intercepted during parallel calls of the function
 	let messages = [];
 
+	// We don't want to mix up the console messages intercepted during the function's parallel calls,
+	// so we use `AsyncLocalStorage` to maintain isolated contexts for each function call.
 	return asyncLocalStorage.run(messages, async () => {
 		for (let method of ["log", "warn", "error"]) {
 			if (console[method].original) {
@@ -218,6 +220,7 @@ export async function interceptConsole (fn) {
 			console[method] = (...args) => {
 				let context = asyncLocalStorage.getStore();
 				if (context) {
+					// context === messages
 					context.push({ args, method });
 				}
 				else {
