@@ -194,28 +194,28 @@ export function subsetTests (test, path) {
  * @returns {Promise<Array<{args: Array<string>, method: string}>>} A promise that resolves with an array of intercepted messages containing the used console method and passed arguments.
  */
 export async function interceptConsole (fn) {
-	const methods = ["log", "warn", "error"];
-
-	let originalConsole = {};
-	let messages = [];
+	// We don't want to mix up the console messages intercepted during parallel calls of the function
+	let context = {
+		console: {},
+		messages: [],
+	};
 
 	if (IS_NODEJS) {
-		for (let method of methods) {
-			originalConsole[method] = console[method];
-			console[method] = (...args) => messages.push({args, method});
+		for (let method of ["log", "warn", "error"]) {
+			context.console[method] = console[method];
+			console[method] = (...args) => context.messages.push({args, method});
 		}
 	}
 
-	fn = fn();
-	if (fn instanceof Promise) {
-		await fn;
+	try {
+		await fn();
+		return context.messages;
 	}
-
-	for (let method in originalConsole) {
-		console[method] = originalConsole[method];
+	finally {
+		for (let method in context.console) {
+			console[method] = context.console[method];
+		}
 	}
-
-	return messages;
 }
 
 /**
