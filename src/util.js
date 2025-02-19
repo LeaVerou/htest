@@ -188,34 +188,48 @@ export function subsetTests (test, path) {
 	return tests;
 }
 
+let asyncLocalStorage;
+if (IS_NODEJS) {
+	const { AsyncLocalStorage } = await import("node:async_hooks");
+	asyncLocalStorage = new AsyncLocalStorage();
+}
+
 /**
  * Intercept console output while running a function.
  * @param {Function} fn Function to run.
  * @returns {Promise<Array<{args: Array<string>, method: string}>>} A promise that resolves with an array of intercepted messages containing the used console method and passed arguments.
  */
 export async function interceptConsole (fn) {
-	// We don't want to mix up the console messages intercepted during parallel calls of the function
-	let context = {
-		console: {},
-		messages: [],
-	};
-
-	if (IS_NODEJS) {
-		for (let method of ["log", "warn", "error"]) {
-			context.console[method] = console[method];
-			console[method] = (...args) => context.messages.push({args, method});
-		}
-	}
-
-	try {
+	if (!IS_NODEJS) {
 		await fn();
-		return context.messages;
+		return [];
 	}
-	finally {
-		for (let method in context.console) {
-			console[method] = context.console[method];
+
+	// We don't want to mix up the console messages intercepted during parallel calls of the function
+	let messages = [];
+
+	return asyncLocalStorage.run(messages, async () => {
+		for (let method of ["log", "warn", "error"]) {
+			if (console[method].original) {
+				continue;
+			}
+
+			let original = console[method];
+			console[method] = (...args) => {
+				let context = asyncLocalStorage.getStore();
+				if (context) {
+					context.push({ args, method });
+				}
+				else {
+					original(...args);
+				}
+			};
+			console[method].original = original;
 		}
-	}
+
+		await fn();
+		return messages;
+	});
 }
 
 /**
