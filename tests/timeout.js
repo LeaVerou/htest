@@ -10,7 +10,7 @@ export default {
 		},
 		{
 			name: "Error-based test",
-			throws: error => error.cause.name !== "TimeoutError",
+			throws: error => !error.message.startsWith("Test timed out"),
 		},
 		{
 			name: "Time-based test",
