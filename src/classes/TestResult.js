@@ -85,26 +85,23 @@ export default class TestResult extends BubblingEventTarget {
 	async run () {
 		let test = this.test;
 
-		let timer = {
-			timeout: 10000, // by default, give the test 10 seconds to run
-		};
-
+		// By default, give the test 10 seconds to run
+		let timeout = 10000;
 		if (test.maxTime && ("expect" in test || test.throws !== undefined)) {
 			// For result-based and error-based tests, maxTime is the timeout
-			timer.timeout = test.maxTime;
+			timeout = test.maxTime;
 		}
 
+		let timeoutId;
 		this.messages = await Promise.race([
 			new Promise(resolve => {
-				timer.handler = () => {
-					this.error = new Error(`Test timed out after ${ timer.timeout }ms`);
-					this.timeTaken = timer.timeout;
+				timeoutId = setTimeout(() => {
+					this.error = new Error(`Test timed out after ${ timeout }ms`);
+					this.timeTaken = timeout;
 					resolve([]);
-				};
-
-				timer.signal = AbortSignal.timeout(timer.timeout);
-				timer.signal.addEventListener("abort", timer.handler);
+				}, timeout);
 			}),
+
 			interceptConsole(async () => {
 				if (!this.parent) {
 					// We are running the test in isolation, so we need to run beforeAll (if it exists)
@@ -136,10 +133,9 @@ export default class TestResult extends BubblingEventTarget {
 					}
 				}
 			}),
-		]).finally(() => {
-			// Don't fire the abort event if the test finished before the timeout
-			timer.signal.removeEventListener("abort", timer.handler);
-		});
+		]);
+
+		clearTimeout(timeoutId);
 
 		this.evaluate();
 	}
