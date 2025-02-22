@@ -36,7 +36,7 @@ export default function render (test) {
 							contents: [
 								{tag: "td", textContent: t2.args?.map(a => output(a)).join(", ") },
 								{tag: "td"},
-								{tag: "td"},
+								{tag: "td", textContent: output(t2.expect) },
 							],
 						});
 
@@ -68,7 +68,6 @@ export default function render (test) {
 
 		if (target.test.isTest) {
 			let tr = testRows.get(target.test);
-			tr.cells[2].textContent = output(target.test.expect);
 			let error = target.error;
 			let cell = tr.cells[1];
 			if (error) {
