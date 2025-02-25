@@ -202,7 +202,7 @@ We are also only specifying a name when it's non-obvious, and using the `getName
 
 Notice that there is a spectrum between how much you want to abstract away and how much you want to specify in each test.
 It’s up to you where your tests would be in that spectrum.
-You may prefer to keep inherited settngs simple, and add local overrides,
+You may prefer to keep inherited settings simple, and add local overrides,
 or you may prefer to add more code at the root, so the tests can be as lean as possible.
 hTest allows you to do both.
 
