@@ -99,7 +99,7 @@ If no name is provided, it defaults to the first argument passed to `run`, if an
 
 This is an optional unique identifier for the test that can be used to refer to it programmatically.
 
-## Setting expectations:
+## Setting expectations
 
 All of these properties define the criteria for a test to pass.
 

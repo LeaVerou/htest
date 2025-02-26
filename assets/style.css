@@ -5,9 +5,9 @@
 @import url("prism.css");
 
 :root {
-	--max-page-width: min(120ch, 100% - 2em);
-	--max-content-width: min(80ch, 100% - 2em);
-	--body-padding: 1em;
+	--body-padding: 1rem;
+	--max-page-width: min(125ch, 100% - 2 * var(--body-padding));
+	--max-content-width: min(80ch, 100%);
 	--header-height: 6.5rem;
 
 	--color-magenta: hsl(340 90% 50%);
@@ -65,6 +65,7 @@ header {
 
 	& h1 {
 		font-size: 300%;
+		white-space: nowrap;
 
 		& > :is(a, a:hover) {
 			color: inherit;
@@ -110,10 +111,6 @@ nav {
 	max-width: var(--max-page-width);
 	margin-inline: auto;
 
-	@media (width <= 625px) {
-		flex-direction: column;
-	}
-
 	@media (width > 1360px) {
 		&:has(#main-contents) {
 			padding-inline-start: var(--wa-space-3xl);
@@ -123,52 +120,66 @@ nav {
 	@media (width > 1000px) {
 		&:has(> .sidebar) {
 			> .sidebar {
-				> .toc {
-					margin: 0;
-					position: sticky;
-					top: var(--header-height);
-
-					.toc {
-						block-size: calc(100vh - var(--header-height) - 1.2lh);
-						overflow: visible auto;
-					}
+				> .toc .toc {
+					block-size: calc(100vh - var(--header-height) - 1.2lh);
+					padding-block-end: var(--wa-space-3xl); /* allow scrolling past the last item */
+					overflow-y: auto;
+					overscroll-behavior: contain;
 				}
 
 				~ .sidebar {
-					padding-inline-start: var(--wa-space-l);
+					padding-inline-end: 0;
 					border-inline-start: var(--wa-border-style) var(--wa-panel-border-width) var(--wa-color-surface-border);
 					border-inline-end: none;
 				}
-
 			}
-		}
 
-		&:has(> .sidebar ~ .sidebar) {
-			--max-content-width: 75ch;
-		}
-
-		#section-contents {
-			white-space: nowrap;
+			#section-contents {
+				padding-inline-start: 0;
+			}
 		}
 	}
 
 	@media (width <= 1000px) {
+		&:has(.sidebar ~ .sidebar) {
+			flex-direction: column;
+
+			.sidebar {
+				border: none;
+			}
+
+			#section-contents {
+				order: 999;
+			}
+		}
+
 		#page-contents {
 			order: -1;
 		}
+	}
 
-		#section-contents {
-			order: 999;
+	@media (width > 625px) {
+		&:not(:has(.sidebar ~ .sidebar)) .sidebar {
+			padding-inline-start: 0;
+		}
+	}
+
+	@media (width <= 625px) {
+		flex-direction: column;
+
+		.sidebar {
+			border: none;
 		}
 	}
 }
 
 main {
-	max-width: var(--max-content-width);
+	max-inline-size: var(--max-content-width);
+	min-inline-size: 0;
 	padding: var(--wa-space-xl);
 	margin-inline-end: auto;
 
-	> ul:first-of-type {
+	ul:is(#features-at-a-glance + *) {
 		list-style: "✅ ";
 		padding-inline-start: 0;
 
@@ -209,8 +220,7 @@ main {
 
 .sidebar {
 	border-inline-end: var(--wa-border-style) var(--wa-panel-border-width) var(--wa-color-surface-border);
-	padding-block: var(--wa-space-l);
-	padding-inline: var(--wa-space-l);
+	padding: var(--wa-space-l);
 	font-size: var(--wa-font-size-s);
 	color: var(--color-neutral-30);
 
@@ -222,6 +232,12 @@ main {
 	}
 
 	.toc {
+		:is(.sidebar > &) {
+			margin: 0;
+			position: sticky;
+			top: var(--header-height);
+		}
+
 		.active.toc-link {
 			font-weight: var(--wa-font-weight-bold);
 			color: var(--color-accent);
@@ -246,19 +262,25 @@ main {
 				}
 			}
 
-			:is(* > &) > li {
-				font-weight: var(--wa-font-weight-semibold);
+			:is(.toc > &) {
+				> li {
+					font-weight: var(--wa-font-weight-semibold);
+				}
+			}
+
+			&:is(.toc > *):not(:has(&)) > li {
+				font-weight: var(--wa-font-weight-normal);
+
+				& + & {
+					margin-block-start: var(--wa-space-xs);
+				}
 			}
 		}
 	}
+}
 
-	@media (width <= 625px) {
-		border-inline-end: none;
-	}
-
-	@media (width > 625px) {
-		padding-inline-start: 0;
-	}
+#section-contents {
+	white-space: nowrap;
 }
 
 #main-contents {
@@ -268,12 +290,6 @@ main {
 		top: var(--header-height);
 		list-style: none;
 		line-height: var(--wa-line-height-expanded);
-	}
-
-	@media (width <= 625px) {
-		ul {
-			position: static;
-		}
 	}
 
 	a {
@@ -290,6 +306,7 @@ main {
 pre:has(code) {
 	max-width: 100%;
 	overflow-x: auto;
+	overscroll-behavior: contain;
 }
 
 :nth-child(1) { --index: 1; }
