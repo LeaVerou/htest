@@ -9,6 +9,10 @@ pre {
 	}
 }
 
+code[class*="language-"]:not(pre[class*="language-"] > *) .token {
+	color: var(--wa-color-text-normal);
+}
+
 .token.comment,
 .token.prolog,
 .token.doctype,
