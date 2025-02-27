@@ -50,17 +50,18 @@ export default function transform (test) {
 				let { throws, doesNotThrow } = await import("assert");
 				let run = test.run.bind(test, ...test.args);
 
+				// FIXME: if run() is async, these assertions will not work
 				if (test.throws === true) {
-					await throws(run);
+					throws(run);
 				}
 				else if (test.throws === false) {
-					await doesNotThrow(run);
+					doesNotThrow(run);
 				}
 				else if (test.throws.prototype instanceof Error) {
-					await throws(run, test.throws);
+					throws(run, test.throws);
 				}
 				else if (typeof test.throws === "function") {
-					await throws(run, test.throws);
+					throws(run, test.throws);
 				}
 			}
 			else if (test.maxTime || test.maxTimeAsync) {
@@ -87,13 +88,14 @@ export default function transform (test) {
 			else {
 				// Result-based test
 				let { ok, equal, deepEqual, deepStrictEqual, strictEqual } = await import("assert");
-				let actual = test.run.apply(test, test.args);
+				let actual = await test.run.apply(test, test.args);
 				let assertFn;
 
 				if (test.originalCheck) {
 					let check = test.originalCheck;
 					if (typeof check === "function") {
-						return await ok(check.call(test, actual, test.expect));
+						let result = await check.call(test, actual, test.expect);
+						return ok(result);
 					}
 					else {
 						if (check.looseTypes) {
@@ -116,7 +118,7 @@ export default function transform (test) {
 					assertFn = deepStrictEqual;
 				}
 
-				await assertFn(actual, test.expect);
+				assertFn(actual, test.expect);
 			}
 		});
 	}

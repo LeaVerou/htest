@@ -106,6 +106,18 @@ const testSuite = {
 			],
 		},
 		{
+			name: "Asynchronous run()",
+			tests: [
+				{
+					run: async () => {
+						await new Promise(resolve => setTimeout(resolve, 10));
+						return "foo";
+					},
+					arg: "foo",
+				},
+			],
+		},
+		{
 			name: "Lifecycle hooks",
 			getName () {
 				return `Test #${ this.args[1] }`;
