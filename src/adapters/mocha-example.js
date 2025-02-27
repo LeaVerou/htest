@@ -70,6 +70,21 @@ const testSuite = {
 			],
 		},
 		{
+			name: "Time-based tests",
+			tests: [
+				{
+					name: "Synchronous",
+					run: () => "foo",
+					maxTime: 10,
+				},
+				{
+					name: "Asynchronous",
+					run: async () => new Promise(resolve => setTimeout(resolve, 10, "foo")),
+					maxTimeAsync: 20,
+				},
+			],
+		},
+		{
 			name: "Custom check",
 			tests: [
 				{

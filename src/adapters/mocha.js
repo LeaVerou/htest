@@ -63,6 +63,27 @@ export default function transform (test) {
 					await throws(run, test.throws);
 				}
 			}
+			else if (test.maxTime || test.maxTimeAsync) {
+				// Time-based test
+				let { ok } = await import("assert");
+
+				let start = performance.now();
+				let actual = test.run.apply(test, test.args);
+				let timeTaken = performance.now() - start;
+
+				let timeTakenAsync;
+				if (actual instanceof Promise) {
+					actual = await actual;
+					timeTakenAsync = performance.now() - start;
+				}
+
+				if (test.maxTime) {
+					ok(timeTaken <= test.maxTime, `Exceeded max time of ${ test.maxTime }ms (took ${ timeTaken }ms)`);
+				}
+				else {
+					ok(timeTakenAsync <= test.maxTimeAsync, `Exceeded max async time of ${ test.maxTimeAsync }ms (took ${ timeTakenAsync }ms)`);
+				}
+			}
 			else {
 				// Result-based test
 				let { ok, equal, deepEqual, deepStrictEqual, strictEqual } = await import("assert");
