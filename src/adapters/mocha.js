@@ -54,7 +54,7 @@ export default function transform (test) {
 		let itFn = test.skip ? it.skip : it;
 
 		// Create a Mocha test with the assertion logic
-		itFn(test.name, async () => {
+		itFn(test.name, async function () {
 			if (test.throws !== undefined) {
 				// Error-based test
 				let { rejects, doesNotReject } = await import("assert");
