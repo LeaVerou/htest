@@ -27,14 +27,20 @@ export default function transform (test) {
 				after(test.afterAll.bind(test));
 			}
 
-			// FIXME: We need to pass the right context to beforeEach/afterEach (for now, we pass a group of tests instead of a single one)
-			// if (test.beforeEach) {
-			// 	beforeEach(test.beforeEach.bind(test));
-			// }
+			// FIXME: What if more than one test has the same name?
+			if (test.beforeEach) {
+				beforeEach(function () {
+					let currentTest = test.tests.find(t => t.name === this.currentTest.title);
+					test.beforeEach.bind(currentTest)();
+				});
+			}
 
-			// if (test.afterEach) {
-			// 	afterEach(test.afterEach.bind(test));
-			// }
+			if (test.afterEach) {
+				afterEach(function () {
+					let currentTest = test.tests.find(t => t.name === this.currentTest.title);
+					test.afterEach.bind(currentTest)();
+				});
+			}
 
 			test.tests.forEach(test => transform(test));
 		});
