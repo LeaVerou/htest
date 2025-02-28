@@ -47,21 +47,20 @@ export default function transform (test) {
 		itFn(test.name, async () => {
 			if (test.throws !== undefined) {
 				// Error-based test
-				let { throws, doesNotThrow } = await import("assert");
-				let run = test.run.bind(test, ...test.args);
+				let { rejects, doesNotReject } = await import("assert");
+				let run = async () => await test.run.apply(test, test.args);
 
-				// FIXME: if run() is async, these assertions will not work
 				if (test.throws === true) {
-					throws(run);
+					await rejects(run);
 				}
 				else if (test.throws === false) {
-					doesNotThrow(run);
+					await doesNotReject(run);
 				}
 				else if (test.throws.prototype instanceof Error) {
-					throws(run, test.throws);
+					await rejects(run, test.throws);
 				}
 				else if (typeof test.throws === "function") {
-					throws(run, test.throws);
+					await rejects(run, test.throws);
 				}
 			}
 			else if (test.maxTime || test.maxTimeAsync) {
