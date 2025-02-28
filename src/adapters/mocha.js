@@ -20,25 +20,29 @@ export default function transform (test) {
 		let describeFn = test.skip ? describe.skip : describe;
 		describeFn(test.description || test.name, () => {
 			if (test.beforeAll) {
-				before(test.beforeAll.bind(test));
+				before(async function () {
+					return await test.beforeAll.apply(test);
+				});
 			}
 
 			if (test.afterAll) {
-				after(test.afterAll.bind(test));
+				after(async function () {
+					return await test.afterAll.apply(test);
+				});
 			}
 
 			// FIXME: What if more than one test has the same name?
 			if (test.beforeEach) {
-				beforeEach(function () {
+				beforeEach(async function () {
 					let currentTest = test.tests.find(t => t.name === this.currentTest.title);
-					test.beforeEach.bind(currentTest)();
+					return await test.beforeEach.apply(currentTest);
 				});
 			}
 
 			if (test.afterEach) {
-				afterEach(function () {
+				afterEach(async function () {
 					let currentTest = test.tests.find(t => t.name === this.currentTest.title);
-					test.afterEach.bind(currentTest)();
+					return await test.afterEach.apply(currentTest);
 				});
 			}
 
